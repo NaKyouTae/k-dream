@@ -1054,6 +1054,17 @@ function Footer() {
             &copy; 2026 K-DREAM. All rights reserved.
           </p>
         </div>
+
+        <div className="border-t border-white/10 mt-8 pt-6 text-xs text-blue-200/40 leading-relaxed">
+          <p>
+            주식회사 케이드림유학원 | 대표자: 이현정 | 사업자등록번호:
+            603-87-03414
+          </p>
+          <p className="mt-1">
+            사업장 소재지: 경상북도 포항시 남구 대이로63번길 8, 2층(대장동) |
+            업태: 교육서비스업 | 종목: 유학알선
+          </p>
+        </div>
       </div>
     </footer>
   );
