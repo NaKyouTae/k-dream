@@ -6,7 +6,8 @@
     "dev": "next dev -p 14000",
     "build": "next build",
     "start": "next start -p 14000",
-    "lint": "eslint"
+    "lint": "eslint",
+    "deploy": "next build && firebase deploy --only hosting"
   },
   "dependencies": {
     "next": "16.2.4",
