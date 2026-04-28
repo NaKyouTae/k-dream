@@ -1,15 +1,75 @@
 "use client";
 
 import { useState } from "react";
+import { LanguageProvider, useLanguage } from "@/lib/LanguageContext";
+
+function LanguageToggle() {
+  const { locale, toggleLocale } = useLanguage();
+  const [open, setOpen] = useState(false);
+
+  return (
+    <div className="relative">
+      <button
+        onClick={() => setOpen(!open)}
+        className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-gray-600 hover:text-blue-600 transition-colors rounded-full border border-gray-200 hover:border-blue-300"
+        aria-label="언어 변경"
+      >
+        <svg
+          className="w-4 h-4"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          strokeWidth={1.5}
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5a17.92 17.92 0 01-8.716-2.247m0 0A8.966 8.966 0 013 12c0-1.264.26-2.466.733-3.559"
+          />
+        </svg>
+        <span className="text-xs font-medium">
+          {locale === "ko" ? "KO" : "EN"}
+        </span>
+      </button>
+      {open && (
+        <>
+          <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
+          <div className="absolute right-0 mt-1 w-32 bg-white rounded-xl shadow-lg border border-gray-100 py-1 z-50">
+            <button
+              onClick={() => {
+                if (locale !== "ko") toggleLocale();
+                setOpen(false);
+              }}
+              className={`w-full text-left px-4 py-2 text-sm ${locale === "ko" ? "text-blue-600 font-medium bg-blue-50" : "text-gray-600 hover:bg-gray-50"}`}
+            >
+              한국어
+            </button>
+            <button
+              onClick={() => {
+                if (locale !== "en") toggleLocale();
+                setOpen(false);
+              }}
+              className={`w-full text-left px-4 py-2 text-sm ${locale === "en" ? "text-blue-600 font-medium bg-blue-50" : "text-gray-600 hover:bg-gray-50"}`}
+            >
+              English
+            </button>
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
 
 function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const { t } = useLanguage();
+
   const links = [
-    { href: "#about", label: "소개" },
-    { href: "#services", label: "서비스" },
-    { href: "#countries", label: "국가별 가이드" },
-    { href: "#partners", label: "파트너십" },
-    { href: "#contact", label: "문의" },
+    { href: "#about", label: t("nav.about") },
+    { href: "#services", label: t("nav.services") },
+    { href: "#countries", label: t("nav.countries") },
+    { href: "#partners", label: t("nav.partners") },
+    { href: "#contact", label: t("nav.contact") },
   ];
 
   return (
@@ -33,40 +93,46 @@ function Header() {
               </a>
             ))}
           </nav>
-          <a
-            href="#contact"
-            className="hidden md:inline-flex px-5 py-2 bg-blue-600 text-white text-sm font-medium rounded-full hover:bg-blue-700 transition-colors"
-          >
-            협력 문의
-          </a>
-          <button
-            className="md:hidden p-2"
-            onClick={() => setMenuOpen(!menuOpen)}
-            aria-label="메뉴 열기"
-          >
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
+          <div className="hidden md:flex items-center gap-3">
+            <a
+              href="#contact"
+              className="px-5 py-2 bg-blue-600 text-white text-sm font-medium rounded-full hover:bg-blue-700 transition-colors"
             >
-              {menuOpen ? (
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              ) : (
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4 6h16M4 12h16M4 18h16"
-                />
-              )}
-            </svg>
-          </button>
+              {t("header.contact")}
+            </a>
+            <LanguageToggle />
+          </div>
+          <div className="md:hidden flex items-center gap-2">
+            <button
+              className="p-2"
+              onClick={() => setMenuOpen(!menuOpen)}
+              aria-label={t("header.menuOpen")}
+            >
+              <svg
+                className="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                {menuOpen ? (
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                ) : (
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M4 6h16M4 12h16M4 18h16"
+                  />
+                )}
+              </svg>
+            </button>
+            <LanguageToggle />
+          </div>
         </div>
       </div>
       {menuOpen && (
@@ -86,7 +152,7 @@ function Header() {
             className="mt-3 block text-center px-5 py-2.5 bg-blue-600 text-white text-sm font-medium rounded-full"
             onClick={() => setMenuOpen(false)}
           >
-            협력 문의
+            {t("header.contact")}
           </a>
         </div>
       )}
@@ -95,6 +161,7 @@ function Header() {
 }
 
 function Hero() {
+  const { t } = useLanguage();
   return (
     <section className="relative pt-16 overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-br from-[#0a1628] via-[#0f2345] to-[#162d50]" />
@@ -107,60 +174,43 @@ function Hero() {
           <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-blue-500/20 rounded-full mb-6">
             <span className="w-2 h-2 bg-blue-400 rounded-full animate-pulse" />
             <span className="text-blue-300 text-sm font-medium">
-              K-DREAM Study Abroad Agency
+              {t("hero.badge")}
             </span>
           </div>
           <h1 className="text-3xl sm:text-4xl lg:text-6xl font-bold text-white leading-tight mb-6">
-            비수도권 취업·정주 연계형
+            {t("hero.title1")}
             <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300">
-              외국인 유학생 풀케어 플랫폼
+              {t("hero.title2")}
             </span>
           </h1>
           <p className="text-lg sm:text-xl text-blue-200/80 max-w-2xl mx-auto mb-10">
-            우즈베키스탄·몽골·베트남·중국 타깃, 사립 전문대/4년제 공대/관광·외식
-            파트너로
+            {t("hero.desc")}
             <br className="hidden sm:block" />
-            &lsquo;입학~정주&rsquo;까지 원스톱 지원하는 차별화된 유학원
+            {t("hero.desc2")}
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <a
               href="#services"
               className="px-8 py-3 bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-full transition-colors"
             >
-              서비스 알아보기
+              {t("hero.cta1")}
             </a>
             <a
               href="#contact"
               className="px-8 py-3 border border-blue-400/30 text-blue-300 hover:bg-blue-500/10 font-medium rounded-full transition-colors"
             >
-              협력 문의하기
+              {t("hero.cta2")}
             </a>
           </div>
         </div>
 
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-16 max-w-4xl mx-auto">
           {[
-            {
-              icon: "🏛",
-              label: "대상 대학",
-              value: "사립 전문대 · 4년제 공대",
-            },
-            {
-              icon: "🌏",
-              label: "타깃 국가",
-              value: "UZ · MN · VN · CN",
-            },
-            {
-              icon: "📈",
-              label: "시장 성장",
-              value: "208,962 → 253,434명",
-            },
-            {
-              icon: "✅",
-              label: "인증대학",
-              value: "158개교 협력",
-            },
+            { icon: "\u{1F3DB}", label: t("hero.stat1.label"), value: t("hero.stat1.value") },
+            { icon: "\u{1F30F}", label: t("hero.stat2.label"), value: t("hero.stat2.value") },
+            { icon: "\u{1F4C8}", label: t("hero.stat3.label"), value: t("hero.stat3.value") },
+            { icon: "\u2705", label: t("hero.stat4.label"), value: t("hero.stat4.value") },
           ].map((item) => (
             <div
               key={item.label}
@@ -178,67 +228,69 @@ function Hero() {
 }
 
 function About() {
+  const { t } = useLanguage();
   return (
     <section id="about" className="py-20 sm:py-28 bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <p className="text-blue-600 font-semibold text-sm mb-2">
-            ABOUT K-DREAM
+            {t("about.tag")}
           </p>
           <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
-            비전 · 미션 · 핵심가치
+            {t("about.title")}
           </h2>
           <p className="text-gray-500 max-w-xl mx-auto">
-            비수도권 지역에서 취업과 정주를 연계하는 글로벌 유학생 유치 및 관리의
-            최고 플랫폼
+            {t("about.desc")}
           </p>
         </div>
 
         <div className="grid md:grid-cols-2 gap-8 mb-12">
           <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
             <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-4">
-              <span className="text-blue-600 text-xl">🔭</span>
+              <span className="text-blue-600 text-xl">{"\u{1F52D}"}</span>
             </div>
             <h3 className="text-xl font-bold text-gray-900 mb-2">
-              비전 (Vision)
+              {t("about.vision")}
             </h3>
             <p className="text-sm text-gray-500 mb-4">
-              비수도권 취업·정주 연계 No.1 글로벌 유학 플랫폼
+              {t("about.vision.sub")}
             </p>
             <p className="text-gray-700 leading-relaxed">
-              외국인 유학생의{" "}
-              <strong>학업성공 → 취업 → 정주</strong>를 통합 지원하여
-              지역과 산업의 인력난을 해결합니다.
+              {t("about.vision.desc")}
+              <strong>{t("about.vision.bold")}</strong>
+              {t("about.vision.desc2")}
             </p>
           </div>
           <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
             <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center mb-4">
-              <span className="text-green-600 text-xl">🎯</span>
+              <span className="text-green-600 text-xl">{"\u{1F3AF}"}</span>
             </div>
             <h3 className="text-xl font-bold text-gray-900 mb-2">
-              미션 (Mission)
+              {t("about.mission")}
             </h3>
             <p className="text-sm text-gray-500 mb-4">
-              학업성공-취업-정주 통합 지원
+              {t("about.mission.sub")}
             </p>
             <ul className="space-y-2 text-gray-700">
               <li className="flex items-start gap-2">
-                <span className="text-blue-500 mt-0.5">•</span>
+                <span className="text-blue-500 mt-0.5">{"\u2022"}</span>
                 <span>
-                  <strong>학업성공:</strong> 한국어·전공 교육 지원, 학업 적응
-                  관리
+                  <strong>{t("about.mission.item1.title")}</strong>
+                  {t("about.mission.item1.desc")}
                 </span>
               </li>
               <li className="flex items-start gap-2">
-                <span className="text-blue-500 mt-0.5">•</span>
+                <span className="text-blue-500 mt-0.5">{"\u2022"}</span>
                 <span>
-                  <strong>취업연계:</strong> 산업별 맞춤형 현장실습·채용 매칭
+                  <strong>{t("about.mission.item2.title")}</strong>
+                  {t("about.mission.item2.desc")}
                 </span>
               </li>
               <li className="flex items-start gap-2">
-                <span className="text-blue-500 mt-0.5">•</span>
+                <span className="text-blue-500 mt-0.5">{"\u2022"}</span>
                 <span>
-                  <strong>정주지원:</strong> 비자·주거·생활 안정화 프로그램
+                  <strong>{t("about.mission.item3.title")}</strong>
+                  {t("about.mission.item3.desc")}
                 </span>
               </li>
             </ul>
@@ -247,30 +299,10 @@ function About() {
 
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           {[
-            {
-              icon: "🛡",
-              title: "Compliance First",
-              desc: "법규 준수 및 비자 관리 강화",
-              color: "bg-blue-50 text-blue-600",
-            },
-            {
-              icon: "🎓",
-              title: "Student Success",
-              desc: "학업 성취 및 취업 연계 지원",
-              color: "bg-amber-50 text-amber-600",
-            },
-            {
-              icon: "🤝",
-              title: "Partnership Excellence",
-              desc: "대학·기업 협력 강화",
-              color: "bg-green-50 text-green-600",
-            },
-            {
-              icon: "📊",
-              title: "Data-Driven",
-              desc: "데이터 기반 의사결정",
-              color: "bg-purple-50 text-purple-600",
-            },
+            { icon: "\u{1F6E1}", title: t("about.value1.title"), desc: t("about.value1.desc"), color: "bg-blue-50 text-blue-600" },
+            { icon: "\u{1F393}", title: t("about.value2.title"), desc: t("about.value2.desc"), color: "bg-amber-50 text-amber-600" },
+            { icon: "\u{1F91D}", title: t("about.value3.title"), desc: t("about.value3.desc"), color: "bg-green-50 text-green-600" },
+            { icon: "\u{1F4CA}", title: t("about.value4.title"), desc: t("about.value4.desc"), color: "bg-purple-50 text-purple-600" },
           ].map((v) => (
             <div
               key={v.title}
@@ -294,85 +326,61 @@ function About() {
 }
 
 function Services() {
+  const { t } = useLanguage();
   const steps = [
     {
       num: "01",
-      title: "프리입국",
-      subtitle: "준비 단계",
+      title: t("services.step1.title"),
+      subtitle: t("services.step1.subtitle"),
       color: "from-blue-500 to-blue-600",
-      items: [
-        "레벨테스트: 한국어 능력 진단",
-        "TOPIK/면접 준비: 시험 대비",
-        "비자 서류: D-2, D-4 비자 지원",
-        "재정 플랜: 학비·생활비 설계",
-      ],
+      items: [t("services.step1.item1"), t("services.step1.item2"), t("services.step1.item3"), t("services.step1.item4")],
       stats: [
-        { label: "준비 기간", value: "2-4주" },
-        { label: "비자 승인률", value: "95%" },
+        { label: t("services.step1.stat1.label"), value: t("services.step1.stat1.value") },
+        { label: t("services.step1.stat2.label"), value: t("services.step1.stat2.value") },
       ],
     },
     {
       num: "02",
-      title: "입국·정착",
-      subtitle: "정착 단계",
+      title: t("services.step2.title"),
+      subtitle: t("services.step2.subtitle"),
       color: "from-cyan-500 to-cyan-600",
-      items: [
-        "공항 픽업: 24시간 공항 수령",
-        "외국인등록: 법무 서류 지원",
-        "기숙사·주거: 기숙사 배정",
-        "생활 오리엔테이션: 지역 적응",
-      ],
+      items: [t("services.step2.item1"), t("services.step2.item2"), t("services.step2.item3"), t("services.step2.item4")],
       stats: [
-        { label: "정착 완료", value: "1-2일" },
-        { label: "만족도", value: "98%" },
+        { label: t("services.step2.stat1.label"), value: t("services.step2.stat1.value") },
+        { label: t("services.step2.stat2.label"), value: t("services.step2.stat2.value") },
       ],
     },
     {
       num: "03",
-      title: "재학관리",
-      subtitle: "학업 단계",
+      title: t("services.step3.title"),
+      subtitle: t("services.step3.subtitle"),
       color: "from-indigo-500 to-indigo-600",
-      items: [
-        "출결·학사 모니터링: 실시간 확인",
-        "한국어 튜터링: TOPIK 4급 목표",
-        "멘탈케어: 상담, 정서 지원",
-        "중도탈락 예방: 조기 경보",
-      ],
+      items: [t("services.step3.item1"), t("services.step3.item2"), t("services.step3.item3"), t("services.step3.item4")],
       stats: [
-        { label: "출석률", value: "92%" },
-        { label: "중도탈락률", value: "7%" },
+        { label: t("services.step3.stat1.label"), value: t("services.step3.stat1.value") },
+        { label: t("services.step3.stat2.label"), value: t("services.step3.stat2.value") },
       ],
     },
     {
       num: "04",
-      title: "취업연계",
-      subtitle: "취업 단계",
+      title: t("services.step4.title"),
+      subtitle: t("services.step4.subtitle"),
       color: "from-violet-500 to-violet-600",
-      items: [
-        "이력서·면접 코칭: 취업 준비",
-        "현장실습·인턴: 기업 매칭",
-        "기업탐방: 산업체 방문",
-        "채용 매칭: 취업 연결",
-      ],
+      items: [t("services.step4.item1"), t("services.step4.item2"), t("services.step4.item3"), t("services.step4.item4")],
       stats: [
-        { label: "취업률", value: "85%" },
-        { label: "평균 취업", value: "6개월" },
+        { label: t("services.step4.stat1.label"), value: t("services.step4.stat1.value") },
+        { label: t("services.step4.stat2.label"), value: t("services.step4.stat2.value") },
       ],
     },
     {
       num: "05",
-      title: "정주지원",
-      subtitle: "정착 단계",
+      title: t("services.step5.title"),
+      subtitle: t("services.step5.subtitle"),
       color: "from-pink-500 to-pink-600",
-      items: [
-        "비자전환: 취업비자 전환 지원",
-        "주거·금융: 정주 지원",
-        "커뮤니티: 네트워크 구축",
-        "가족초청: 가족 초청 가이드",
-      ],
+      items: [t("services.step5.item1"), t("services.step5.item2"), t("services.step5.item3"), t("services.step5.item4")],
       stats: [
-        { label: "정주율", value: "78%" },
-        { label: "평균 체류", value: "2년+" },
+        { label: t("services.step5.stat1.label"), value: t("services.step5.stat1.value") },
+        { label: t("services.step5.stat2.label"), value: t("services.step5.stat2.value") },
       ],
     },
   ];
@@ -382,13 +390,13 @@ function Services() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <p className="text-blue-600 font-semibold text-sm mb-2">
-            FULL-CARE SYSTEM
+            {t("services.tag")}
           </p>
           <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
-            5단계 풀케어 시스템
+            {t("services.title")}
           </h2>
           <p className="text-gray-500 max-w-xl mx-auto">
-            입학 전부터 정주까지, 외국인 유학생 전 과정을 관리합니다
+            {t("services.desc")}
           </p>
         </div>
 
@@ -453,43 +461,24 @@ function Services() {
 }
 
 function Stats() {
+  const { t } = useLanguage();
   return (
     <section className="py-20 bg-gradient-to-br from-[#0a1628] via-[#0f2345] to-[#162d50]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
-            핵심 성과 지표
+            {t("stats.title")}
           </h2>
           <p className="text-blue-200/70">
-            K-DREAM이 만들어가는 성과입니다
+            {t("stats.desc")}
           </p>
         </div>
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
           {[
-            {
-              value: "208,962",
-              unit: "명",
-              label: "2024년 유학생",
-              sub: "+14.9% YoY",
-            },
-            {
-              value: "158",
-              unit: "개",
-              label: "인증대학",
-              sub: "+24 전년 대비",
-            },
-            {
-              value: "85",
-              unit: "%",
-              label: "취업률",
-              sub: "졸업 6개월 내",
-            },
-            {
-              value: "65.5",
-              unit: "%",
-              label: "정주율",
-              sub: "졸업 후 체류",
-            },
+            { value: t("stats.item1.value"), unit: t("stats.item1.unit"), label: t("stats.item1.label"), sub: t("stats.item1.sub") },
+            { value: t("stats.item2.value"), unit: t("stats.item2.unit"), label: t("stats.item2.label"), sub: t("stats.item2.sub") },
+            { value: t("stats.item3.value"), unit: t("stats.item3.unit"), label: t("stats.item3.label"), sub: t("stats.item3.sub") },
+            { value: t("stats.item4.value"), unit: t("stats.item4.unit"), label: t("stats.item4.label"), sub: t("stats.item4.sub") },
           ].map((s) => (
             <div
               key={s.label}
@@ -499,7 +488,7 @@ function Stats() {
                 <span className="text-3xl sm:text-4xl font-bold text-white">
                   {s.value}
                 </span>
-                <span className="text-lg text-blue-300">{s.unit}</span>
+                {s.unit && <span className="text-lg text-blue-300">{s.unit}</span>}
               </div>
               <p className="text-white/80 text-sm mt-2">{s.label}</p>
               <p className="text-blue-400 text-xs mt-1">{s.sub}</p>
@@ -512,62 +501,47 @@ function Stats() {
 }
 
 function Countries() {
+  const { t } = useLanguage();
   const countries = [
     {
       code: "UZ",
-      name: "우즈베키스탄",
-      tag: "1차 핵심 공략국",
+      name: t("countries.uz.name"),
+      tag: t("countries.uz.tag"),
       color: "bg-blue-500",
       stats: { y2024: "12,025", y2025: "15,786", growth: "+31%" },
-      strategy: "전문대·공대·취업형",
-      items: [
-        "전문대/공대 중심 학위과정 유치",
-        "경북 취업연계 제조·건설업 매칭",
-        "파일럿 프로그램 빠른 성과 확인",
-      ],
-      channels: ["현지 에이전트", "설명회"],
+      strategy: t("countries.uz.strategy"),
+      items: [t("countries.uz.item1"), t("countries.uz.item2"), t("countries.uz.item3")],
+      channels: [t("countries.uz.ch1"), t("countries.uz.ch2")],
     },
     {
       code: "MN",
-      name: "몽골",
-      tag: "안정형 확장국",
+      name: t("countries.mn.name"),
+      tag: t("countries.mn.tag"),
       color: "bg-amber-500",
       stats: { y2024: "12,317", y2025: "15,270", growth: "+24%" },
-      strategy: "전문대+4년제 병행",
-      items: [
-        "안정적 규모 유지 및 확대",
-        "풀케어 모델 생활정착 강화",
-        "한국어 적응 지원 프로그램",
-      ],
-      channels: ["레퍼럴", "동문네트워크"],
+      strategy: t("countries.mn.strategy"),
+      items: [t("countries.mn.item1"), t("countries.mn.item2"), t("countries.mn.item3")],
+      channels: [t("countries.mn.ch1"), t("countries.mn.ch2")],
     },
     {
       code: "VN",
-      name: "베트남",
-      tag: "성장형 대량 시장",
+      name: t("countries.vn.name"),
+      tag: t("countries.vn.tag"),
       color: "bg-green-500",
       stats: { y2024: "56,003", y2025: "75,144", growth: "+34%" },
-      strategy: "어학→진학 전환형",
-      items: [
-        "대량 모집 어학연수 중심",
-        "전환율 관리 진학 파이프라인",
-        "지역/학과 세분화 전략",
-      ],
-      channels: ["디지털 마케팅", "SNS"],
+      strategy: t("countries.vn.strategy"),
+      items: [t("countries.vn.item1"), t("countries.vn.item2"), t("countries.vn.item3")],
+      channels: [t("countries.vn.ch1"), t("countries.vn.ch2")],
     },
     {
       code: "CN",
-      name: "중국",
-      tag: "후순위 정밀 공략국",
+      name: t("countries.cn.name"),
+      tag: t("countries.cn.tag"),
       color: "bg-purple-500",
       stats: { y2024: "72,020", y2025: "76,541", growth: "+6%" },
-      strategy: "틈새 전공·편입",
-      items: [
-        "관광외식·공대 세그먼트",
-        "편입·대학원 연계 프로그램",
-        "브랜드 대학 집중 공략",
-      ],
-      channels: ["중국어 채널", "위챗"],
+      strategy: t("countries.cn.strategy"),
+      items: [t("countries.cn.item1"), t("countries.cn.item2"), t("countries.cn.item3")],
+      channels: [t("countries.cn.ch1"), t("countries.cn.ch2")],
     },
   ];
 
@@ -576,13 +550,13 @@ function Countries() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <p className="text-blue-600 font-semibold text-sm mb-2">
-            TARGET COUNTRIES
+            {t("countries.tag")}
           </p>
           <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
-            국가별 맞춤 유학 가이드
+            {t("countries.title")}
           </h2>
           <p className="text-gray-500 max-w-xl mx-auto">
-            각 나라의 특성에 맞는 최적의 유학 방향을 안내합니다
+            {t("countries.desc")}
           </p>
         </div>
 
@@ -612,14 +586,14 @@ function Countries() {
 
                 <div className="flex items-end gap-4 mb-5 p-4 bg-gray-50 rounded-xl">
                   <div>
-                    <p className="text-xs text-gray-400">2024년</p>
+                    <p className="text-xs text-gray-400">{t("countries.year2024")}</p>
                     <p className="text-lg font-bold text-gray-900">
                       {c.stats.y2024}
                     </p>
                   </div>
-                  <div className="text-gray-300 pb-1">→</div>
+                  <div className="text-gray-300 pb-1">{"\u2192"}</div>
                   <div>
-                    <p className="text-xs text-gray-400">2025년</p>
+                    <p className="text-xs text-gray-400">{t("countries.year2025")}</p>
                     <p className="text-lg font-bold text-gray-900">
                       {c.stats.y2025}
                     </p>
@@ -635,7 +609,7 @@ function Countries() {
                       key={item}
                       className="flex items-start gap-2 text-sm text-gray-600"
                     >
-                      <span className="text-blue-500 mt-0.5">•</span>
+                      <span className="text-blue-500 mt-0.5">{"\u2022"}</span>
                       {item}
                     </li>
                   ))}
@@ -661,61 +635,53 @@ function Countries() {
 }
 
 function Partners() {
+  const { t } = useLanguage();
   return (
     <section id="partners" className="py-20 sm:py-28">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <p className="text-blue-600 font-semibold text-sm mb-2">
-            PARTNERSHIP
+            {t("partners.tag")}
           </p>
           <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
-            대학 시장 수요와 파트너십
+            {t("partners.title")}
           </h2>
           <p className="text-gray-500 max-w-xl mx-auto">
-            3개 우선 파트너 그룹의 시장 수요 분석 및 선정 기준
+            {t("partners.desc")}
           </p>
         </div>
 
         <div className="grid md:grid-cols-3 gap-6 mb-12">
           {[
             {
-              icon: "🎓",
-              title: "사립 전문대",
-              sub: "취업·실습 강점",
-              stat1: { label: "2024년", value: "24,366명" },
-              stat2: { label: "2025년", value: "37,372명" },
+              icon: "\u{1F393}",
+              title: t("partners.college.title"),
+              sub: t("partners.college.sub"),
+              stat1: { label: t("partners.college.stat1.label"), value: t("partners.college.stat1.value") },
+              stat2: { label: t("partners.college.stat2.label"), value: t("partners.college.stat2.value") },
               growth: "+53%",
-              items: [
-                "취업률 85% 이상, 현장실습 중심",
-                "전문대 특화 제조·건설·관광 연계",
-              ],
-              ratio: "50%",
+              items: [t("partners.college.item1"), t("partners.college.item2")],
+              ratio: t("partners.college.ratio"),
             },
             {
-              icon: "⚙️",
-              title: "4년제 공대",
-              sub: "브랜드·장기가치",
-              stat1: { label: "공학 비중", value: "15.6%" },
-              stat2: { label: "성장률", value: "+23%" },
-              growth: "확대",
-              items: [
-                "대학원 연계 석사·박사 진학률 65%",
-                "산학협력 기업 연계 실습 강화",
-              ],
-              ratio: "30%",
+              icon: "\u2699\uFE0F",
+              title: t("partners.engineering.title"),
+              sub: t("partners.engineering.sub"),
+              stat1: { label: t("partners.engineering.stat1.label"), value: t("partners.engineering.stat1.value") },
+              stat2: { label: t("partners.engineering.stat2.label"), value: t("partners.engineering.stat2.value") },
+              growth: "",
+              items: [t("partners.engineering.item1"), t("partners.engineering.item2")],
+              ratio: t("partners.engineering.ratio"),
             },
             {
-              icon: "🍽",
-              title: "관광·외식",
-              sub: "진입장벽 낮음",
-              stat1: { label: "전환율", value: "68%" },
-              stat2: { label: "성장", value: "+45%" },
-              growth: "고성장",
-              items: [
-                "어학→전공 전환 가능, 진입장벽 낮음",
-                "취업 연계 관광·호텔·외식업",
-              ],
-              ratio: "20%",
+              icon: "\u{1F37D}",
+              title: t("partners.tourism.title"),
+              sub: t("partners.tourism.sub"),
+              stat1: { label: t("partners.tourism.stat1.label"), value: t("partners.tourism.stat1.value") },
+              stat2: { label: t("partners.tourism.stat2.label"), value: t("partners.tourism.stat2.value") },
+              growth: "",
+              items: [t("partners.tourism.item1"), t("partners.tourism.item2")],
+              ratio: t("partners.tourism.ratio"),
             },
           ].map((p) => (
             <div
@@ -729,7 +695,7 @@ function Partners() {
                   <p className="text-xs text-gray-400">{p.sub}</p>
                 </div>
                 <span className="ml-auto text-xs bg-blue-100 text-blue-700 px-2.5 py-1 rounded-full font-medium">
-                  비중 {p.ratio}
+                  {p.ratio}
                 </span>
               </div>
 
@@ -750,7 +716,7 @@ function Partners() {
                     key={item}
                     className="flex items-start gap-2 text-sm text-gray-600"
                   >
-                    <span className="text-blue-500 mt-0.5">•</span>
+                    <span className="text-blue-500 mt-0.5">{"\u2022"}</span>
                     {item}
                   </li>
                 ))}
@@ -761,15 +727,15 @@ function Partners() {
 
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
           <h3 className="font-bold text-lg text-gray-900 mb-6">
-            경북 산업 맞춤 취업 연계
+            {t("partners.pipeline.title")}
           </h3>
           <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
             {[
-              { step: "1", title: "학과 선정", sub: "전문대/공대/관광" },
-              { step: "2", title: "기업 매칭", sub: "제조/건설/관광" },
-              { step: "3", title: "현장실습", sub: "직무 부트캠프" },
-              { step: "4", title: "채용 연계", sub: "취업 매칭" },
-              { step: "5", title: "정주 지원", sub: "지역 정착" },
+              { step: "1", title: t("partners.pipeline.step1"), sub: t("partners.pipeline.step1.sub") },
+              { step: "2", title: t("partners.pipeline.step2"), sub: t("partners.pipeline.step2.sub") },
+              { step: "3", title: t("partners.pipeline.step3"), sub: t("partners.pipeline.step3.sub") },
+              { step: "4", title: t("partners.pipeline.step4"), sub: t("partners.pipeline.step4.sub") },
+              { step: "5", title: t("partners.pipeline.step5"), sub: t("partners.pipeline.step5.sub") },
             ].map((s, i) => (
               <div key={s.step} className="flex items-center gap-3">
                 <div className="bg-blue-50 rounded-xl p-4 text-center flex-1">
@@ -782,7 +748,7 @@ function Partners() {
                   <p className="text-xs text-gray-400">{s.sub}</p>
                 </div>
                 {i < 4 && (
-                  <span className="text-gray-300 hidden lg:block">→</span>
+                  <span className="text-gray-300 hidden lg:block">{"\u2192"}</span>
                 )}
               </div>
             ))}
@@ -794,66 +760,42 @@ function Partners() {
 }
 
 function StudentManagement() {
+  const { t } = useLanguage();
   const stages = [
     {
-      icon: "📋",
-      title: "온보딩",
-      period: "1~3개월",
+      icon: "\u{1F4CB}",
+      title: t("mgmt.stage1.title"),
+      period: t("mgmt.stage1.period"),
       color: "from-blue-500 to-blue-600",
-      items: [
-        "입국 지원: 공항픽업, 숙소, 등록",
-        "정착 지원: 기숙사·주거, 생활용품",
-        "학교 적응: 캠퍼스 오리엔테이션, 버디",
-      ],
-      risk: "비자 연장",
+      items: [t("mgmt.stage1.item1"), t("mgmt.stage1.item2"), t("mgmt.stage1.item3")],
     },
     {
-      icon: "📚",
-      title: "학업안착",
-      period: "1~6개월",
+      icon: "\u{1F4DA}",
+      title: t("mgmt.stage2.title"),
+      period: t("mgmt.stage2.period"),
       color: "from-green-500 to-green-600",
-      items: [
-        "학업 관리: 출석, 성적 모니터링",
-        "한국어 지원: TOPIK 과정",
-        "생활 지원: 은행, 보험, 통신",
-      ],
-      risk: "학업 부적응",
+      items: [t("mgmt.stage2.item1"), t("mgmt.stage2.item2"), t("mgmt.stage2.item3")],
     },
     {
-      icon: "🧭",
-      title: "진로설계",
-      period: "6~12개월",
+      icon: "\u{1F9ED}",
+      title: t("mgmt.stage3.title"),
+      period: t("mgmt.stage3.period"),
       color: "from-amber-500 to-amber-600",
-      items: [
-        "진로 탐색: 적성·기업 탐방",
-        "실습 연계: 현장실습 매칭",
-        "역량 강화: 자격증, 이력서, 면접",
-      ],
-      risk: "진로 미결정",
+      items: [t("mgmt.stage3.item1"), t("mgmt.stage3.item2"), t("mgmt.stage3.item3")],
     },
     {
-      icon: "💼",
-      title: "취업준비",
-      period: "6~24개월",
+      icon: "\u{1F4BC}",
+      title: t("mgmt.stage4.title"),
+      period: t("mgmt.stage4.period"),
       color: "from-violet-500 to-violet-600",
-      items: [
-        "기업 매칭: 산업별 취업 연계",
-        "취업 지원: 이력서, 면접 코칭",
-        "현장실습: 인턴·실습 프로그램",
-      ],
-      risk: "취업 실패",
+      items: [t("mgmt.stage4.item1"), t("mgmt.stage4.item2"), t("mgmt.stage4.item3")],
     },
     {
-      icon: "🏠",
-      title: "정주",
-      period: "24개월~",
+      icon: "\u{1F3E0}",
+      title: t("mgmt.stage5.title"),
+      period: t("mgmt.stage5.period"),
       color: "from-pink-500 to-pink-600",
-      items: [
-        "비자 전환: 취업비자 전환 지원",
-        "생활 안정: 주거·금융 지원",
-        "커뮤니티: 지역 네트워크 구축",
-      ],
-      risk: "정주 실패",
+      items: [t("mgmt.stage5.item1"), t("mgmt.stage5.item2"), t("mgmt.stage5.item3")],
     },
   ];
 
@@ -862,13 +804,13 @@ function StudentManagement() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <p className="text-blue-600 font-semibold text-sm mb-2">
-            STUDENT MANAGEMENT
+            {t("mgmt.tag")}
           </p>
           <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
-            유학생 관리 프로세스
+            {t("mgmt.title")}
           </h2>
           <p className="text-gray-500 max-w-xl mx-auto">
-            온보딩부터 정착까지 체계적인 생애주기 관리 시스템
+            {t("mgmt.desc")}
           </p>
         </div>
 
@@ -888,27 +830,22 @@ function StudentManagement() {
                   </div>
                 </div>
                 <div className="p-4">
-                  <ul className="space-y-2 mb-4">
+                  <ul className="space-y-2">
                     {stage.items.map((item) => (
                       <li
                         key={item}
                         className="flex items-start gap-1.5 text-xs text-gray-600"
                       >
-                        <span className="text-blue-500 mt-0.5">•</span>
+                        <span className="text-blue-500 mt-0.5">{"\u2022"}</span>
                         {item}
                       </li>
                     ))}
                   </ul>
-                  <div className="pt-3 border-t border-gray-100">
-                    <span className="inline-flex items-center gap-1 text-xs bg-amber-50 text-amber-700 px-2.5 py-1 rounded-full">
-                      <span>⚠️</span> 리스크: {stage.risk}
-                    </span>
-                  </div>
                 </div>
               </div>
               {i < stages.length - 1 && (
                 <span className="hidden lg:flex items-center text-gray-300 text-lg">
-                  →
+                  {"\u2192"}
                 </span>
               )}
             </div>
@@ -920,19 +857,19 @@ function StudentManagement() {
 }
 
 function Differentiation1() {
+  const { t } = useLanguage();
   return (
     <section id="diff1" className="py-20 sm:py-28">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <p className="text-blue-600 font-semibold text-sm mb-2">
-            DIFFERENTIATION
+            {t("diff1.tag")}
           </p>
           <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
-            경북 산업 맞춤 취업 연계
+            {t("diff1.title")}
           </h2>
           <p className="text-gray-500 max-w-xl mx-auto">
-            학과선정부터 기업매칭, 현장실습, 취업연계까지 지역 산업에 최적화된
-            프로그램
+            {t("diff1.desc")}
           </p>
         </div>
 
@@ -940,37 +877,29 @@ function Differentiation1() {
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow">
             <div className="flex items-center gap-3 mb-4">
               <div className="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center">
-                <span className="text-blue-600 text-lg">🎓</span>
+                <span className="text-blue-600 text-lg">{"\u{1F393}"}</span>
               </div>
               <div>
-                <h3 className="font-bold text-gray-900">학과 매칭</h3>
-                <p className="text-xs text-gray-400">
-                  전문대학 · 공대 · 관광학과
-                </p>
+                <h3 className="font-bold text-gray-900">{t("diff1.dept.title")}</h3>
+                <p className="text-xs text-gray-400">{t("diff1.dept.sub")}</p>
               </div>
             </div>
             <ul className="space-y-2 mb-5">
-              <li className="flex items-start gap-2 text-sm text-gray-600">
-                <span className="text-blue-500 mt-0.5">•</span>
-                전문대학교 → 건설·관광학과
-              </li>
-              <li className="flex items-start gap-2 text-sm text-gray-600">
-                <span className="text-blue-500 mt-0.5">•</span>
-                4년제 공대 → 제조·기술
-              </li>
-              <li className="flex items-start gap-2 text-sm text-gray-600">
-                <span className="text-blue-500 mt-0.5">•</span>
-                관광학과/호텔 → 호텔·외식업
-              </li>
+              {[t("diff1.dept.item1"), t("diff1.dept.item2"), t("diff1.dept.item3")].map((item) => (
+                <li key={item} className="flex items-start gap-2 text-sm text-gray-600">
+                  <span className="text-blue-500 mt-0.5">{"\u2022"}</span>
+                  {item}
+                </li>
+              ))}
             </ul>
             <div className="flex gap-6 pt-4 border-t border-gray-100">
               <div>
-                <p className="text-2xl font-bold text-gray-900">50+</p>
-                <p className="text-xs text-gray-400">학과</p>
+                <p className="text-2xl font-bold text-gray-900">{t("diff1.dept.stat1.value")}</p>
+                <p className="text-xs text-gray-400">{t("diff1.dept.stat1.label")}</p>
               </div>
               <div>
-                <p className="text-2xl font-bold text-green-600">95%</p>
-                <p className="text-xs text-gray-400">매칭률</p>
+                <p className="text-2xl font-bold text-green-600">{t("diff1.dept.stat2.value")}</p>
+                <p className="text-xs text-gray-400">{t("diff1.dept.stat2.label")}</p>
               </div>
             </div>
           </div>
@@ -978,37 +907,29 @@ function Differentiation1() {
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow">
             <div className="flex items-center gap-3 mb-4">
               <div className="w-10 h-10 bg-amber-100 rounded-xl flex items-center justify-center">
-                <span className="text-amber-600 text-lg">🏭</span>
+                <span className="text-amber-600 text-lg">{"\u{1F3ED}"}</span>
               </div>
               <div>
-                <h3 className="font-bold text-gray-900">기업 매칭</h3>
-                <p className="text-xs text-gray-400">
-                  제조 · 건설 · 관광학과
-                </p>
+                <h3 className="font-bold text-gray-900">{t("diff1.company.title")}</h3>
+                <p className="text-xs text-gray-400">{t("diff1.company.sub")}</p>
               </div>
             </div>
             <ul className="space-y-2 mb-5">
-              <li className="flex items-start gap-2 text-sm text-gray-600">
-                <span className="text-blue-500 mt-0.5">•</span>
-                제조업: 기계·금속·화학
-              </li>
-              <li className="flex items-start gap-2 text-sm text-gray-600">
-                <span className="text-blue-500 mt-0.5">•</span>
-                건설업: 건축·토목·설비
-              </li>
-              <li className="flex items-start gap-2 text-sm text-gray-600">
-                <span className="text-blue-500 mt-0.5">•</span>
-                관광업: 호텔·외식업
-              </li>
+              {[t("diff1.company.item1"), t("diff1.company.item2"), t("diff1.company.item3")].map((item) => (
+                <li key={item} className="flex items-start gap-2 text-sm text-gray-600">
+                  <span className="text-blue-500 mt-0.5">{"\u2022"}</span>
+                  {item}
+                </li>
+              ))}
             </ul>
             <div className="flex gap-6 pt-4 border-t border-gray-100">
               <div>
-                <p className="text-2xl font-bold text-gray-900">200+</p>
-                <p className="text-xs text-gray-400">기업</p>
+                <p className="text-2xl font-bold text-gray-900">{t("diff1.company.stat1.value")}</p>
+                <p className="text-xs text-gray-400">{t("diff1.company.stat1.label")}</p>
               </div>
               <div>
-                <p className="text-2xl font-bold text-green-600">78%</p>
-                <p className="text-xs text-gray-400">매칭률</p>
+                <p className="text-2xl font-bold text-green-600">{t("diff1.company.stat2.value")}</p>
+                <p className="text-xs text-gray-400">{t("diff1.company.stat2.label")}</p>
               </div>
             </div>
           </div>
@@ -1016,52 +937,46 @@ function Differentiation1() {
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow">
             <div className="flex items-center gap-3 mb-4">
               <div className="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center">
-                <span className="text-green-600 text-lg">💼</span>
+                <span className="text-green-600 text-lg">{"\u{1F4BC}"}</span>
               </div>
               <div>
-                <h3 className="font-bold text-gray-900">취업 연계</h3>
-                <p className="text-xs text-gray-400">현장실습 → 취업</p>
+                <h3 className="font-bold text-gray-900">{t("diff1.employment.title")}</h3>
+                <p className="text-xs text-gray-400">{t("diff1.employment.sub")}</p>
               </div>
             </div>
             <ul className="space-y-2 mb-5">
-              <li className="flex items-start gap-2 text-sm text-gray-600">
-                <span className="text-blue-500 mt-0.5">•</span>
-                현장실습 프로그램 운영
-              </li>
-              <li className="flex items-start gap-2 text-sm text-gray-600">
-                <span className="text-blue-500 mt-0.5">•</span>
-                채용 연계 매칭
-              </li>
-              <li className="flex items-start gap-2 text-sm text-gray-600">
-                <span className="text-blue-500 mt-0.5">•</span>
-                정주 지원 프로그램
-              </li>
+              {[t("diff1.employment.item1"), t("diff1.employment.item2"), t("diff1.employment.item3")].map((item) => (
+                <li key={item} className="flex items-start gap-2 text-sm text-gray-600">
+                  <span className="text-blue-500 mt-0.5">{"\u2022"}</span>
+                  {item}
+                </li>
+              ))}
             </ul>
             <div className="flex gap-6 pt-4 border-t border-gray-100">
               <div>
-                <p className="text-2xl font-bold text-gray-900">85%</p>
-                <p className="text-xs text-gray-400">취업률</p>
+                <p className="text-2xl font-bold text-gray-900">{t("diff1.employment.stat1.value")}</p>
+                <p className="text-xs text-gray-400">{t("diff1.employment.stat1.label")}</p>
               </div>
               <div>
-                <p className="text-2xl font-bold text-green-600">65%</p>
-                <p className="text-xs text-gray-400">정주율</p>
+                <p className="text-2xl font-bold text-green-600">{t("diff1.employment.stat2.value")}</p>
+                <p className="text-xs text-gray-400">{t("diff1.employment.stat2.label")}</p>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-6">
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
+        <div className="grid md:grid-cols-2 gap-6 items-stretch">
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 flex flex-col">
             <h3 className="font-bold text-lg text-gray-900 mb-6">
-              취업 연계 프로세스
+              {t("diff1.process.title")}
             </h3>
-            <div className="grid grid-cols-5 gap-3">
+            <div className="grid grid-cols-5 gap-3 flex-1 items-center">
               {[
-                { step: "1", title: "학과 선정" },
-                { step: "2", title: "기업 매칭" },
-                { step: "3", title: "현장실습" },
-                { step: "4", title: "매칭 연계" },
-                { step: "5", title: "정주 지원" },
+                { step: "1", title: t("diff1.process.step1") },
+                { step: "2", title: t("diff1.process.step2") },
+                { step: "3", title: t("diff1.process.step3") },
+                { step: "4", title: t("diff1.process.step4") },
+                { step: "5", title: t("diff1.process.step5") },
               ].map((s, i) => (
                 <div key={s.step} className="flex items-center gap-2">
                   <div className="bg-blue-50 rounded-xl p-3 text-center flex-1">
@@ -1073,20 +988,20 @@ function Differentiation1() {
                     </p>
                   </div>
                   {i < 4 && (
-                    <span className="text-gray-300 hidden md:block">→</span>
+                    <span className="text-gray-300 hidden md:block">{"\u2192"}</span>
                   )}
                 </div>
               ))}
             </div>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
-            <h3 className="font-bold text-lg text-gray-900 mb-6">성과 지표</h3>
-            <div className="grid grid-cols-3 gap-4">
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 flex flex-col">
+            <h3 className="font-bold text-lg text-gray-900 mb-6">{t("diff1.kpi.title")}</h3>
+            <div className="grid grid-cols-3 gap-4 flex-1 items-center">
               {[
-                { label: "취업률", value: "85%", color: "text-blue-600" },
-                { label: "정주율", value: "65%", color: "text-green-600" },
-                { label: "만족도", value: "95%", color: "text-amber-600" },
+                { label: t("diff1.kpi.employment"), value: "85%", color: "text-blue-600" },
+                { label: t("diff1.kpi.settlement"), value: "65%", color: "text-green-600" },
+                { label: t("diff1.kpi.satisfaction"), value: "95%", color: "text-amber-600" },
               ].map((m) => (
                 <div
                   key={m.label}
@@ -1105,18 +1020,19 @@ function Differentiation1() {
 }
 
 function Differentiation2() {
+  const { t } = useLanguage();
   return (
     <section id="diff2" className="py-20 sm:py-28 bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <p className="text-blue-600 font-semibold text-sm mb-2">
-            DUAL TRACK MODEL
+            {t("diff2.tag")}
           </p>
           <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
-            대학 × 직업전문학교 협업
+            {t("diff2.title")}
           </h2>
           <p className="text-gray-500 max-w-xl mx-auto">
-            대학(학위)과 직업전문학교(기술)를 결합한 듀얼 트랙 모델
+            {t("diff2.desc")}
           </p>
         </div>
 
@@ -1124,37 +1040,29 @@ function Differentiation2() {
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow">
             <div className="flex items-center gap-3 mb-4">
               <div className="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center">
-                <span className="text-blue-600 text-lg">🎓</span>
+                <span className="text-blue-600 text-lg">{"\u{1F393}"}</span>
               </div>
               <div>
-                <h3 className="font-bold text-gray-900">대학(학위 과정)</h3>
-                <p className="text-xs text-gray-400">
-                  1~2년 이론 · 기초 교육
-                </p>
+                <h3 className="font-bold text-gray-900">{t("diff2.univ.title")}</h3>
+                <p className="text-xs text-gray-400">{t("diff2.univ.sub")}</p>
               </div>
             </div>
             <ul className="space-y-2 mb-5">
-              <li className="flex items-start gap-2 text-sm text-gray-600">
-                <span className="text-blue-500 mt-0.5">•</span>
-                학위 취득: 전문학사/학사
-              </li>
-              <li className="flex items-start gap-2 text-sm text-gray-600">
-                <span className="text-blue-500 mt-0.5">•</span>
-                기초 이론/전공 기초 교육
-              </li>
-              <li className="flex items-start gap-2 text-sm text-gray-600">
-                <span className="text-blue-500 mt-0.5">•</span>
-                한국어/TOPIK 3급 달성
-              </li>
+              {[t("diff2.univ.item1"), t("diff2.univ.item2"), t("diff2.univ.item3")].map((item) => (
+                <li key={item} className="flex items-start gap-2 text-sm text-gray-600">
+                  <span className="text-blue-500 mt-0.5">{"\u2022"}</span>
+                  {item}
+                </li>
+              ))}
             </ul>
             <div className="flex gap-6 pt-4 border-t border-gray-100">
               <div>
-                <p className="text-2xl font-bold text-gray-900">2년</p>
-                <p className="text-xs text-gray-400">과정 기간</p>
+                <p className="text-2xl font-bold text-gray-900">{t("diff2.univ.stat1.value")}</p>
+                <p className="text-xs text-gray-400">{t("diff2.univ.stat1.label")}</p>
               </div>
               <div>
-                <p className="text-2xl font-bold text-green-600">95%</p>
-                <p className="text-xs text-gray-400">이수율</p>
+                <p className="text-2xl font-bold text-green-600">{t("diff2.univ.stat2.value")}</p>
+                <p className="text-xs text-gray-400">{t("diff2.univ.stat2.label")}</p>
               </div>
             </div>
           </div>
@@ -1162,37 +1070,29 @@ function Differentiation2() {
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow">
             <div className="flex items-center gap-3 mb-4">
               <div className="w-10 h-10 bg-amber-100 rounded-xl flex items-center justify-center">
-                <span className="text-amber-600 text-lg">⚙️</span>
+                <span className="text-amber-600 text-lg">{"\u2699\uFE0F"}</span>
               </div>
               <div>
-                <h3 className="font-bold text-gray-900">직업전문학교</h3>
-                <p className="text-xs text-gray-400">
-                  실무 교육 · 현장 중심 기술
-                </p>
+                <h3 className="font-bold text-gray-900">{t("diff2.vocational.title")}</h3>
+                <p className="text-xs text-gray-400">{t("diff2.vocational.sub")}</p>
               </div>
             </div>
             <ul className="space-y-2 mb-5">
-              <li className="flex items-start gap-2 text-sm text-gray-600">
-                <span className="text-blue-500 mt-0.5">•</span>
-                실무 교육/현장 중심 기술
-              </li>
-              <li className="flex items-start gap-2 text-sm text-gray-600">
-                <span className="text-blue-500 mt-0.5">•</span>
-                산학협력/기업 연계
-              </li>
-              <li className="flex items-start gap-2 text-sm text-gray-600">
-                <span className="text-blue-500 mt-0.5">•</span>
-                취업 준비: 이력서·면접
-              </li>
+              {[t("diff2.vocational.item1"), t("diff2.vocational.item2"), t("diff2.vocational.item3")].map((item) => (
+                <li key={item} className="flex items-start gap-2 text-sm text-gray-600">
+                  <span className="text-blue-500 mt-0.5">{"\u2022"}</span>
+                  {item}
+                </li>
+              ))}
             </ul>
             <div className="flex gap-6 pt-4 border-t border-gray-100">
               <div>
-                <p className="text-2xl font-bold text-gray-900">1년</p>
-                <p className="text-xs text-gray-400">과정 기간</p>
+                <p className="text-2xl font-bold text-gray-900">{t("diff2.vocational.stat1.value")}</p>
+                <p className="text-xs text-gray-400">{t("diff2.vocational.stat1.label")}</p>
               </div>
               <div>
-                <p className="text-2xl font-bold text-green-600">90%</p>
-                <p className="text-xs text-gray-400">이수율</p>
+                <p className="text-2xl font-bold text-green-600">{t("diff2.vocational.stat2.value")}</p>
+                <p className="text-xs text-gray-400">{t("diff2.vocational.stat2.label")}</p>
               </div>
             </div>
           </div>
@@ -1200,52 +1100,46 @@ function Differentiation2() {
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow">
             <div className="flex items-center gap-3 mb-4">
               <div className="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center">
-                <span className="text-green-600 text-lg">💼</span>
+                <span className="text-green-600 text-lg">{"\u{1F4BC}"}</span>
               </div>
               <div>
-                <h3 className="font-bold text-gray-900">취업 · 정주</h3>
-                <p className="text-xs text-gray-400">현장실습 → 취업</p>
+                <h3 className="font-bold text-gray-900">{t("diff2.career.title")}</h3>
+                <p className="text-xs text-gray-400">{t("diff2.career.sub")}</p>
               </div>
             </div>
             <ul className="space-y-2 mb-5">
-              <li className="flex items-start gap-2 text-sm text-gray-600">
-                <span className="text-blue-500 mt-0.5">•</span>
-                취업 매칭: 기업 연계
-              </li>
-              <li className="flex items-start gap-2 text-sm text-gray-600">
-                <span className="text-blue-500 mt-0.5">•</span>
-                정주 지원: 비자·주거
-              </li>
-              <li className="flex items-start gap-2 text-sm text-gray-600">
-                <span className="text-blue-500 mt-0.5">•</span>
-                커뮤니티 네트워크 구축
-              </li>
+              {[t("diff2.career.item1"), t("diff2.career.item2"), t("diff2.career.item3")].map((item) => (
+                <li key={item} className="flex items-start gap-2 text-sm text-gray-600">
+                  <span className="text-blue-500 mt-0.5">{"\u2022"}</span>
+                  {item}
+                </li>
+              ))}
             </ul>
             <div className="flex gap-6 pt-4 border-t border-gray-100">
               <div>
-                <p className="text-2xl font-bold text-gray-900">85%</p>
-                <p className="text-xs text-gray-400">취업률</p>
+                <p className="text-2xl font-bold text-gray-900">{t("diff2.career.stat1.value")}</p>
+                <p className="text-xs text-gray-400">{t("diff2.career.stat1.label")}</p>
               </div>
               <div>
-                <p className="text-2xl font-bold text-green-600">65%</p>
-                <p className="text-xs text-gray-400">정주율</p>
+                <p className="text-2xl font-bold text-green-600">{t("diff2.career.stat2.value")}</p>
+                <p className="text-xs text-gray-400">{t("diff2.career.stat2.label")}</p>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-6">
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
+        <div className="grid md:grid-cols-2 gap-6 items-stretch">
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 flex flex-col">
             <h3 className="font-bold text-lg text-gray-900 mb-6">
-              듀얼 트랙 프로세스
+              {t("diff2.process.title")}
             </h3>
-            <div className="grid grid-cols-5 gap-3">
+            <div className="grid grid-cols-5 gap-3 flex-1 items-center">
               {[
-                { step: "1", title: "입학" },
-                { step: "2", title: "대학(1~2년)" },
-                { step: "3", title: "직업전문학교" },
-                { step: "4", title: "현장 실습" },
-                { step: "5", title: "취업·정주" },
+                { step: "1", title: t("diff2.process.step1") },
+                { step: "2", title: t("diff2.process.step2") },
+                { step: "3", title: t("diff2.process.step3") },
+                { step: "4", title: t("diff2.process.step4") },
+                { step: "5", title: t("diff2.process.step5") },
               ].map((s, i) => (
                 <div key={s.step} className="flex items-center gap-2">
                   <div className="bg-blue-50 rounded-xl p-3 text-center flex-1">
@@ -1257,20 +1151,20 @@ function Differentiation2() {
                     </p>
                   </div>
                   {i < 4 && (
-                    <span className="text-gray-300 hidden md:block">→</span>
+                    <span className="text-gray-300 hidden md:block">{"\u2192"}</span>
                   )}
                 </div>
               ))}
             </div>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
-            <h3 className="font-bold text-lg text-gray-900 mb-6">성과 지표</h3>
-            <div className="grid grid-cols-3 gap-4">
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 flex flex-col">
+            <h3 className="font-bold text-lg text-gray-900 mb-6">{t("diff2.kpi.title")}</h3>
+            <div className="grid grid-cols-3 gap-4 flex-1 items-center">
               {[
-                { label: "취업률", value: "85%", color: "text-blue-600" },
-                { label: "정주율", value: "65%", color: "text-green-600" },
-                { label: "만족도", value: "95%", color: "text-amber-600" },
+                { label: t("diff1.kpi.employment"), value: "85%", color: "text-blue-600" },
+                { label: t("diff1.kpi.settlement"), value: "65%", color: "text-green-600" },
+                { label: t("diff1.kpi.satisfaction"), value: "95%", color: "text-amber-600" },
               ].map((m) => (
                 <div
                   key={m.label}
@@ -1289,58 +1183,41 @@ function Differentiation2() {
 }
 
 function Contact() {
+  const { t } = useLanguage();
   return (
     <section id="contact" className="py-20 sm:py-28">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <p className="text-blue-600 font-semibold text-sm mb-2">
-            PARTNERSHIP
+            {t("contact.tag")}
           </p>
           <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
-            제휴 제안 및 협력 요청
+            {t("contact.title")}
           </h2>
           <p className="text-gray-500 max-w-xl mx-auto">
-            대학·지자체·기업 맞춤 트랙을 함께 설계합니다
+            {t("contact.desc")}
           </p>
         </div>
 
         <div className="grid md:grid-cols-3 gap-6 mb-12">
           {[
             {
-              icon: "🏛",
-              title: "대학",
-              sub: "전형쿼터·장학·기숙사·한국어",
-              items: [
-                "외국인 유학생 전형쿼터 확보",
-                "장학금 및 학비 지원",
-                "기숙사 우선 배정",
-                "TOPIK 준비 과정",
-                "현장실습 연계",
-              ],
+              icon: "\u{1F3DB}",
+              title: t("contact.univ.title"),
+              sub: t("contact.univ.sub"),
+              items: [t("contact.univ.item1"), t("contact.univ.item2"), t("contact.univ.item3"), t("contact.univ.item4"), t("contact.univ.item5")],
             },
             {
-              icon: "🏢",
-              title: "지자체",
-              sub: "취업박람회·정주·생활행정",
-              items: [
-                "정기적 취업 박람회 개최",
-                "지역 정착 지원",
-                "외국인등록 등 지원",
-                "주거·금융 지원",
-                "동네 활동 지원",
-              ],
+              icon: "\u{1F3E2}",
+              title: t("contact.gov.title"),
+              sub: t("contact.gov.sub"),
+              items: [t("contact.gov.item1"), t("contact.gov.item2"), t("contact.gov.item3"), t("contact.gov.item4"), t("contact.gov.item5")],
             },
             {
-              icon: "🏭",
-              title: "기업",
-              sub: "실습·인턴·채용·커리큘럼",
-              items: [
-                "현장실습 기회 제공",
-                "정규직 전환 지원",
-                "맞춤형 교육",
-                "직무 훈련",
-                "최적 인재 추천",
-              ],
+              icon: "\u{1F3ED}",
+              title: t("contact.company.title"),
+              sub: t("contact.company.sub"),
+              items: [t("contact.company.item1"), t("contact.company.item2"), t("contact.company.item3"), t("contact.company.item4"), t("contact.company.item5")],
             },
           ].map((p) => (
             <div
@@ -1381,7 +1258,7 @@ function Contact() {
                 href="mailto:contact@k-dream.co.kr"
                 className="block text-center w-full py-3 bg-blue-600 text-white font-medium rounded-xl hover:bg-blue-700 transition-colors text-sm"
               >
-                협력 문의
+                {t("contact.cta")}
               </a>
             </div>
           ))}
@@ -1392,28 +1269,27 @@ function Contact() {
 }
 
 function Footer() {
+  const { t } = useLanguage();
   return (
     <footer className="bg-[#0a1628] text-white py-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <h2 className="text-2xl sm:text-3xl font-bold mb-4">
-            K-DREAM은 &lsquo;입학~정주&rsquo; 통합 플랫폼으로
+            {t("footer.headline")}
             <br />
-            지역과 산업, 학생 모두의 성과를 만듭니다.
+            {t("footer.headline2")}
           </h2>
           <p className="text-blue-200/70 max-w-2xl mx-auto">
-            비수도권 취업·정주 연계형 외국인 유학생 풀케어 시스템을 통해 대학의
-            인재 다양성, 기업의 적시 인력 확보, 지역 경제 활성화를 동시에
-            실현합니다.
+            {t("footer.desc")}
           </p>
         </div>
 
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
           {[
-            { icon: "🎓", title: "학업 성공", sub: "TOPIK 4급 달성" },
-            { icon: "💼", title: "취업 연계", sub: "85% 취업률" },
-            { icon: "🏠", title: "정주 지원", sub: "지역 정착" },
-            { icon: "🏭", title: "산업 협력", sub: "기업 매칭" },
+            { icon: "\u{1F393}", title: t("footer.item1.title"), sub: t("footer.item1.sub") },
+            { icon: "\u{1F4BC}", title: t("footer.item2.title"), sub: t("footer.item2.sub") },
+            { icon: "\u{1F3E0}", title: t("footer.item3.title"), sub: t("footer.item3.sub") },
+            { icon: "\u{1F3ED}", title: t("footer.item4.title"), sub: t("footer.item4.sub") },
           ].map((item) => (
             <div
               key={item.title}
@@ -1439,14 +1315,8 @@ function Footer() {
         </div>
 
         <div className="border-t border-white/10 mt-8 pt-6 text-xs text-blue-200/40 leading-relaxed">
-          <p>
-            주식회사 케이드림유학원 | 대표자: 이현정 | 사업자등록번호:
-            603-87-03414
-          </p>
-          <p className="mt-1">
-            사업장 소재지: 경상북도 포항시 남구 대이로63번길 8, 2층(대장동) |
-            업태: 교육서비스업 | 종목: 유학알선
-          </p>
+          <p>{t("footer.company")}</p>
+          <p className="mt-1">{t("footer.address")}</p>
         </div>
       </div>
     </footer>
@@ -1455,7 +1325,7 @@ function Footer() {
 
 export default function Home() {
   return (
-    <>
+    <LanguageProvider>
       <Header />
       <Hero />
       <About />
@@ -1468,6 +1338,6 @@ export default function Home() {
       <Differentiation2 />
       <Contact />
       <Footer />
-    </>
+    </LanguageProvider>
   );
 }
