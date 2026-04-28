@@ -37,7 +37,7 @@ function LanguageToggle() {
     <div className="relative">
       <button
         onClick={() => setOpen(!open)}
-        className="flex items-center gap-1.5 px-4 py-2 text-sm text-gray-600 hover:text-blue-600 transition-colors rounded-full border border-gray-200 hover:border-blue-300"
+        className="flex items-center gap-1.5 h-9 px-4 text-sm text-gray-600 hover:text-blue-600 transition-colors rounded-full border border-gray-200 hover:border-blue-300"
         aria-label="언어 변경"
       >
         <svg
@@ -130,7 +130,7 @@ function Header() {
           <div className="hidden md:flex items-center gap-3">
             <a
               href="#contact"
-              className="px-5 py-2 bg-blue-600 text-white text-sm font-medium rounded-full hover:bg-blue-700 transition-colors"
+              className="h-9 px-5 inline-flex items-center bg-blue-600 text-white text-sm font-medium rounded-full hover:bg-blue-700 transition-colors"
             >
               {t("header.contact")}
             </a>
