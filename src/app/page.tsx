@@ -1167,8 +1167,8 @@ function Differentiation2() {
         </div>
 
         <div className="grid md:grid-cols-2 gap-6 items-stretch">
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 flex flex-col">
-            <h3 className="font-bold text-lg text-gray-900 mb-6">
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 flex flex-col" style={{ wordBreak: "break-all" }}>
+            <h3 className="font-bold text-lg text-gray-900 mb-6" style={{ wordBreak: "keep-all" }}>
               {t("diff2.process.title")}
             </h3>
             <div className="grid grid-cols-5 gap-3 flex-1 items-center">
