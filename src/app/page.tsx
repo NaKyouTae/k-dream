@@ -7,9 +7,8 @@ function Header() {
   const links = [
     { href: "#about", label: "소개" },
     { href: "#services", label: "서비스" },
-    { href: "#countries", label: "타깃 국가" },
+    { href: "#countries", label: "국가별 가이드" },
     { href: "#partners", label: "파트너십" },
-    { href: "#roadmap", label: "로드맵" },
     { href: "#contact", label: "문의" },
   ];
 
@@ -580,10 +579,10 @@ function Countries() {
             TARGET COUNTRIES
           </p>
           <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
-            타깃 국가 우선순위와 진입 전략
+            국가별 맞춤 유학 가이드
           </h2>
           <p className="text-gray-500 max-w-xl mx-auto">
-            우즈베키스탄→몽골→베트남→중국 순으로 대학생을 유치하는 전략
+            각 나라의 특성에 맞는 최적의 유학 방향을 안내합니다
           </p>
         </div>
 
@@ -794,111 +793,495 @@ function Partners() {
   );
 }
 
-function Roadmap() {
-  const quarters = [
+function StudentManagement() {
+  const stages = [
     {
-      q: "Q1 2026",
-      period: "1-3월",
-      status: "진행 중",
-      statusColor: "bg-green-100 text-green-700",
-      target: "30명",
+      icon: "📋",
+      title: "온보딩",
+      period: "1~3개월",
+      color: "from-blue-500 to-blue-600",
       items: [
-        "법인·조직 세팅: 유학원 설립",
-        "경북·전문대 MOU: 3-5개 대학 제휴",
-        "채널 오픈: UZ·MN 현지 에이전트",
-        "시스템 구축: 학생관리·비자·출결",
+        "입국 지원: 공항픽업, 숙소, 등록",
+        "정착 지원: 기숙사·주거, 생활용품",
+        "학교 적응: 캠퍼스 오리엔테이션, 버디",
       ],
+      risk: "비자 연장",
     },
     {
-      q: "Q2 2026",
-      period: "4-6월",
-      status: "진행 중",
-      statusColor: "bg-green-100 text-green-700",
-      target: "40명",
+      icon: "📚",
+      title: "학업안착",
+      period: "1~6개월",
+      color: "from-green-500 to-green-600",
       items: [
-        "파일럿 코호트: 30-40명 선발·입국",
-        "관리시스템 가동: 학생관리 시스템",
-        "초기 지원: 정착·생활·학업 적응",
-        "모니터링: 중도탈락 예방 시스템",
+        "학업 관리: 출석, 성적 모니터링",
+        "한국어 지원: TOPIK 과정",
+        "생활 지원: 은행, 보험, 통신",
       ],
+      risk: "학업 부적응",
     },
     {
-      q: "Q3 2026",
-      period: "7-9월",
-      status: "예정",
-      statusColor: "bg-amber-100 text-amber-700",
-      target: "60명",
+      icon: "🧭",
+      title: "진로설계",
+      period: "6~12개월",
+      color: "from-amber-500 to-amber-600",
       items: [
-        "베트남 확장: 베트남 시장 진출",
-        "대거 모집: 2차 모집 시즌 진행",
-        "기업 탐방: 20개사 현장실습 매칭",
-        "취업연계: 기업·학생 매칭",
+        "진로 탐색: 적성·기업 탐방",
+        "실습 연계: 현장실습 매칭",
+        "역량 강화: 자격증, 이력서, 면접",
       ],
+      risk: "진로 미결정",
     },
     {
-      q: "Q4 2026",
-      period: "10-12월",
-      status: "예정",
-      statusColor: "bg-amber-100 text-amber-700",
-      target: "70명",
+      icon: "💼",
+      title: "취업준비",
+      period: "6~24개월",
+      color: "from-violet-500 to-violet-600",
       items: [
-        "배치·채용: 졸업생 취업·정주 지원",
-        "성과 리뷰: 연간 성과 분석·개선",
-        "파이프라인: 차년도 100명 확보",
-        "시스템 개선: 프로세스 고도화",
+        "기업 매칭: 산업별 취업 연계",
+        "취업 지원: 이력서, 면접 코칭",
+        "현장실습: 인턴·실습 프로그램",
       ],
+      risk: "취업 실패",
+    },
+    {
+      icon: "🏠",
+      title: "정주",
+      period: "24개월~",
+      color: "from-pink-500 to-pink-600",
+      items: [
+        "비자 전환: 취업비자 전환 지원",
+        "생활 안정: 주거·금융 지원",
+        "커뮤니티: 지역 네트워크 구축",
+      ],
+      risk: "정주 실패",
     },
   ];
 
   return (
-    <section id="roadmap" className="py-20 sm:py-28 bg-gray-50">
+    <section id="management" className="py-20 sm:py-28 bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <p className="text-blue-600 font-semibold text-sm mb-2">ROADMAP</p>
+          <p className="text-blue-600 font-semibold text-sm mb-2">
+            STUDENT MANAGEMENT
+          </p>
           <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
-            2026년 실행 로드맵
+            유학생 관리 프로세스
           </h2>
-          <div className="inline-flex items-center gap-2 bg-blue-50 text-blue-700 px-4 py-2 rounded-full text-sm font-medium">
-            목표: 100명 유학생 유치
+          <p className="text-gray-500 max-w-xl mx-auto">
+            온보딩부터 정착까지 체계적인 생애주기 관리 시스템
+          </p>
+        </div>
+
+        <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-4">
+          {stages.map((stage, i) => (
+            <div key={stage.title} className="flex items-stretch gap-2">
+              <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex-1 hover:shadow-md transition-shadow">
+                <div
+                  className={`bg-gradient-to-r ${stage.color} px-4 py-3 flex items-center gap-2`}
+                >
+                  <span className="text-lg">{stage.icon}</span>
+                  <div>
+                    <h3 className="font-bold text-white text-sm">
+                      {stage.title}
+                    </h3>
+                    <p className="text-xs text-white/70">{stage.period}</p>
+                  </div>
+                </div>
+                <div className="p-4">
+                  <ul className="space-y-2 mb-4">
+                    {stage.items.map((item) => (
+                      <li
+                        key={item}
+                        className="flex items-start gap-1.5 text-xs text-gray-600"
+                      >
+                        <span className="text-blue-500 mt-0.5">•</span>
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                  <div className="pt-3 border-t border-gray-100">
+                    <span className="inline-flex items-center gap-1 text-xs bg-amber-50 text-amber-700 px-2.5 py-1 rounded-full">
+                      <span>⚠️</span> 리스크: {stage.risk}
+                    </span>
+                  </div>
+                </div>
+              </div>
+              {i < stages.length - 1 && (
+                <span className="hidden lg:flex items-center text-gray-300 text-lg">
+                  →
+                </span>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function Differentiation1() {
+  return (
+    <section id="diff1" className="py-20 sm:py-28">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-16">
+          <p className="text-blue-600 font-semibold text-sm mb-2">
+            DIFFERENTIATION
+          </p>
+          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
+            경북 산업 맞춤 취업 연계
+          </h2>
+          <p className="text-gray-500 max-w-xl mx-auto">
+            학과선정부터 기업매칭, 현장실습, 취업연계까지 지역 산업에 최적화된
+            프로그램
+          </p>
+        </div>
+
+        <div className="grid md:grid-cols-3 gap-6 mb-8">
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center">
+                <span className="text-blue-600 text-lg">🎓</span>
+              </div>
+              <div>
+                <h3 className="font-bold text-gray-900">학과 매칭</h3>
+                <p className="text-xs text-gray-400">
+                  전문대학 · 공대 · 관광학과
+                </p>
+              </div>
+            </div>
+            <ul className="space-y-2 mb-5">
+              <li className="flex items-start gap-2 text-sm text-gray-600">
+                <span className="text-blue-500 mt-0.5">•</span>
+                전문대학교 → 건설·관광학과
+              </li>
+              <li className="flex items-start gap-2 text-sm text-gray-600">
+                <span className="text-blue-500 mt-0.5">•</span>
+                4년제 공대 → 제조·기술
+              </li>
+              <li className="flex items-start gap-2 text-sm text-gray-600">
+                <span className="text-blue-500 mt-0.5">•</span>
+                관광학과/호텔 → 호텔·외식업
+              </li>
+            </ul>
+            <div className="flex gap-6 pt-4 border-t border-gray-100">
+              <div>
+                <p className="text-2xl font-bold text-gray-900">50+</p>
+                <p className="text-xs text-gray-400">학과</p>
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-green-600">95%</p>
+                <p className="text-xs text-gray-400">매칭률</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 bg-amber-100 rounded-xl flex items-center justify-center">
+                <span className="text-amber-600 text-lg">🏭</span>
+              </div>
+              <div>
+                <h3 className="font-bold text-gray-900">기업 매칭</h3>
+                <p className="text-xs text-gray-400">
+                  제조 · 건설 · 관광학과
+                </p>
+              </div>
+            </div>
+            <ul className="space-y-2 mb-5">
+              <li className="flex items-start gap-2 text-sm text-gray-600">
+                <span className="text-blue-500 mt-0.5">•</span>
+                제조업: 기계·금속·화학
+              </li>
+              <li className="flex items-start gap-2 text-sm text-gray-600">
+                <span className="text-blue-500 mt-0.5">•</span>
+                건설업: 건축·토목·설비
+              </li>
+              <li className="flex items-start gap-2 text-sm text-gray-600">
+                <span className="text-blue-500 mt-0.5">•</span>
+                관광업: 호텔·외식업
+              </li>
+            </ul>
+            <div className="flex gap-6 pt-4 border-t border-gray-100">
+              <div>
+                <p className="text-2xl font-bold text-gray-900">200+</p>
+                <p className="text-xs text-gray-400">기업</p>
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-green-600">78%</p>
+                <p className="text-xs text-gray-400">매칭률</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center">
+                <span className="text-green-600 text-lg">💼</span>
+              </div>
+              <div>
+                <h3 className="font-bold text-gray-900">취업 연계</h3>
+                <p className="text-xs text-gray-400">현장실습 → 취업</p>
+              </div>
+            </div>
+            <ul className="space-y-2 mb-5">
+              <li className="flex items-start gap-2 text-sm text-gray-600">
+                <span className="text-blue-500 mt-0.5">•</span>
+                현장실습 프로그램 운영
+              </li>
+              <li className="flex items-start gap-2 text-sm text-gray-600">
+                <span className="text-blue-500 mt-0.5">•</span>
+                채용 연계 매칭
+              </li>
+              <li className="flex items-start gap-2 text-sm text-gray-600">
+                <span className="text-blue-500 mt-0.5">•</span>
+                정주 지원 프로그램
+              </li>
+            </ul>
+            <div className="flex gap-6 pt-4 border-t border-gray-100">
+              <div>
+                <p className="text-2xl font-bold text-gray-900">85%</p>
+                <p className="text-xs text-gray-400">취업률</p>
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-green-600">65%</p>
+                <p className="text-xs text-gray-400">정주율</p>
+              </div>
+            </div>
           </div>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {quarters.map((q) => (
-            <div
-              key={q.q}
-              className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow"
-            >
-              <div className="flex items-center justify-between mb-4">
-                <div>
-                  <h3 className="font-bold text-gray-900">{q.q}</h3>
-                  <p className="text-xs text-gray-400">{q.period}</p>
+        <div className="grid md:grid-cols-2 gap-6">
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
+            <h3 className="font-bold text-lg text-gray-900 mb-6">
+              취업 연계 프로세스
+            </h3>
+            <div className="grid grid-cols-5 gap-3">
+              {[
+                { step: "1", title: "학과 선정" },
+                { step: "2", title: "기업 매칭" },
+                { step: "3", title: "현장실습" },
+                { step: "4", title: "매칭 연계" },
+                { step: "5", title: "정주 지원" },
+              ].map((s, i) => (
+                <div key={s.step} className="flex items-center gap-2">
+                  <div className="bg-blue-50 rounded-xl p-3 text-center flex-1">
+                    <div className="w-7 h-7 bg-blue-600 rounded-full flex items-center justify-center text-white text-xs font-bold mx-auto mb-1.5">
+                      {s.step}
+                    </div>
+                    <p className="font-semibold text-xs text-gray-900">
+                      {s.title}
+                    </p>
+                  </div>
+                  {i < 4 && (
+                    <span className="text-gray-300 hidden md:block">→</span>
+                  )}
                 </div>
-                <span
-                  className={`text-xs px-2.5 py-1 rounded-full font-medium ${q.statusColor}`}
+              ))}
+            </div>
+          </div>
+
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
+            <h3 className="font-bold text-lg text-gray-900 mb-6">성과 지표</h3>
+            <div className="grid grid-cols-3 gap-4">
+              {[
+                { label: "취업률", value: "85%", color: "text-blue-600" },
+                { label: "정주율", value: "65%", color: "text-green-600" },
+                { label: "만족도", value: "95%", color: "text-amber-600" },
+              ].map((m) => (
+                <div
+                  key={m.label}
+                  className="bg-gray-50 rounded-xl p-4 text-center"
                 >
-                  {q.status}
-                </span>
+                  <p className={`text-3xl font-bold ${m.color}`}>{m.value}</p>
+                  <p className="text-sm text-gray-500 mt-1">{m.label}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function Differentiation2() {
+  return (
+    <section id="diff2" className="py-20 sm:py-28 bg-gray-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-16">
+          <p className="text-blue-600 font-semibold text-sm mb-2">
+            DUAL TRACK MODEL
+          </p>
+          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
+            대학 × 직업전문학교 협업
+          </h2>
+          <p className="text-gray-500 max-w-xl mx-auto">
+            대학(학위)과 직업전문학교(기술)를 결합한 듀얼 트랙 모델
+          </p>
+        </div>
+
+        <div className="grid md:grid-cols-3 gap-6 mb-8">
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center">
+                <span className="text-blue-600 text-lg">🎓</span>
               </div>
-
-              <ul className="space-y-2.5 mb-5">
-                {q.items.map((item) => (
-                  <li
-                    key={item}
-                    className="flex items-start gap-2 text-sm text-gray-600"
-                  >
-                    <span className="text-blue-500 mt-0.5">•</span>
-                    {item}
-                  </li>
-                ))}
-              </ul>
-
-              <div className="pt-4 border-t border-gray-100">
-                <p className="text-xs text-gray-400">목표 유치</p>
-                <p className="text-2xl font-bold text-gray-900">{q.target}</p>
+              <div>
+                <h3 className="font-bold text-gray-900">대학(학위 과정)</h3>
+                <p className="text-xs text-gray-400">
+                  1~2년 이론 · 기초 교육
+                </p>
               </div>
             </div>
-          ))}
+            <ul className="space-y-2 mb-5">
+              <li className="flex items-start gap-2 text-sm text-gray-600">
+                <span className="text-blue-500 mt-0.5">•</span>
+                학위 취득: 전문학사/학사
+              </li>
+              <li className="flex items-start gap-2 text-sm text-gray-600">
+                <span className="text-blue-500 mt-0.5">•</span>
+                기초 이론/전공 기초 교육
+              </li>
+              <li className="flex items-start gap-2 text-sm text-gray-600">
+                <span className="text-blue-500 mt-0.5">•</span>
+                한국어/TOPIK 3급 달성
+              </li>
+            </ul>
+            <div className="flex gap-6 pt-4 border-t border-gray-100">
+              <div>
+                <p className="text-2xl font-bold text-gray-900">2년</p>
+                <p className="text-xs text-gray-400">과정 기간</p>
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-green-600">95%</p>
+                <p className="text-xs text-gray-400">이수율</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 bg-amber-100 rounded-xl flex items-center justify-center">
+                <span className="text-amber-600 text-lg">⚙️</span>
+              </div>
+              <div>
+                <h3 className="font-bold text-gray-900">직업전문학교</h3>
+                <p className="text-xs text-gray-400">
+                  실무 교육 · 현장 중심 기술
+                </p>
+              </div>
+            </div>
+            <ul className="space-y-2 mb-5">
+              <li className="flex items-start gap-2 text-sm text-gray-600">
+                <span className="text-blue-500 mt-0.5">•</span>
+                실무 교육/현장 중심 기술
+              </li>
+              <li className="flex items-start gap-2 text-sm text-gray-600">
+                <span className="text-blue-500 mt-0.5">•</span>
+                산학협력/기업 연계
+              </li>
+              <li className="flex items-start gap-2 text-sm text-gray-600">
+                <span className="text-blue-500 mt-0.5">•</span>
+                취업 준비: 이력서·면접
+              </li>
+            </ul>
+            <div className="flex gap-6 pt-4 border-t border-gray-100">
+              <div>
+                <p className="text-2xl font-bold text-gray-900">1년</p>
+                <p className="text-xs text-gray-400">과정 기간</p>
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-green-600">90%</p>
+                <p className="text-xs text-gray-400">이수율</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center">
+                <span className="text-green-600 text-lg">💼</span>
+              </div>
+              <div>
+                <h3 className="font-bold text-gray-900">취업 · 정주</h3>
+                <p className="text-xs text-gray-400">현장실습 → 취업</p>
+              </div>
+            </div>
+            <ul className="space-y-2 mb-5">
+              <li className="flex items-start gap-2 text-sm text-gray-600">
+                <span className="text-blue-500 mt-0.5">•</span>
+                취업 매칭: 기업 연계
+              </li>
+              <li className="flex items-start gap-2 text-sm text-gray-600">
+                <span className="text-blue-500 mt-0.5">•</span>
+                정주 지원: 비자·주거
+              </li>
+              <li className="flex items-start gap-2 text-sm text-gray-600">
+                <span className="text-blue-500 mt-0.5">•</span>
+                커뮤니티 네트워크 구축
+              </li>
+            </ul>
+            <div className="flex gap-6 pt-4 border-t border-gray-100">
+              <div>
+                <p className="text-2xl font-bold text-gray-900">85%</p>
+                <p className="text-xs text-gray-400">취업률</p>
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-green-600">65%</p>
+                <p className="text-xs text-gray-400">정주율</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="grid md:grid-cols-2 gap-6">
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
+            <h3 className="font-bold text-lg text-gray-900 mb-6">
+              듀얼 트랙 프로세스
+            </h3>
+            <div className="grid grid-cols-5 gap-3">
+              {[
+                { step: "1", title: "입학" },
+                { step: "2", title: "대학(1~2년)" },
+                { step: "3", title: "직업전문학교" },
+                { step: "4", title: "현장 실습" },
+                { step: "5", title: "취업·정주" },
+              ].map((s, i) => (
+                <div key={s.step} className="flex items-center gap-2">
+                  <div className="bg-blue-50 rounded-xl p-3 text-center flex-1">
+                    <div className="w-7 h-7 bg-blue-600 rounded-full flex items-center justify-center text-white text-xs font-bold mx-auto mb-1.5">
+                      {s.step}
+                    </div>
+                    <p className="font-semibold text-xs text-gray-900">
+                      {s.title}
+                    </p>
+                  </div>
+                  {i < 4 && (
+                    <span className="text-gray-300 hidden md:block">→</span>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
+            <h3 className="font-bold text-lg text-gray-900 mb-6">성과 지표</h3>
+            <div className="grid grid-cols-3 gap-4">
+              {[
+                { label: "취업률", value: "85%", color: "text-blue-600" },
+                { label: "정주율", value: "65%", color: "text-green-600" },
+                { label: "만족도", value: "95%", color: "text-amber-600" },
+              ].map((m) => (
+                <div
+                  key={m.label}
+                  className="bg-gray-50 rounded-xl p-4 text-center"
+                >
+                  <p className={`text-3xl font-bold ${m.color}`}>{m.value}</p>
+                  <p className="text-sm text-gray-500 mt-1">{m.label}</p>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -1080,7 +1463,9 @@ export default function Home() {
       <Stats />
       <Countries />
       <Partners />
-      <Roadmap />
+      <StudentManagement />
+      <Differentiation1 />
+      <Differentiation2 />
       <Contact />
       <Footer />
     </>
