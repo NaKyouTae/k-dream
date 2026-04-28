@@ -6,6 +6,7 @@ export const translations = {
   "nav.services": { ko: "서비스", en: "Services" },
   "nav.countries": { ko: "국가별 가이드", en: "Country Guide" },
   "nav.partners": { ko: "파트너십", en: "Partnership" },
+  "nav.strengths": { ko: "강점", en: "Strengths" },
   "nav.contact": { ko: "문의", en: "Contact" },
   "header.contact": { ko: "협력 문의", en: "Partnership Inquiry" },
   "header.menuOpen": { ko: "메뉴 열기", en: "Open menu" },
@@ -305,11 +306,11 @@ export const translations = {
   "mgmt.stage5.item3": { ko: "장기 정착: 정주 로드맵", en: "Long-term Settlement: Settlement roadmap" },
 
   // Differentiation 1
-  "diff1.tag": { ko: "DIFFERENTIATION", en: "DIFFERENTIATION" },
-  "diff1.title": { ko: "경북 산업 맞춤 취업 연계", en: "Gyeongbuk Industry-Tailored Employment" },
+  "diff1.tag": { ko: "K-DREAM STRENGTH", en: "K-DREAM STRENGTH" },
+  "diff1.title": { ko: "K-DREAM만의 지역 산업 맞춤 취업 연계", en: "K-DREAM's Regional Industry-Tailored Employment" },
   "diff1.desc": {
-    ko: "학과선정부터 기업매칭, 현장실습, 취업연계까지 지역 산업에 최적화된 프로그램",
-    en: "Programs optimized for regional industry, from department selection to company matching, field training, and employment linkage",
+    ko: "학과선정부터 기업매칭, 현장실습, 취업연계까지 지역 산업에 최적화된 K-DREAM만의 프로그램",
+    en: "K-DREAM's exclusive programs optimized for regional industry, from department selection to employment linkage",
   },
   "diff1.dept.title": { ko: "학과 매칭", en: "Department Matching" },
   "diff1.dept.sub": { ko: "전문대학 · 공대 · 관광학과", en: "College · Engineering · Tourism" },
@@ -350,11 +351,11 @@ export const translations = {
   "diff1.kpi.satisfaction": { ko: "만족도", en: "Satisfaction" },
 
   // Differentiation 2
-  "diff2.tag": { ko: "DUAL TRACK MODEL", en: "DUAL TRACK MODEL" },
-  "diff2.title": { ko: "대학 × 직업전문학교 협업", en: "University × Vocational School Collaboration" },
+  "diff2.tag": { ko: "K-DREAM STRENGTH", en: "K-DREAM STRENGTH" },
+  "diff2.title": { ko: "K-DREAM 듀얼 트랙: 대학 × 직업전문학교", en: "K-DREAM Dual Track: University × Vocational School" },
   "diff2.desc": {
-    ko: "대학(학위)과 직업전문학교(기술)를 결합한 듀얼 트랙 모델",
-    en: "A dual-track model combining university (degree) and vocational school (skills)",
+    ko: "대학(학위)과 직업전문학교(기술)를 결합한 K-DREAM만의 듀얼 트랙 모델",
+    en: "K-DREAM's exclusive dual-track model combining university (degree) and vocational school (skills)",
   },
   "diff2.univ.title": { ko: "대학(학위 과정)", en: "University (Degree Program)" },
   "diff2.univ.sub": { ko: "1~2년 이론 · 기초 교육", en: "1-2 Years Theory & Basic Education" },

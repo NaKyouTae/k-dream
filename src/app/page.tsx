@@ -1,7 +1,33 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { LanguageProvider, useLanguage } from "@/lib/LanguageContext";
+
+function useActiveSection(sectionIds: string[]) {
+  const [active, setActive] = useState("");
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            setActive(entry.target.id);
+          }
+        }
+      },
+      { rootMargin: "-40% 0px -55% 0px" }
+    );
+
+    for (const id of sectionIds) {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    }
+
+    return () => observer.disconnect();
+  }, [sectionIds]);
+
+  return active;
+}
 
 function LanguageToggle() {
   const { locale, toggleLocale } = useLanguage();
@@ -11,7 +37,7 @@ function LanguageToggle() {
     <div className="relative">
       <button
         onClick={() => setOpen(!open)}
-        className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-gray-600 hover:text-blue-600 transition-colors rounded-full border border-gray-200 hover:border-blue-300"
+        className="flex items-center gap-1.5 px-4 py-2 text-sm text-gray-600 hover:text-blue-600 transition-colors rounded-full border border-gray-200 hover:border-blue-300"
         aria-label="언어 변경"
       >
         <svg
@@ -60,16 +86,20 @@ function LanguageToggle() {
   );
 }
 
+const SECTION_IDS = ["about", "services", "countries", "partners", "strengths", "contact"];
+
 function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const { t } = useLanguage();
+  const activeSection = useActiveSection(SECTION_IDS);
 
   const links = [
-    { href: "#about", label: t("nav.about") },
-    { href: "#services", label: t("nav.services") },
-    { href: "#countries", label: t("nav.countries") },
-    { href: "#partners", label: t("nav.partners") },
-    { href: "#contact", label: t("nav.contact") },
+    { href: "#about", id: "about", label: t("nav.about") },
+    { href: "#services", id: "services", label: t("nav.services") },
+    { href: "#countries", id: "countries", label: t("nav.countries") },
+    { href: "#partners", id: "partners", label: t("nav.partners") },
+    { href: "#strengths", id: "strengths", label: t("nav.strengths") },
+    { href: "#contact", id: "contact", label: t("nav.contact") },
   ];
 
   return (
@@ -87,7 +117,11 @@ function Header() {
               <a
                 key={link.href}
                 href={link.href}
-                className="text-sm text-gray-600 hover:text-blue-600 transition-colors"
+                className={`text-sm transition-colors ${
+                  activeSection === link.id
+                    ? "text-blue-600 font-semibold"
+                    : "text-gray-600 hover:text-blue-600"
+                }`}
               >
                 {link.label}
               </a>
@@ -141,7 +175,11 @@ function Header() {
             <a
               key={link.href}
               href={link.href}
-              className="block py-3 text-gray-600 hover:text-blue-600 border-b border-gray-50"
+              className={`block py-3 border-b border-gray-50 ${
+                activeSection === link.id
+                  ? "text-blue-600 font-semibold"
+                  : "text-gray-600 hover:text-blue-600"
+              }`}
               onClick={() => setMenuOpen(false)}
             >
               {link.label}
@@ -859,7 +897,7 @@ function StudentManagement() {
 function Differentiation1() {
   const { t } = useLanguage();
   return (
-    <section id="diff1" className="py-20 sm:py-28">
+    <section id="strengths" className="py-20 sm:py-28">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <p className="text-blue-600 font-semibold text-sm mb-2">
@@ -1022,7 +1060,7 @@ function Differentiation1() {
 function Differentiation2() {
   const { t } = useLanguage();
   return (
-    <section id="diff2" className="py-20 sm:py-28 bg-gray-50">
+    <section className="py-20 sm:py-28 bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <p className="text-blue-600 font-semibold text-sm mb-2">
