@@ -386,7 +386,7 @@ export const translations = {
   "diff2.career.stat2.label": { ko: "정주율", en: "Settlement Rate" },
   "diff2.process.title": { ko: "듀얼 트랙 프로세스", en: "Dual Track Process" },
   "diff2.process.step1": { ko: "입학", en: "Enrollment" },
-  "diff2.process.step2": { ko: "대학(1~2년)", en: "University (1-2 Yrs)" },
+  "diff2.process.step2": { ko: "대학", en: "University" },
   "diff2.process.step3": { ko: "직업전문학교", en: "Vocational School" },
   "diff2.process.step4": { ko: "현장 실습", en: "Field Training" },
   "diff2.process.step5": { ko: "취업·정주", en: "Employment · Settlement" },
