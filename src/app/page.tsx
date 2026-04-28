@@ -1017,16 +1017,13 @@ function Differentiation1() {
                 { step: "5", title: t("diff1.process.step5") },
               ].map((s, i) => (
                 <div key={s.step}>
-                  <div className="flex md:flex-col items-center gap-3 md:gap-0">
-                    <div className="bg-blue-50 rounded-xl p-3 text-center flex-1 w-full">
-                      <div className="w-7 h-7 bg-blue-600 rounded-full flex items-center justify-center text-white text-xs font-bold mx-auto md:mb-1.5">
-                        {s.step}
-                      </div>
-                      <p className="font-semibold text-xs text-gray-900 hidden md:block">
-                        {s.title}
-                      </p>
+                  <div className="bg-blue-50 rounded-xl p-3 text-center w-full flex items-center gap-3 md:block">
+                    <div className="w-7 h-7 bg-blue-600 rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0 md:mx-auto md:mb-1.5">
+                      {s.step}
                     </div>
-                    <p className="font-semibold text-xs text-gray-900 md:hidden">{s.title}</p>
+                    <p className="font-semibold text-xs text-gray-900 text-left md:text-center">
+                      {s.title}
+                    </p>
                   </div>
                   {i < 4 && (
                     <div className="flex justify-center py-1 md:hidden text-gray-300">{"\u2193"}</div>
@@ -1183,16 +1180,13 @@ function Differentiation2() {
                 { step: "5", title: t("diff2.process.step5") },
               ].map((s, i) => (
                 <div key={s.step}>
-                  <div className="flex md:flex-col items-center gap-3 md:gap-0">
-                    <div className="bg-blue-50 rounded-xl p-3 text-center flex-1 w-full">
-                      <div className="w-7 h-7 bg-blue-600 rounded-full flex items-center justify-center text-white text-xs font-bold mx-auto md:mb-1.5">
-                        {s.step}
-                      </div>
-                      <p className="font-semibold text-xs text-gray-900 hidden md:block">
-                        {s.title}
-                      </p>
+                  <div className="bg-blue-50 rounded-xl p-3 text-center w-full flex items-center gap-3 md:block">
+                    <div className="w-7 h-7 bg-blue-600 rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0 md:mx-auto md:mb-1.5">
+                      {s.step}
                     </div>
-                    <p className="font-semibold text-xs text-gray-900 md:hidden">{s.title}</p>
+                    <p className="font-semibold text-xs text-gray-900 text-left md:text-center">
+                      {s.title}
+                    </p>
                   </div>
                   {i < 4 && (
                     <div className="flex justify-center py-1 md:hidden text-gray-300">{"\u2193"}</div>
