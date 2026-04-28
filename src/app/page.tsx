@@ -1008,7 +1008,7 @@ function Differentiation1() {
             <h3 className="font-bold text-lg text-gray-900 mb-6">
               {t("diff1.process.title")}
             </h3>
-            <div className="grid grid-cols-5 gap-3 flex-1 items-center">
+            <div className="grid grid-cols-1 md:grid-cols-5 gap-3 flex-1 items-center">
               {[
                 { step: "1", title: t("diff1.process.step1") },
                 { step: "2", title: t("diff1.process.step2") },
@@ -1016,17 +1016,20 @@ function Differentiation1() {
                 { step: "4", title: t("diff1.process.step4") },
                 { step: "5", title: t("diff1.process.step5") },
               ].map((s, i) => (
-                <div key={s.step} className="flex items-center gap-2">
-                  <div className="bg-blue-50 rounded-xl p-3 text-center flex-1">
-                    <div className="w-7 h-7 bg-blue-600 rounded-full flex items-center justify-center text-white text-xs font-bold mx-auto mb-1.5">
-                      {s.step}
+                <div key={s.step}>
+                  <div className="flex md:flex-col items-center gap-3 md:gap-0">
+                    <div className="bg-blue-50 rounded-xl p-3 text-center flex-1 w-full">
+                      <div className="w-7 h-7 bg-blue-600 rounded-full flex items-center justify-center text-white text-xs font-bold mx-auto md:mb-1.5">
+                        {s.step}
+                      </div>
+                      <p className="font-semibold text-xs text-gray-900 hidden md:block">
+                        {s.title}
+                      </p>
                     </div>
-                    <p className="font-semibold text-xs text-gray-900">
-                      {s.title}
-                    </p>
+                    <p className="font-semibold text-xs text-gray-900 md:hidden">{s.title}</p>
                   </div>
                   {i < 4 && (
-                    <span className="text-gray-300 hidden md:block">{"\u2192"}</span>
+                    <div className="flex justify-center py-1 md:hidden text-gray-300">{"\u2193"}</div>
                   )}
                 </div>
               ))}
@@ -1171,7 +1174,7 @@ function Differentiation2() {
             <h3 className="font-bold text-lg text-gray-900 mb-6" style={{ wordBreak: "keep-all" }}>
               {t("diff2.process.title")}
             </h3>
-            <div className="grid grid-cols-5 gap-3 flex-1 items-center">
+            <div className="grid grid-cols-1 md:grid-cols-5 gap-3 flex-1 items-center">
               {[
                 { step: "1", title: t("diff2.process.step1") },
                 { step: "2", title: t("diff2.process.step2") },
@@ -1179,17 +1182,20 @@ function Differentiation2() {
                 { step: "4", title: t("diff2.process.step4") },
                 { step: "5", title: t("diff2.process.step5") },
               ].map((s, i) => (
-                <div key={s.step} className="flex items-center gap-2">
-                  <div className="bg-blue-50 rounded-xl p-3 text-center flex-1">
-                    <div className="w-7 h-7 bg-blue-600 rounded-full flex items-center justify-center text-white text-xs font-bold mx-auto mb-1.5">
-                      {s.step}
+                <div key={s.step}>
+                  <div className="flex md:flex-col items-center gap-3 md:gap-0">
+                    <div className="bg-blue-50 rounded-xl p-3 text-center flex-1 w-full">
+                      <div className="w-7 h-7 bg-blue-600 rounded-full flex items-center justify-center text-white text-xs font-bold mx-auto md:mb-1.5">
+                        {s.step}
+                      </div>
+                      <p className="font-semibold text-xs text-gray-900 hidden md:block">
+                        {s.title}
+                      </p>
                     </div>
-                    <p className="font-semibold text-xs text-gray-900">
-                      {s.title}
-                    </p>
+                    <p className="font-semibold text-xs text-gray-900 md:hidden">{s.title}</p>
                   </div>
                   {i < 4 && (
-                    <span className="text-gray-300 hidden md:block">{"\u2192"}</span>
+                    <div className="flex justify-center py-1 md:hidden text-gray-300">{"\u2193"}</div>
                   )}
                 </div>
               ))}
