@@ -3,6 +3,8 @@
 :root {
   --background: #ffffff;
   --foreground: #1a1a2e;
+  --color-primary: #2F6BFF;
+  --color-primary-dark: #0A2A5E;
 }
 
 @theme inline {
@@ -21,4 +23,22 @@ body {
 
 html {
   scroll-behavior: smooth;
+}
+
+/* Partner logos infinite marquee */
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  animation: marquee 30s linear infinite;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
 }

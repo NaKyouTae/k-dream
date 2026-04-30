@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev -p 14000",
+    "dev": "next dev -p 16000",
     "build": "next build",
-    "start": "next start -p 14000",
+    "start": "next start -p 16000",
     "lint": "eslint",
     "deploy": "next build && firebase deploy --only hosting"
   },
