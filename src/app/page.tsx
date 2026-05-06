@@ -37,7 +37,7 @@ function LanguageToggle() {
     <div className="relative">
       <button
         onClick={() => setOpen(!open)}
-        className="flex items-center gap-1.5 h-9 px-4 text-sm text-gray-600 hover:text-[#2F6BFF] transition-colors rounded-full border border-gray-200 hover:border-[#2F6BFF]/30"
+        className="cursor-pointer flex items-center gap-1.5 h-9 px-4 text-sm text-gray-600 hover:text-[#2F6BFF] transition-colors rounded-full border border-gray-200 hover:border-[#2F6BFF]/30"
         aria-label="언어 변경"
       >
         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
@@ -51,13 +51,13 @@ function LanguageToggle() {
           <div className="absolute right-0 mt-1 w-32 bg-white rounded-xl shadow-lg border border-gray-100 py-1 z-50">
             <button
               onClick={() => { if (locale !== "ko") toggleLocale(); setOpen(false); }}
-              className={`w-full text-left px-4 py-2 text-sm ${locale === "ko" ? "text-[#2F6BFF] font-medium bg-blue-50" : "text-gray-600 hover:bg-gray-50"}`}
+              className={`cursor-pointer w-full text-left px-4 py-2 text-sm ${locale === "ko" ? "text-[#2F6BFF] font-medium bg-blue-50" : "text-gray-600 hover:bg-gray-50"}`}
             >
               한국어
             </button>
             <button
               onClick={() => { if (locale !== "en") toggleLocale(); setOpen(false); }}
-              className={`w-full text-left px-4 py-2 text-sm ${locale === "en" ? "text-[#2F6BFF] font-medium bg-blue-50" : "text-gray-600 hover:bg-gray-50"}`}
+              className={`cursor-pointer w-full text-left px-4 py-2 text-sm ${locale === "en" ? "text-[#2F6BFF] font-medium bg-blue-50" : "text-gray-600 hover:bg-gray-50"}`}
             >
               English
             </button>
@@ -91,7 +91,7 @@ function Header() {
     <header className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          <a href="#" className="flex items-center gap-2">
+          <a href="#" className="cursor-pointer flex items-center gap-2">
             <Image src="/images/logo.png" alt="K-DREAM" width={32} height={32} className="w-8 h-8 object-contain" />
             <span className="font-bold text-lg text-gray-900">K-DREAM</span>
           </a>
@@ -101,7 +101,7 @@ function Header() {
               <a
                 key={link.href}
                 href={link.href}
-                className={`text-sm transition-colors ${activeSection === link.id ? "text-[#2F6BFF] font-semibold" : "text-gray-600 hover:text-[#2F6BFF]"}`}
+                className={`cursor-pointer text-sm transition-colors ${activeSection === link.id ? "text-[#2F6BFF] font-semibold" : "text-gray-600 hover:text-[#2F6BFF]"}`}
               >
                 {link.label}
               </a>
@@ -109,14 +109,14 @@ function Header() {
           </nav>
 
           <div className="hidden lg:flex items-center gap-3">
-            <a href="#contact" className="h-9 px-5 inline-flex items-center bg-[#2F6BFF] text-white text-sm font-medium rounded-full hover:bg-[#0A2A5E] transition-colors">
+            <a href="#contact" className="cursor-pointer h-9 px-5 inline-flex items-center bg-[#2F6BFF] text-white text-sm font-medium rounded-full hover:bg-[#0A2A5E] transition-colors">
               {t("header.cta")}
             </a>
             <LanguageToggle />
           </div>
 
           <div className="lg:hidden flex items-center gap-2">
-            <button className="p-2" onClick={() => setMenuOpen(!menuOpen)} aria-label={t("header.menuOpen")}>
+            <button className="cursor-pointer p-2" onClick={() => setMenuOpen(!menuOpen)} aria-label={t("header.menuOpen")}>
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 {menuOpen ? (
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -136,7 +136,7 @@ function Header() {
             <a
               key={link.href}
               href={link.href}
-              className={`block py-3 border-b border-gray-50 ${activeSection === link.id ? "text-[#2F6BFF] font-semibold" : "text-gray-600 hover:text-[#2F6BFF]"}`}
+              className={`cursor-pointer block py-3 border-b border-gray-50 ${activeSection === link.id ? "text-[#2F6BFF] font-semibold" : "text-gray-600 hover:text-[#2F6BFF]"}`}
               onClick={() => setMenuOpen(false)}
             >
               {link.label}
@@ -160,6 +160,7 @@ function Header() {
    ────────────────────────────────────────── */
 function Hero() {
   const { t } = useLanguage();
+  const heroPoints = [t("hero.point1"), t("hero.point2"), t("hero.point3")];
   return (
     <section className="relative pt-16 overflow-hidden">
       {/* 배경: 이미지 + 오버레이 */}
@@ -189,14 +190,34 @@ function Hero() {
               {t("hero.title2")}
             </span>
           </h1>
-          <p className="text-lg sm:text-xl text-blue-200/80 max-w-2xl mx-auto mb-10">
-            {t("hero.desc")}
-          </p>
+          <div className="max-w-3xl mx-auto mb-10">
+            <p className="mb-[20px] text-[20px] text-blue-200/80">
+              {t("hero.desc")}
+            </p>
+            <p className="text-[16px] text-blue-100/85 leading-relaxed">
+              {t("hero.desc2")}
+            </p>
+            <div className="mt-6 grid gap-3 max-w-2xl mx-auto sm:grid-cols-3">
+              {heroPoints.map((point) => (
+                <div
+                  key={point}
+                  className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-left text-sm text-blue-50/95 backdrop-blur-sm"
+                >
+                  <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-cyan-300/15 text-cyan-200">
+                    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
+                  </div>
+                  <span className="leading-snug">{point}</span>
+                </div>
+              ))}
+            </div>
+          </div>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <a href="#programs" className="px-8 py-3 bg-[#2F6BFF] hover:bg-[#0A2A5E] text-white font-medium rounded-full transition-colors">
+            <a href="#programs" className="cursor-pointer px-8 py-3 bg-[#2F6BFF] hover:bg-[#0A2A5E] text-white font-medium rounded-full transition-colors">
               {t("hero.cta1")}
             </a>
-            <a href="#contact" className="px-8 py-3 border border-[#2F6BFF]/40 text-blue-300 hover:bg-[#2F6BFF]/10 font-medium rounded-full transition-colors">
+            <a href="#contact" className="cursor-pointer px-8 py-3 border border-[#2F6BFF]/40 text-blue-300 hover:bg-[#2F6BFF]/10 font-medium rounded-full transition-colors">
               {t("hero.cta2")}
             </a>
           </div>
@@ -207,7 +228,100 @@ function Hero() {
 }
 
 /* ──────────────────────────────────────────
-   [3] Core Services (3-column cards)
+   [3] Full Service Flow
+   ────────────────────────────────────────── */
+function FullServiceFlow() {
+  const { t } = useLanguage();
+  const steps = [
+    { num: "01", label: t("flow.step1") },
+    { num: "02", label: t("flow.step2") },
+    { num: "03", label: t("flow.step3") },
+    { num: "04", label: t("flow.step4") },
+    { num: "05", label: t("flow.step5") },
+    { num: "06", label: t("flow.step6") },
+  ];
+
+  const splitStepLabel = (label: string) => {
+    const match = label.match(/^(.*?)(\s*\(.*\))$/);
+    if (!match) return { main: label, sub: "" };
+    return { main: match[1].trim(), sub: match[2].trim() };
+  };
+
+  const renderStepCard = (step: (typeof steps)[number]) => {
+    const { main, sub } = splitStepLabel(step.label);
+    const isStepFive = step.num === "05";
+
+    return (
+      <div className="rounded-[1.75rem] border border-[#EEF2F7] bg-white px-4 py-5 sm:px-5 sm:py-6 text-center shadow-[0_12px_28px_rgba(15,23,42,0.06)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_18px_40px_rgba(15,23,42,0.1)]">
+        <div className="mb-4 flex justify-center">
+          <span className="inline-flex h-7 items-center rounded-full bg-[#EAF2FF] px-3 text-[12px] font-semibold tracking-[1px] text-[#2F6BFF]">
+            {`STEP ${step.num}`}
+          </span>
+        </div>
+        {isStepFive ? (
+          <p className="text-[13px] sm:text-xl font-semibold sm:font-bold leading-snug text-gray-900 whitespace-nowrap tracking-[-0.02em]">
+            {step.label}
+          </p>
+        ) : (
+          <div className="space-y-1">
+            <p className="text-lg sm:text-xl font-bold leading-snug text-gray-900 break-keep">
+              {main}
+            </p>
+            {sub ? (
+              <p className="text-sm font-normal leading-snug text-gray-400 break-keep">
+                {sub}
+              </p>
+            ) : null}
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  return (
+    <section className="py-16 sm:py-20 bg-white">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-12">
+          <p className="text-[#2F6BFF] font-semibold text-sm mb-2">{t("flow.tag")}</p>
+          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900">{t("flow.title")}</h2>
+        </div>
+
+        <div className="grid grid-cols-2 gap-4 sm:hidden">
+          {steps.map((step, index) => (
+            <div key={`mobile-${step.num}`} className="relative">
+              {renderStepCard(step)}
+              {index < steps.length - 1 ? (
+                <div className="absolute top-1/2 right-[-14px] z-10 -translate-y-1/2 text-[#B8C6E3]">
+                  <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14m-4-4 4 4-4 4" />
+                  </svg>
+                </div>
+              ) : null}
+            </div>
+          ))}
+        </div>
+
+        <div className="hidden sm:grid gap-5 xl:grid-cols-3 2xl:grid-cols-6">
+          {steps.map((step, index) => (
+            <div key={step.num} className="relative">
+              {renderStepCard(step)}
+              {index < steps.length - 1 && (
+                <div className="hidden 2xl:flex absolute top-1/2 -right-4 z-10 -translate-y-1/2 items-center text-[#B8C6E3]">
+                  <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14m-4-4 4 4-4 4" />
+                  </svg>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ──────────────────────────────────────────
+   [4] Core Services (3-column cards)
    ────────────────────────────────────────── */
 function CoreServices() {
   const { t } = useLanguage();
@@ -254,8 +368,8 @@ function CoreServices() {
         </div>
         <div className="grid md:grid-cols-3 gap-6">
           {items.map((item) => (
-            <div key={item.title} className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
-              <div className={`w-14 h-14 ${item.color} rounded-xl flex items-center justify-center mb-5`}>
+            <div key={item.title} className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 text-center md:text-left">
+              <div className={`w-14 h-14 ${item.color} rounded-xl flex items-center justify-center mb-5 mx-auto md:mx-0`}>
                 {item.icon}
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-3">{item.title}</h3>
@@ -269,7 +383,7 @@ function CoreServices() {
 }
 
 /* ──────────────────────────────────────────
-   [4] Introduction (image + text)
+   [5] Introduction (image + text)
    ────────────────────────────────────────── */
 function Introduction() {
   const { t } = useLanguage();
@@ -313,7 +427,7 @@ function Introduction() {
 }
 
 /* ──────────────────────────────────────────
-   [5] Programs (4-card)
+   [6] Programs (4-card)
    ────────────────────────────────────────── */
 function Programs() {
   const { t } = useLanguage();
@@ -416,7 +530,7 @@ function Programs() {
 }
 
 /* ──────────────────────────────────────────
-   [6] Admission Process (6-step)
+   [7] Admission Process (6-step)
    ────────────────────────────────────────── */
 function AdmissionProcess() {
   const { t } = useLanguage();
@@ -478,7 +592,7 @@ function AdmissionProcess() {
 }
 
 /* ──────────────────────────────────────────
-   [7] Settlement Support
+   [8] Settlement Support
    ────────────────────────────────────────── */
 function SettlementSupport() {
   const { t } = useLanguage();
@@ -496,7 +610,7 @@ function SettlementSupport() {
         <div className="text-center mb-16">
           <p className="text-[#2F6BFF] font-semibold text-sm mb-2">{t("settlement.tag")}</p>
           <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">{t("settlement.title")}</h2>
-          <p className="text-gray-500 max-w-xl mx-auto">{t("settlement.desc")}</p>
+          <p className="text-gray-500 max-w-xl mx-auto whitespace-pre-line">{t("settlement.desc")}</p>
         </div>
 
         <div className="grid md:grid-cols-2 gap-12 items-center">
@@ -532,7 +646,47 @@ function SettlementSupport() {
 }
 
 /* ──────────────────────────────────────────
-   [8] Career Support (dark background)
+   [9] Visa & Stay Management Support
+   ────────────────────────────────────────── */
+function VisaSupport() {
+  const { t } = useLanguage();
+  const items = [
+    { num: "01", title: t("visa.item1.title"), desc: t("visa.item1.desc") },
+    { num: "02", title: t("visa.item2.title"), desc: t("visa.item2.desc") },
+    { num: "03", title: t("visa.item3.title"), desc: t("visa.item3.desc") },
+    { num: "04", title: t("visa.item4.title"), desc: t("visa.item4.desc") },
+  ];
+
+  return (
+    <section className="py-20 sm:py-24 bg-white">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-16">
+          <p className="text-[#2F6BFF] font-semibold text-sm mb-2">{t("visa.tag")}</p>
+          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">{t("visa.title")}</h2>
+          <p className="text-gray-500 max-w-xl mx-auto">{t("visa.desc")}</p>
+        </div>
+
+        <div className="relative">
+          <div className="absolute inset-x-10 -top-6 h-24 rounded-full bg-[#2F6BFF]/8 blur-3xl" />
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 relative">
+            {items.map((item) => (
+              <div key={item.num} className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 text-center">
+                <div className="w-14 h-14 bg-[#2F6BFF] rounded-2xl flex items-center justify-center text-white text-sm font-bold mx-auto mb-4 shadow-lg shadow-[#2F6BFF]/20">
+                  {item.num}
+                </div>
+                <h3 className="text-lg font-bold text-gray-900 mb-2">{item.title}</h3>
+                <p className="text-sm text-gray-500 leading-relaxed">{item.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ──────────────────────────────────────────
+   [10] Career Support (dark background)
    ────────────────────────────────────────── */
 function CareerSupport() {
   const { t } = useLanguage();
@@ -585,20 +739,29 @@ function CareerSupport() {
 }
 
 /* ──────────────────────────────────────────
-   [9] Partner Logos (marquee scroll)
+   [11] Partnerships
    ────────────────────────────────────────── */
 function PartnerLogos() {
   const { t } = useLanguage();
-  // 실제 로고가 준비되면 교체
-  const placeholderLogos = [
-    "Partner University A",
-    "Partner University B",
-    "Partner University C",
-    "Partner Company D",
-    "Partner Company E",
-    "Partner Organization F",
-    "Partner University G",
-    "Partner Company H",
+  const partnerGroups = [
+    {
+      title: t("partners.item1.title"),
+      desc: t("partners.item1.desc"),
+      icon: "🎓",
+      color: "from-blue-50 to-cyan-50 border-blue-100",
+    },
+    {
+      title: t("partners.item2.title"),
+      desc: t("partners.item2.desc"),
+      icon: "🌏",
+      color: "from-emerald-50 to-teal-50 border-emerald-100",
+    },
+    {
+      title: t("partners.item3.title"),
+      desc: t("partners.item3.desc"),
+      icon: "🏢",
+      color: "from-amber-50 to-orange-50 border-amber-100",
+    },
   ];
 
   return (
@@ -610,18 +773,19 @@ function PartnerLogos() {
           <p className="text-gray-500 max-w-xl mx-auto">{t("partners.desc")}</p>
         </div>
 
-        {/* 로고 무한 스크롤 */}
-        <div className="overflow-hidden">
-          <div className="flex animate-marquee gap-8">
-            {[...placeholderLogos, ...placeholderLogos].map((name, i) => (
-              <div
-                key={`${name}-${i}`}
-                className="flex-shrink-0 h-16 px-8 bg-gray-50 border border-gray-100 rounded-xl flex items-center justify-center text-sm text-gray-400 font-medium whitespace-nowrap"
-              >
-                {name}
+        <div className="grid md:grid-cols-3 gap-6">
+          {partnerGroups.map((group) => (
+            <div
+              key={group.title}
+              className={`rounded-2xl border bg-gradient-to-br ${group.color} p-8 text-center shadow-sm`}
+            >
+              <div className="w-16 h-16 mx-auto mb-5 rounded-2xl bg-white/80 border border-white flex items-center justify-center text-3xl shadow-sm">
+                {group.icon}
               </div>
-            ))}
-          </div>
+              <h3 className="text-xl font-bold text-gray-900">{group.title}</h3>
+              <p className="mt-3 text-sm text-gray-500 leading-relaxed">{group.desc}</p>
+            </div>
+          ))}
         </div>
       </div>
     </section>
@@ -629,7 +793,7 @@ function PartnerLogos() {
 }
 
 /* ──────────────────────────────────────────
-   [10] Contact CTA (blue background)
+   [12] Contact CTA (blue background)
    ────────────────────────────────────────── */
 function ContactCTA() {
   const { t } = useLanguage();
@@ -642,7 +806,7 @@ function ContactCTA() {
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
           <a
             href="mailto:contact@k-dream.co.kr"
-            className="px-8 py-3.5 bg-white text-[#0A2A5E] font-semibold rounded-full hover:bg-gray-100 transition-colors shadow-lg"
+            className="cursor-pointer px-8 py-3.5 bg-white text-[#0A2A5E] font-semibold rounded-full hover:bg-gray-100 transition-colors shadow-lg"
           >
             {t("contact.cta1")}
           </a>
@@ -650,7 +814,7 @@ function ContactCTA() {
             href="https://pf.kakao.com/_placeholder"
             target="_blank"
             rel="noopener noreferrer"
-            className="px-8 py-3.5 bg-[#FEE500] text-[#3C1E1E] font-semibold rounded-full hover:bg-[#FDD835] transition-colors shadow-lg flex items-center gap-2"
+            className="cursor-pointer px-8 py-3.5 bg-[#FEE500] text-[#3C1E1E] font-semibold rounded-full hover:bg-[#FDD835] transition-colors shadow-lg flex items-center gap-2"
           >
             <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
               <path d="M12 3C6.477 3 2 6.463 2 10.691c0 2.643 1.758 4.965 4.406 6.298-.194.726-.703 2.632-.805 3.04-.124.5.183.493.385.359.158-.105 2.516-1.711 3.543-2.41.486.07.985.107 1.495.107 5.523 0 10-3.463 10-7.394C22 6.463 17.523 3 12 3z" />
@@ -664,19 +828,22 @@ function ContactCTA() {
 }
 
 /* ──────────────────────────────────────────
-   [11] Footer
+   [13] Footer
    ────────────────────────────────────────── */
 function Footer() {
   const { t } = useLanguage();
   return (
     <footer className="bg-[#0A2A5E] text-white py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 text-left">
           <div className="flex items-center gap-2">
             <Image src="/images/logo.png" alt="K-DREAM" width={28} height={28} className="w-7 h-7 object-contain" />
-            <span className="font-bold">K-DREAM Study Abroad Agency</span>
+            <div>
+              <span className="font-bold">K-DREAM Study Abroad Agency</span>
+              <p className="text-xs text-blue-200/60 mt-1">{t("footer.tagline")}</p>
+            </div>
           </div>
-          <p className="text-sm text-blue-200/50">&copy; 2026 K-DREAM. All rights reserved.</p>
+          <p className="text-sm text-blue-200/50 text-left">&copy; 2026 K-DREAM. All rights reserved.</p>
         </div>
         <div className="border-t border-white/10 pt-6 text-xs text-blue-200/40 leading-relaxed">
           <p>{t("footer.company")}</p>
@@ -688,7 +855,7 @@ function Footer() {
 }
 
 /* ──────────────────────────────────────────
-   [12] Mobile Bottom CTA (fixed)
+   [14] Mobile Bottom CTA (fixed)
    ────────────────────────────────────────── */
 function MobileBottomCTA() {
   const { t } = useLanguage();
@@ -697,7 +864,7 @@ function MobileBottomCTA() {
       <div className="flex gap-3 max-w-lg mx-auto">
         <a
           href="mailto:contact@k-dream.co.kr"
-          className="flex-1 py-3 bg-[#2F6BFF] text-white text-sm font-semibold rounded-full text-center hover:bg-[#0A2A5E] transition-colors"
+          className="cursor-pointer flex-1 py-3 bg-[#2F6BFF] text-white text-sm font-semibold rounded-full text-center hover:bg-[#0A2A5E] transition-colors"
         >
           {t("mobile.cta1")}
         </a>
@@ -705,7 +872,7 @@ function MobileBottomCTA() {
           href="https://pf.kakao.com/_placeholder"
           target="_blank"
           rel="noopener noreferrer"
-          className="flex-1 py-3 bg-[#FEE500] text-[#3C1E1E] text-sm font-semibold rounded-full text-center hover:bg-[#FDD835] transition-colors flex items-center justify-center gap-1.5"
+          className="cursor-pointer flex-1 py-3 bg-[#FEE500] text-[#3C1E1E] text-sm font-semibold rounded-full text-center hover:bg-[#FDD835] transition-colors flex items-center justify-center gap-1.5"
         >
           <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
             <path d="M12 3C6.477 3 2 6.463 2 10.691c0 2.643 1.758 4.965 4.406 6.298-.194.726-.703 2.632-.805 3.04-.124.5.183.493.385.359.158-.105 2.516-1.711 3.543-2.41.486.07.985.107 1.495.107 5.523 0 10-3.463 10-7.394C22 6.463 17.523 3 12 3z" />
@@ -725,11 +892,13 @@ export default function Home() {
     <LanguageProvider>
       <Header />
       <Hero />
+      <FullServiceFlow />
       <CoreServices />
       <Introduction />
       <Programs />
       <AdmissionProcess />
       <SettlementSupport />
+      <VisaSupport />
       <CareerSupport />
       <PartnerLogos />
       <ContactCTA />
