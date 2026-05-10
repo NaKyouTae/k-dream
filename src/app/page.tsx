@@ -249,7 +249,6 @@ function FullServiceFlow() {
 
   const renderStepCard = (step: (typeof steps)[number]) => {
     const { main, sub } = splitStepLabel(step.label);
-    const isStepFive = step.num === "05";
 
     return (
       <div className="rounded-[1.75rem] border border-[#EEF2F7] bg-white px-4 py-5 sm:px-5 sm:py-6 text-center shadow-[0_12px_28px_rgba(15,23,42,0.06)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_18px_40px_rgba(15,23,42,0.1)]">
@@ -258,22 +257,16 @@ function FullServiceFlow() {
             {`STEP ${step.num}`}
           </span>
         </div>
-        {isStepFive ? (
-          <p className="text-[13px] sm:text-xl font-semibold sm:font-bold leading-snug text-gray-900 whitespace-nowrap tracking-[-0.02em]">
-            {step.label}
+        <div className="space-y-1">
+          <p className="text-lg sm:text-xl font-bold leading-snug text-gray-900 break-keep">
+            {main}
           </p>
-        ) : (
-          <div className="space-y-1">
-            <p className="text-lg sm:text-xl font-bold leading-snug text-gray-900 break-keep">
-              {main}
+          {sub ? (
+            <p className="text-sm font-normal leading-snug text-gray-400 break-keep">
+              {sub}
             </p>
-            {sub ? (
-              <p className="text-sm font-normal leading-snug text-gray-400 break-keep">
-                {sub}
-              </p>
-            ) : null}
-          </div>
-        )}
+          ) : null}
+        </div>
       </div>
     );
   };
