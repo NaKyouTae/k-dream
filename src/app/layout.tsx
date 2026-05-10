@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "K-DREAM Study Abroad Agency | 입학에서 정주까지",
+  title: "K-Dream | 입학에서 정주까지",
   description:
     "비수도권 취업·정주 연계형 외국인 유학생 풀케어 플랫폼. 우즈베키스탄·몽골·베트남·중국 타깃, 사립 전문대/4년제 공대/관광·외식 파트너로 입학~정주까지 원스톱 지원.",
 };

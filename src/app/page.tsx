@@ -839,7 +839,7 @@ function Footer() {
           <div className="flex items-center gap-2">
             <Image src="/images/logo.png" alt="K-DREAM" width={28} height={28} className="w-7 h-7 object-contain" />
             <div>
-              <span className="font-bold">K-DREAM Study Abroad Agency</span>
+              <span className="font-bold">Korean Dream Study Abroad Consulting</span>
               <p className="text-xs text-blue-200/60 mt-1">{t("footer.tagline")}</p>
             </div>
           </div>

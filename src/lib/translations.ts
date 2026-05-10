@@ -4,9 +4,9 @@ export const translations = {
   // Header
   "nav.about": { ko: "소개", en: "About" },
   "nav.programs": { ko: "입학 프로그램", en: "Programs" },
-  "nav.process": { ko: "입학 절차", en: "Admission" },
-  "nav.settlement": { ko: "정착 지원", en: "Settlement" },
-  "nav.career": { ko: "취업 지원", en: "Career" },
+  "nav.process": { ko: "입학 절차", en: "Admission Process" },
+  "nav.settlement": { ko: "정착 지원", en: "Settlement Support" },
+  "nav.career": { ko: "취업 지원", en: "Career Support" },
   "nav.contact": { ko: "문의", en: "Contact" },
   "header.cta": { ko: "무료 입학·비자 상담 받기", en: "Get a Free Admission & Visa Consultation" },
   "header.menuOpen": { ko: "메뉴 열기", en: "Open menu" },
@@ -17,12 +17,12 @@ export const translations = {
     en: "International Students,",
   },
   "hero.title2": {
-    ko: "입학부터 정주까지 전 과정 관리",
-    en: "End-to-End Management from Admission to Settlement",
+    ko: "입학부터 정주까지 관리",
+    en: "Management from Admission to Settlement",
   },
   "hero.desc": {
     ko: "행정사가 직접 비자 및 체류 업무를 지원합니다",
-    en: "Licensed administrators directly handle visa and residency matters",
+    en: "A licensed administrator directly handles visa and residency matters",
   },
   "hero.desc2": {
     ko: "대학 매칭부터 정착·취업까지 One-Stop 관리",
@@ -37,7 +37,7 @@ export const translations = {
     en: "Student recruitment through overseas local networks",
   },
   "hero.point3": {
-    ko: "입학 → 정주 → 취업까지 전 과정 관리",
+    ko: "입학 → 정착 → 취업까지 전 과정 관리",
     en: "Full-process management from admission to settlement to employment",
   },
   "hero.cta1": { ko: "나에게 맞는 입학 과정 확인", en: "Find the Right Admission Program for Me" },
@@ -48,17 +48,17 @@ export const translations = {
   "flow.title": { ko: "K-DREAM 프로세스", en: "K-DREAM Process" },
   "flow.step1": { ko: "상담 및 목표 설정", en: "Consultation & Goal Setting" },
   "flow.step2": { ko: "대학·과정 매칭", en: "University & Program Matching" },
-  "flow.step3": { ko: "입학 진행 및 합격", en: "Admission Process & Acceptance" },
+  "flow.step3": { ko: "입학 진행 및 합격", en: "Admission Processing & Acceptance" },
   "flow.step4": { ko: "비자 발급 및 입국", en: "Visa Issuance & Arrival" },
-  "flow.step5": { ko: "정착 지원 (초기 30일 집중 관리)", en: "Settlement Support (Intensive Management for the First 30 Days)" },
-  "flow.step6": { ko: "취업 및 체류 연계", en: "Employment & Residency Linkage" },
+  "flow.step5": { ko: "정착 지원", en: "Settlement Support" },
+  "flow.step6": { ko: "취업 및 체류 연계", en: "Employment and Residency Linkage" },
 
   // Core Services (3-column)
   "core.tag": { ko: "CORE SERVICES", en: "CORE SERVICES" },
   "core.title": { ko: "주요 서비스", en: "Core Services" },
   "core.desc": {
     ko: "유학생의 한국 생활 전 과정을 지원합니다",
-    en: "We support every step of your life in Korea",
+    en: "We support every step of international student life in Korea",
   },
   "core.item1.title": { ko: "입학 지원", en: "Admission Support" },
   "core.item1.desc": {
@@ -80,8 +80,8 @@ export const translations = {
   "intro.tag": { ko: "ABOUT K-DREAM", en: "ABOUT K-DREAM" },
   "intro.title": { ko: "K-DREAM 소개", en: "About K-DREAM" },
   "intro.desc": {
-    ko: "외국인 유학생의 입학부터 정주까지 전 과정을 관리하는\n유학 토털 플랫폼",
-    en: "A total study abroad platform managing the entire process\nfrom admission to settlement for international students",
+    ko: "외국인 유학생의 입학부터 정주까지 전 과정을 관리하는\n토털 플랫폼",
+    en: "A total platform that manages the entire process\nfrom admission to settlement for international students",
   },
   "intro.item1": {
     ko: "해외 현지 협력 네트워크 기반 학생 선발",
@@ -89,7 +89,7 @@ export const translations = {
   },
   "intro.item2": {
     ko: "입국 후 정착 지원 및 체계적 관리 운영",
-    en: "Post-arrival settlement support and systematic management",
+    en: "Post-arrival settlement support and systematic management services",
   },
   "intro.item3": {
     ko: "비자 및 체류 업무 지원",
@@ -158,7 +158,7 @@ export const translations = {
   "process.step1.desc": { ko: "맞춤 상담 및 계획 수립", en: "Custom consultation & planning" },
   "process.step2": { ko: "대학 매칭", en: "University Matching" },
   "process.step2.desc": { ko: "적합한 대학·학과 선정", en: "Selecting the right university & major" },
-  "process.step3": { ko: "서류 준비", en: "Documents" },
+  "process.step3": { ko: "서류 준비", en: "Document Preparation" },
   "process.step3.desc": { ko: "입학 서류 작성 및 제출", en: "Application documents preparation & submission" },
   "process.step4": { ko: "합격 및 등록", en: "Acceptance & Enrollment" },
   "process.step4.desc": { ko: "합격 통보 및 등록금 납부", en: "Acceptance notice & tuition payment" },
@@ -172,14 +172,14 @@ export const translations = {
   "settlement.title": { ko: "정착 지원", en: "Settlement Support" },
   "settlement.desc": {
     ko: "입국 후 초기 30일 집중 정착 지원을 통해\n안정적인 한국 생활을 시작할 수 있도록 돕고\n이후에도 지속적인 관리 서비스를 제공합니다",
-    en: "Through intensive settlement support during the first 30 days after arrival,\nwe help students begin a stable life in Korea\nand continue to provide ongoing management services afterward",
+    en: "Through intensive settlement support during the first 30 days after arrival,\nwe help students begin a stable life in Korea\nand continue to provide ongoing support services afterward",
   },
   "settlement.item1.title": { ko: "공항 픽업", en: "Airport Pickup" },
   "settlement.item1.desc": { ko: "입국 시 공항 마중 및 숙소 이동 지원", en: "Airport greeting and accommodation transfer support upon arrival" },
   "settlement.item2.title": { ko: "주거 지원", en: "Housing Support" },
-  "settlement.item2.desc": { ko: "기숙사 배정 및 원룸·주거 계약 지원", en: "Dormitory placement and studio housing contract support" },
+  "settlement.item2.desc": { ko: "기숙사 배정 및 원룸·주거 계약 지원", en: "Dormitory placement and one-room housing contract support" },
   "settlement.item3.title": { ko: "외국인 등록", en: "Foreign Registration" },
-  "settlement.item3.desc": { ko: "외국인 등록 및 체류 신고 대행 지원", en: "Support for foreign registration and stay reporting assistance" },
+  "settlement.item3.desc": { ko: "외국인 등록 및 체류 신고 대행 지원", en: "Assistance with foreign registration and stay reporting" },
   "settlement.item4.title": { ko: "통장 및 통신 개설", en: "Bank Account & Mobile Setup" },
   "settlement.item4.desc": { ko: "은행 계좌 개설 및 휴대폰 개통 지원", en: "Bank account opening and mobile phone activation support" },
   "settlement.item5.title": { ko: "생활 안내", en: "Living Guide" },
@@ -193,7 +193,7 @@ export const translations = {
     en: "We support the full range of foreign residency-related administrative services",
   },
   "visa.item1.title": { ko: "비자 신청 및 연장", en: "Visa Application & Extension" },
-  "visa.item1.desc": { ko: "비자 신청 및 연장 대행", en: "Application and extension assistance" },
+  "visa.item1.desc": { ko: "비자 신청 및 연장 대행", en: "Assistance with visa applications and extensions" },
   "visa.item2.title": { ko: "체류 변경", en: "Stay Status Change" },
   "visa.item2.desc": { ko: "체류 자격 변경 (D-10, E-7 등) 전문 상담", en: "Specialized consultation for stay status changes such as D-10 and E-7" },
   "visa.item3.title": { ko: "외국인 등록", en: "Foreign Registration" },
@@ -206,7 +206,7 @@ export const translations = {
   "career.title": { ko: "취업 지원", en: "Career Support" },
   "career.desc": {
     ko: "유학 이후 취업까지 연계하는 실질적 시스템을 지원합니다",
-    en: "We support a practical system that connects study abroad to employment",
+    en: "We provide a practical system that connects study abroad to employment",
   },
   "career.item1.title": { ko: "아르바이트 연계", en: "Part-time Job Linkage" },
   "career.item1.desc": { ko: "합법적 아르바이트 연계 지원", en: "Support for legal part-time job placement" },
@@ -236,10 +236,10 @@ export const translations = {
   "contact.title": { ko: "상담 및 문의", en: "Consultation & Inquiry" },
   "contact.desc": {
     ko: "입학·비자·정착까지 무료 상담 가능합니다\n카카오톡 또는 상담 신청으로 바로 신청하세요",
-    en: "Free consultation is available for admission, visa, and settlement\nApply right away through KakaoTalk or a consultation request",
+    en: "Free consultation is available for admission, visa, and settlement\nApply right away via KakaoTalk or by submitting a consultation request",
   },
   "contact.cta1": { ko: "무료 상담 신청하기", en: "Apply for a Free Consultation" },
-  "contact.cta2": { ko: "카카오톡 실시간 상담", en: "Real-Time KakaoTalk Consultation" },
+  "contact.cta2": { ko: "카카오톡 실시간 상담", en: "Real-Time Consultation on KakaoTalk" },
 
   // Footer
   "footer.company": {
@@ -248,7 +248,7 @@ export const translations = {
   },
   "footer.tagline": {
     ko: "외국인 유학생 전문 관리 서비스 K-DREAM",
-    en: "K-DREAM, a specialized management service for international students",
+    en: "K-DREAM, a specialized support service for international students",
   },
   "footer.address": {
     ko: "사업장 소재지: 경상북도 포항시 남구 대이로63번길 8, 2층(대장동) | 업태: 교육서비스업 | 종목: 유학알선",
@@ -256,8 +256,8 @@ export const translations = {
   },
 
   // Mobile Bottom CTA
-  "mobile.cta1": { ko: "무료 입학·비자 상담 받기", en: "Get a Free Consultation" },
-  "mobile.cta2": { ko: "카카오톡 실시간 상담", en: "Real-Time KakaoTalk Consultation" },
+  "mobile.cta1": { ko: "무료 입학·비자 상담 받기", en: "Get a Free Admission and Visa Consultation" },
+  "mobile.cta2": { ko: "카카오톡 실시간 상담", en: "Real-Time Consultation on KakaoTalk" },
 
   // Language toggle
   "lang.ko": { ko: "한국어", en: "Korean" },
