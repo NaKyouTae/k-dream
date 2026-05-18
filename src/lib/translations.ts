@@ -251,8 +251,8 @@ export const translations = {
     en: "K-DREAM, a specialized support service for international students",
   },
   "footer.address": {
-    ko: "사업장 소재지: 경북 포항시 남구 연일읍 유강길10번길 8 | 업태: 교육서비스업 | 종목: 유학알선",
-    en: "Address: 8, Yugang-gil 10beon-gil, Yeonil-eup, Nam-gu, Pohang-si, Gyeongbuk | Industry: Education Service | Type: Study Abroad Consulting",
+    ko: "사업장 소재지: 포항시 남구 연일읍 유강길 10번길 8, 우영빌딩 2층 | 업태: 교육서비스업 | 종목: 유학알선",
+    en: "Address: 2F, Wooyoung Building, 8, Yugang-gil 10beon-gil, Yeonil-eup, Nam-gu, Pohang-si | Industry: Education Service | Type: Study Abroad Consulting",
   },
 
   // Mobile Bottom CTA

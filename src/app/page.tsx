@@ -162,7 +162,10 @@ function Hero() {
   const { t } = useLanguage();
   const heroPoints = [t("hero.point1"), t("hero.point2"), t("hero.point3")];
   return (
-    <section className="relative pt-16 overflow-hidden">
+    <section
+      className="relative mt-16 overflow-hidden"
+      style={{ minHeight: "fit-content", height: "calc(100dvh - 4rem)" }}
+    >
       {/* 배경: 이미지 + 오버레이 */}
       <div className="absolute inset-0">
         <Image
@@ -181,8 +184,21 @@ function Hero() {
         <div className="absolute bottom-20 right-10 w-96 h-96 bg-[#2F6BFF]/10 rounded-full blur-3xl" />
       </div>
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 sm:py-32 lg:py-40">
-        <div className="text-center">
+      <div className="relative mx-auto flex max-w-7xl min-h-full items-center px-4 sm:px-6 lg:px-8">
+        <div className="w-full py-12 text-center sm:py-14 lg:py-16">
+          <div className="mb-6 flex justify-center">
+            <div className="relative">
+              <div className="absolute inset-[-28px] rounded-full bg-[radial-gradient(circle,rgba(143,199,255,0.34)_0%,rgba(47,107,255,0.16)_42%,rgba(255,255,255,0)_74%)] blur-2xl" />
+              <Image
+                src="/images/hero-logo.png"
+                alt="K-DREAM"
+                width={240}
+                height={240}
+                className="hero-logo relative h-44 w-44 object-contain drop-shadow-[0_20px_40px_rgba(58,28,146,0.34)] sm:h-48 sm:w-48 lg:h-56 lg:w-56"
+                priority
+              />
+            </div>
+          </div>
           <h1 className="text-3xl sm:text-4xl lg:text-6xl font-bold text-white leading-tight mb-6">
             {t("hero.title1")}
             <br />
@@ -830,9 +846,9 @@ function Footer() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 text-left">
           <div className="flex items-center gap-2">
-            <Image src="/images/logo.png" alt="K-DREAM" width={28} height={28} className="w-7 h-7 object-contain" />
+            <Image src="/icon.png" alt="K-DREAM" width={28} height={28} className="w-7 h-7 object-contain" />
             <div>
-              <span className="font-bold">Korean Dream Study Abroad Consulting</span>
+              <span className="font-bold">Study in Korea Support Center</span>
               <p className="text-xs text-blue-200/60 mt-1">{t("footer.tagline")}</p>
             </div>
           </div>

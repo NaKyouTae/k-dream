@@ -25,6 +25,16 @@ html {
   scroll-behavior: smooth;
 }
 
+.hero-logo {
+  filter: drop-shadow(0 20px 40px rgba(58, 28, 146, 0.34));
+}
+
+@media (prefers-color-scheme: dark) {
+  .hero-logo {
+    filter: brightness(1.16) saturate(1.12) drop-shadow(0 22px 44px rgba(214, 168, 255, 0.28));
+  }
+}
+
 /* Partner logos infinite marquee */
 @keyframes marquee {
   0% {
