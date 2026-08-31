@@ -2,26 +2,18 @@
   "name": "k-dream",
   "version": "0.1.0",
   "private": true,
+  "packageManager": "pnpm@10.33.0",
   "scripts": {
-    "dev": "next dev -p 16000",
-    "build": "next build",
-    "start": "next start -p 16000",
-    "lint": "eslint",
-    "deploy": "next build && firebase deploy --only hosting"
-  },
-  "dependencies": {
-    "next": "16.2.4",
-    "react": "19.2.4",
-    "react-dom": "19.2.4"
+    "dev": "turbo run dev",
+    "dev:server": "turbo run dev --filter=server",
+    "dev:portal": "turbo run dev --filter=portal",
+    "dev:admin": "turbo run dev --filter=admin",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "deploy": "turbo run build --filter=portal && firebase deploy --only hosting"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4",
-    "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
-    "eslint": "^9",
-    "eslint-config-next": "16.2.4",
-    "tailwindcss": "^4",
+    "turbo": "^2.6.1",
     "typescript": "^5"
   }
 }
