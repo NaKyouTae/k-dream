@@ -146,6 +146,12 @@ export const COUNTRY_LABEL: Record<CountryCode, string> = {
   MN: "몽골",
 };
 
+/**
+ * 에이전트 계정 생성 시 서버가 넣는 초기 비밀번호.
+ * 서버의 agents.constants.ts 와 같은 값을 유지해야 한다 (안내 문구용).
+ */
+export const DEFAULT_AGENT_PASSWORD = "123456789a";
+
 export const STAFF_TYPE_LABEL: Record<StaffType, string> = {
   ADMIN: "관리자",
   AGENT: "에이전트",

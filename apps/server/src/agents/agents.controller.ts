@@ -12,6 +12,7 @@ import {
 import { AuditService } from "../audit/audit.service";
 import { AdminGuard, AuthedRequest } from "../auth/auth.guard";
 import { StaffService } from "../staff/staff.service";
+import { DEFAULT_AGENT_PASSWORD } from "./agents.constants";
 import { CreateAgentDto } from "./dto/create-agent.dto";
 import { ListAgentsDto } from "./dto/list-agents.dto";
 import { UpdateAgentDto } from "./dto/update-agent.dto";
@@ -36,7 +37,10 @@ export class AgentsController {
 
   @Post()
   async create(@Body() dto: CreateAgentDto, @Req() req: AuthedRequest) {
-    const agent = await this.staff.create("AGENT", dto);
+    const agent = await this.staff.create("AGENT", {
+      ...dto,
+      password: dto.password || DEFAULT_AGENT_PASSWORD,
+    });
     await this.audit.record(req, {
       actionCode: "CREATE_AGENT",
       entityType: "STAFF",

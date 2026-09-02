@@ -13,9 +13,11 @@ export class CreateAgentDto {
   @IsNotEmpty()
   loginId: string;
 
+  /** 비우면 초기 비밀번호(DEFAULT_AGENT_PASSWORD)로 만들어진다 */
+  @IsOptional()
   @IsString()
   @MinLength(8, { message: "비밀번호는 8자 이상이어야 합니다." })
-  password: string;
+  password?: string;
 
   @IsString()
   @IsNotEmpty()

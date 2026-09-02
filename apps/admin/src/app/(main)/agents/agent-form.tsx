@@ -2,7 +2,12 @@
 
 import { useState } from "react";
 import { api, ApiError } from "@/lib/api";
-import { Agent, COUNTRY_LABEL, CountryCode } from "@/lib/types";
+import {
+  Agent,
+  COUNTRY_LABEL,
+  CountryCode,
+  DEFAULT_AGENT_PASSWORD,
+} from "@/lib/types";
 import { Button, ErrorBox, Field, Modal, inputClass } from "@/components/ui";
 
 interface Props {
@@ -42,7 +47,7 @@ export function AgentForm({ agent, onClose, onSaved }: Props) {
       } else {
         await api.post("/agents", {
           loginId,
-          password,
+          // 비밀번호는 서버가 초기값으로 정한다
           name,
           countryCode,
           organization,
@@ -74,21 +79,29 @@ export function AgentForm({ agent, onClose, onSaved }: Props) {
           />
         </Field>
 
-        <Field
-          label="비밀번호"
-          required={!editing}
-          hint={editing ? "변경할 때만 입력하세요. (8자 이상)" : "8자 이상"}
-        >
-          <input
-            className={inputClass}
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required={!editing}
-            minLength={8}
-            placeholder="••••••••"
-          />
-        </Field>
+        {/* 새 계정은 서버가 정한 초기 비밀번호로 만들어진다.
+            수정할 때만 비밀번호를 바꿀 수 있게 입력칸을 보여준다. */}
+        {editing ? (
+          <Field label="비밀번호" hint="변경할 때만 입력하세요. (8자 이상)">
+            <input
+              className={inputClass}
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              minLength={8}
+              placeholder="••••••••"
+            />
+          </Field>
+        ) : (
+          <Field label="초기 비밀번호">
+            <p className="rounded-lg border border-border bg-black/[0.02] px-3 py-2.5 text-sm md:py-2">
+              <code className="font-mono">{DEFAULT_AGENT_PASSWORD}</code>
+              <span className="ml-2 text-muted">
+                계정 전달 시 함께 안내하고, 첫 로그인 후 변경하도록 하세요.
+              </span>
+            </p>
+          </Field>
+        )}
 
         <Field label="담당자명" required>
           <input
