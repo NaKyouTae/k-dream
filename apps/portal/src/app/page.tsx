@@ -78,7 +78,7 @@ function LanguageToggle() {
 /* ──────────────────────────────────────────
    [1] Header
    ────────────────────────────────────────── */
-const SECTION_IDS = ["about", "programs", "process", "settlement", "career", "contact"];
+const SECTION_IDS = ["about", "programs", "degree", "process", "settlement", "career", "contact"];
 
 function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -88,6 +88,7 @@ function Header() {
   const links = [
     { href: "#about", id: "about", label: t("nav.about") },
     { href: "#programs", id: "programs", label: t("nav.programs") },
+    { href: "#degree", id: "degree", label: t("nav.degree") },
     { href: "#process", id: "process", label: t("nav.process") },
     { href: "#settlement", id: "settlement", label: t("nav.settlement") },
     { href: "#career", id: "career", label: t("nav.career") },
@@ -167,7 +168,7 @@ function Header() {
    ────────────────────────────────────────── */
 function Hero() {
   const { t } = useLanguage();
-  const heroPoints = [t("hero.point1"), t("hero.point2"), t("hero.point3")];
+  const heroPoints = [t("hero.point1"), t("hero.point2")];
   return (
     <section
       className="relative mt-16 overflow-hidden"
@@ -256,12 +257,12 @@ function Hero() {
 function FullServiceFlow() {
   const { t } = useLanguage();
   const steps = [
-    { num: "01", label: t("flow.step1") },
-    { num: "02", label: t("flow.step2") },
-    { num: "03", label: t("flow.step3") },
-    { num: "04", label: t("flow.step4") },
-    { num: "05", label: t("flow.step5") },
-    { num: "06", label: t("flow.step6") },
+    { num: "01", label: t("flow.step1"), desc: t("flow.step1.desc") },
+    { num: "02", label: t("flow.step2"), desc: t("flow.step2.desc") },
+    { num: "03", label: t("flow.step3"), desc: t("flow.step3.desc") },
+    { num: "04", label: t("flow.step4"), desc: t("flow.step4.desc") },
+    { num: "05", label: t("flow.step5"), desc: t("flow.step5.desc") },
+    { num: "06", label: t("flow.step6"), desc: t("flow.step6.desc") },
   ];
 
   const splitStepLabel = (label: string) => {
@@ -290,6 +291,9 @@ function FullServiceFlow() {
             </p>
           ) : null}
         </div>
+        <p className="mt-2 text-sm leading-snug text-gray-500 break-keep">
+          {step.desc}
+        </p>
       </div>
     );
   };
@@ -300,6 +304,7 @@ function FullServiceFlow() {
         <div className="text-center mb-12">
           <p className="text-[#2F6BFF] font-semibold text-sm mb-2">{t("flow.tag")}</p>
           <h2 className="text-3xl sm:text-4xl font-bold text-gray-900">{t("flow.title")}</h2>
+          <p className="mt-3 text-gray-500 max-w-2xl mx-auto break-keep">{t("flow.desc")}</p>
         </div>
 
         <div className="grid grid-cols-2 gap-4 sm:hidden">
@@ -372,6 +377,16 @@ function CoreServices() {
       desc: t("core.item3.desc"),
       color: "bg-amber-50 text-amber-600",
     },
+    {
+      icon: (
+        <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M20.25 14.15v4.075c0 1.313-.938 2.44-2.237 2.629-1.116.16-2.25.279-3.4.353m0 0a3 3 0 1 1-6 0m6 0a48.4 48.4 0 0 1-6 0M8.25 3.75h7.5A2.25 2.25 0 0 1 18 6v3.75m-9.75-6A2.25 2.25 0 0 0 6 6v3.75m0 0H4.5a1.5 1.5 0 0 0-1.5 1.5v1.875c0 .621.504 1.125 1.125 1.125h15.75c.621 0 1.125-.504 1.125-1.125V11.25a1.5 1.5 0 0 0-1.5-1.5H18" />
+        </svg>
+      ),
+      title: t("core.item4.title"),
+      desc: t("core.item4.desc"),
+      color: "bg-violet-50 text-violet-600",
+    },
   ];
 
   return (
@@ -382,7 +397,7 @@ function CoreServices() {
           <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">{t("core.title")}</h2>
           <p className="text-gray-500 max-w-xl mx-auto">{t("core.desc")}</p>
         </div>
-        <div className="grid md:grid-cols-3 gap-6">
+        <div className="grid gap-6 sm:grid-cols-2">
           {items.map((item) => (
             <div key={item.title} className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 text-center md:text-left">
               <div className={`w-14 h-14 ${item.color} rounded-xl flex items-center justify-center mb-5 mx-auto md:mx-0`}>
@@ -424,7 +439,7 @@ function Introduction() {
             <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-6">{t("intro.title")}</h2>
             <p className="text-gray-500 leading-relaxed mb-8 whitespace-pre-line">{t("intro.desc")}</p>
             <ul className="space-y-4">
-              {[t("intro.item1"), t("intro.item2"), t("intro.item3")].map((item) => (
+              {[t("intro.item1"), t("intro.item2"), t("intro.item3"), t("intro.item4")].map((item) => (
                 <li key={item} className="flex items-start gap-3">
                   <div className="w-6 h-6 bg-[#2F6BFF]/10 rounded-full flex items-center justify-center shrink-0 mt-0.5">
                     <svg className="w-3.5 h-3.5 text-[#2F6BFF]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
@@ -445,61 +460,46 @@ function Introduction() {
 /* ──────────────────────────────────────────
    [6] Programs (4-card)
    ────────────────────────────────────────── */
-function Programs() {
-  const { t } = useLanguage();
-  const programs = [
-    {
-      title: t("programs.item1.title"),
-      desc: t("programs.item1.desc"),
-      duration: t("programs.item1.duration"),
-      visa: t("programs.item1.visa"),
-      details: [t("programs.item1.detail1"), t("programs.item1.detail2"), t("programs.item1.detail3")],
-      color: "from-[#2F6BFF] to-blue-500",
-      image: "/images/program-language.jpg",
-      imageAlt: "어학연수 수업 장면",
-    },
-    {
-      title: t("programs.item2.title"),
-      desc: t("programs.item2.desc"),
-      duration: t("programs.item2.duration"),
-      visa: t("programs.item2.visa"),
-      details: [t("programs.item2.detail1"), t("programs.item2.detail2"), t("programs.item2.detail3")],
-      color: "from-cyan-500 to-cyan-600",
-      image: "/images/program-college.jpg",
-      imageAlt: "전문대 실습 장면",
-    },
-    {
-      title: t("programs.item3.title"),
-      desc: t("programs.item3.desc"),
-      duration: t("programs.item3.duration"),
-      visa: t("programs.item3.visa"),
-      details: [t("programs.item3.detail1"), t("programs.item3.detail2"), t("programs.item3.detail3")],
-      color: "from-indigo-500 to-indigo-600",
-      image: "/images/program-university.jpg",
-      imageAlt: "4년제 대학 캠퍼스",
-    },
-    {
-      title: t("programs.item4.title"),
-      desc: t("programs.item4.desc"),
-      duration: t("programs.item4.duration"),
-      visa: t("programs.item4.visa"),
-      details: [t("programs.item4.detail1"), t("programs.item4.detail2"), t("programs.item4.detail3")],
-      color: "from-violet-500 to-violet-600",
-      image: "/images/program-masters.jpg",
-      imageAlt: "석사 연구 장면",
-    },
-  ];
+interface ProgramCard {
+  title: string;
+  desc: string;
+  duration: string;
+  visa: string;
+  details: string[];
+  color: string;
+  image: string;
+  imageAlt: string;
+}
+
+/** 입학 프로그램과 학위 과정이 같은 카드 모양을 공유한다 */
+function ProgramSection({
+  id,
+  tag,
+  title,
+  desc,
+  programs,
+  bg,
+  children,
+}: {
+  id: string;
+  tag: string;
+  title: string;
+  desc: string;
+  programs: ProgramCard[];
+  bg: string;
+  children?: React.ReactNode;
+}) {
 
   return (
-    <section id="programs" className="py-20 sm:py-28 bg-gray-50">
+    <section id={id} className={`py-20 sm:py-28 ${bg}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <p className="text-[#2F6BFF] font-semibold text-sm mb-2">{t("programs.tag")}</p>
-          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">{t("programs.title")}</h2>
-          <p className="text-gray-500 max-w-xl mx-auto">{t("programs.desc")}</p>
+          <p className="text-[#2F6BFF] font-semibold text-sm mb-2">{tag}</p>
+          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">{title}</h2>
+          <p className="text-gray-500 max-w-xl mx-auto">{desc}</p>
         </div>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid gap-6 sm:grid-cols-2">
           {programs.map((p) => (
             <div key={p.title} className="group bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
               {/* 카드 상단 이미지 */}
@@ -540,8 +540,110 @@ function Programs() {
             </div>
           ))}
         </div>
+
+        {children}
       </div>
     </section>
+  );
+}
+
+
+/** PDF 기준: 어학연수·전문대 */
+function Programs() {
+  const { t } = useLanguage();
+  const programs: ProgramCard[] = [
+    {
+      title: t("programs.item1.title"),
+      desc: t("programs.item1.desc"),
+      duration: t("programs.item1.duration"),
+      visa: t("programs.item1.visa"),
+      details: [t("programs.item1.detail1"), t("programs.item1.detail2"), t("programs.item1.detail3")],
+      color: "from-[#2F6BFF] to-blue-500",
+      image: "/images/program-language.jpg",
+      imageAlt: "어학연수 수업 장면",
+    },
+    {
+      title: t("programs.item2.title"),
+      desc: t("programs.item2.desc"),
+      duration: t("programs.item2.duration"),
+      visa: t("programs.item2.visa"),
+      details: [t("programs.item2.detail1"), t("programs.item2.detail2"), t("programs.item2.detail3")],
+      color: "from-cyan-500 to-cyan-600",
+      image: "/images/program-college.jpg",
+      imageAlt: "전문대 실습 장면",
+    },
+  ];
+
+  return (
+    <ProgramSection
+      id="programs"
+      tag={t("programs.tag")}
+      title={t("programs.title")}
+      desc={t("programs.desc")}
+      programs={programs}
+      bg="bg-gray-50"
+    >
+      {/* 과정 선택 기준 */}
+      <div className="mt-10 rounded-2xl bg-white border border-gray-100 p-6 sm:p-8">
+        <p className="font-bold text-gray-900 mb-4">{t("programs.criteria.title")}</p>
+        <ul className="grid gap-2 text-sm text-gray-600 sm:grid-cols-2">
+          {[
+            t("programs.criteria.item1"),
+            t("programs.criteria.item2"),
+            t("programs.criteria.item3"),
+            t("programs.criteria.item4"),
+          ].map((item) => (
+            <li key={item} className="flex gap-2">
+              <span aria-hidden="true" className="text-[#2F6BFF]">•</span>
+              <span className="break-keep">{item}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </ProgramSection>
+  );
+}
+
+/** PDF 기준: 4년제·석사 */
+function DegreePrograms() {
+  const { t } = useLanguage();
+  const programs: ProgramCard[] = [
+    {
+      title: t("programs.item3.title"),
+      desc: t("programs.item3.desc"),
+      duration: t("programs.item3.duration"),
+      visa: t("programs.item3.visa"),
+      details: [t("programs.item3.detail1"), t("programs.item3.detail2"), t("programs.item3.detail3")],
+      color: "from-indigo-500 to-indigo-600",
+      image: "/images/program-university.jpg",
+      imageAlt: "4년제 대학 캠퍼스",
+    },
+    {
+      title: t("programs.item4.title"),
+      desc: t("programs.item4.desc"),
+      duration: t("programs.item4.duration"),
+      visa: t("programs.item4.visa"),
+      details: [t("programs.item4.detail1"), t("programs.item4.detail2"), t("programs.item4.detail3")],
+      color: "from-violet-500 to-violet-600",
+      image: "/images/program-masters.jpg",
+      imageAlt: "석사 연구 장면",
+    },
+  ];
+
+  return (
+    <ProgramSection
+      id="degree"
+      tag={t("degree.tag")}
+      title={t("degree.title")}
+      desc={t("degree.desc")}
+      programs={programs}
+      bg=""
+    >
+      <div className="mt-10 rounded-2xl bg-gray-50 border border-gray-100 p-6 sm:p-8 text-center">
+        <p className="font-bold text-gray-900 break-keep">{t("degree.note1")}</p>
+        <p className="mt-2 text-sm text-gray-500 break-keep">{t("degree.note2")}</p>
+      </div>
+    </ProgramSection>
   );
 }
 
@@ -555,8 +657,6 @@ function AdmissionProcess() {
     { num: "02", title: t("process.step2"), desc: t("process.step2.desc"), icon: "\uD83C\uDFEB" },
     { num: "03", title: t("process.step3"), desc: t("process.step3.desc"), icon: "\uD83D\uDCC4" },
     { num: "04", title: t("process.step4"), desc: t("process.step4.desc"), icon: "\u2705" },
-    { num: "05", title: t("process.step5"), desc: t("process.step5.desc"), icon: "\uD83D\uDCCB" },
-    { num: "06", title: t("process.step6"), desc: t("process.step6.desc"), icon: "\u2708\uFE0F" },
   ];
 
   return (
@@ -602,6 +702,11 @@ function AdmissionProcess() {
             </div>
           ))}
         </div>
+
+        {/* 입학 이후 흐름 안내 */}
+        <p className="mt-10 rounded-2xl bg-blue-50 px-6 py-5 text-center text-gray-700 break-keep sm:px-8">
+          {t("process.note")}
+        </p>
       </div>
     </section>
   );
@@ -695,6 +800,14 @@ function VisaSupport() {
               </div>
             ))}
           </div>
+        </div>
+
+        {/* 업무 범위 고지 — 과장 없이 범위를 밝히기 위한 문단 */}
+        <div className="mt-10 rounded-2xl bg-gray-50 border border-gray-100 p-6 sm:p-8">
+          <p className="font-bold text-gray-900 mb-2">{t("visa.note.title")}</p>
+          <p className="text-sm leading-relaxed text-gray-500 break-keep">
+            {t("visa.note.body")}
+          </p>
         </div>
       </div>
     </section>
@@ -856,6 +969,7 @@ function Footer() {
             <Image src="/icon.png" alt="K-DREAM" width={28} height={28} className="w-7 h-7 object-contain" />
             <div>
               <span className="font-bold">Study in Korea Support Center</span>
+              <p className="text-2xl font-bold text-white">{t("footer.heading")}</p>
               <p className="text-xs text-blue-200/60 mt-1">{t("footer.tagline")}</p>
             </div>
           </div>
@@ -912,6 +1026,7 @@ export default function Home() {
       <CoreServices />
       <Introduction />
       <Programs />
+      <DegreePrograms />
       <AdmissionProcess />
       <SettlementSupport />
       <VisaSupport />
