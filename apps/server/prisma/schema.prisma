@@ -46,9 +46,10 @@ model Staff {
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @updatedAt
 
-  students          Student[]  @relation("StudentAgent")
-  reviewedStudents  Student[]  @relation("StudentReviewer")
-  uploadedDocuments Document[] @relation("DocumentUploader")
+  students          Student[]         @relation("StudentAgent")
+  reviewedStudents  Student[]         @relation("StudentReviewer")
+  uploadedDocuments Document[]        @relation("DocumentUploader")
+  comments          StudentComment[]
   auditLogs         AuditLog[]
 
   @@index([type, status])
@@ -149,10 +150,28 @@ model Student {
   updatedAt DateTime @updatedAt
 
   documents Document[]
+  comments  StudentComment[]
 
   @@index([agentId])
   @@index([status])
   @@map("students")
+}
+
+/// 관리자와 에이전트가 학생 건에 대해 주고받는 메모.
+/// reviewNote 는 덮어쓰기라 이력이 남지 않아, 오간 내용은 여기에 쌓는다.
+model StudentComment {
+  id        String  @id @default(uuid())
+  studentId String
+  student   Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  authorId String
+  author   Staff  @relation(fields: [authorId], references: [id])
+
+  body      String
+  createdAt DateTime @default(now())
+
+  @@index([studentId, createdAt])
+  @@map("student_comments")
 }
 
 // ─────────────────────────────────────────────

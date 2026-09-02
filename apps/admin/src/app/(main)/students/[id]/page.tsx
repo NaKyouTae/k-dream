@@ -16,6 +16,7 @@ import {
 import { Badge, Button, ErrorBox, LinkButton, inputClass } from "@/components/ui";
 import { useStaff } from "@/components/app-shell";
 import { StudentForm } from "../student-form";
+import { CommentsSection } from "./comments-section";
 import { DocumentsSection } from "./documents-section";
 
 /** 관리자가 직접 지정할 수 있는 상태. 검토요청은 등록 시점에만 붙는다. */
@@ -173,6 +174,7 @@ export default function StudentDetailPage() {
             />
           </Section>
 
+          <CommentsSection studentId={student.id} />
         </div>
 
         {/* 서류·검토는 우측에 붙여둔다. 좌측 정보를 훑으면서 계속 보이도록

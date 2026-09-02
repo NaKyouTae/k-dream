@@ -5,6 +5,7 @@ import { AdminsModule } from "./admins/admins.module";
 import { AgentsModule } from "./agents/agents.module";
 import { AuditModule } from "./audit/audit.module";
 import { AuthModule } from "./auth/auth.module";
+import { CommentsModule } from "./comments/comments.module";
 import { DocumentsModule } from "./documents/documents.module";
 import { PrismaModule } from "./prisma/prisma.module";
 import { SchoolsModule } from "./schools/schools.module";
@@ -25,6 +26,7 @@ import { StudentsModule } from "./students/students.module";
     StudentsModule,
     StorageModule,
     DocumentsModule,
+    CommentsModule,
   ],
   controllers: [AppController],
 })
