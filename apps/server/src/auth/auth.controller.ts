@@ -18,14 +18,25 @@ import { LoginDto } from "./dto/login.dto";
 const isProduction = process.env.NODE_ENV === "production";
 
 /**
- * 운영에서는 API(Render)와 콘솔(Vercel)이 서로 다른 사이트라
- * SameSite=Lax 면 쿠키가 요청에 실리지 않는다. None + Secure 가 필요하다.
+ * 상위 도메인을 지정하면 그 도메인의 모든 서브도메인에 쿠키가 전달된다.
+ * 예) ".k-dream.kr" → api.k-dream.kr 이 발급한 쿠키를 admin.k-dream.kr 도 받는다.
+ * 콘솔의 미들웨어(proxy.ts)가 이 쿠키를 읽어 로그인 여부를 판단하므로 이게 필요하다.
+ */
+const cookieDomain = process.env.COOKIE_DOMAIN?.trim() || undefined;
+
+/**
+ * COOKIE_DOMAIN 이 있으면 API 와 콘솔이 같은 사이트가 되므로 Lax 로 충분하다.
+ * Lax 는 브라우저의 서드파티 쿠키 차단(Safari 기본값)과 무관해서 더 안전하다.
+ *
+ * 값이 없으면 서로 다른 사이트라고 보고 None + Secure 를 쓴다. 이 경우
+ * 콘솔 미들웨어는 쿠키를 볼 수 없고, 브라우저가 서드파티 쿠키를 허용해야만 동작한다.
  * 로컬은 http 라 Secure 쿠키를 쓸 수 없어 Lax 를 유지한다.
  */
 const COOKIE_OPTIONS: CookieOptions = {
   httpOnly: true,
-  sameSite: isProduction ? "none" : "lax",
+  sameSite: cookieDomain ? "lax" : isProduction ? "none" : "lax",
   secure: isProduction,
+  domain: cookieDomain,
   path: "/",
 };
 

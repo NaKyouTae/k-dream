@@ -48,6 +48,18 @@ services:
       - key: ADMIN_NAME
         value: K-DREAM 관리자
 
+      # 쿠키를 공유할 상위 도메인 (예: .k-dream.kr).
+      #
+      # 순서가 중요하다. 아래 두 가지가 모두 끝난 뒤에 값을 넣어야 한다.
+      #   1) api.k-dream.kr 이 Render 에 연결되어 HTTPS 로 응답할 것
+      #   2) 콘솔의 NEXT_PUBLIC_API_URL 이 https://api.k-dream.kr 을 볼 것
+      # 그 전에 값을 넣으면 onrender.com 이 .k-dream.kr 도메인 쿠키를 내려보내게 되고,
+      # 브라우저가 그런 쿠키는 버리므로 로그인이 아예 안 된다.
+      #
+      # 비워두면 지금처럼 SameSite=None 으로 동작한다.
+      - key: COOKIE_DOMAIN
+        sync: false
+
       # 서류 저장소 (Supabase Storage). 셋 다 있어야 기동된다.
       # 키는 Settings → API → Secret keys 의 sb_secret_... 값이다.
       - key: SUPABASE_URL
