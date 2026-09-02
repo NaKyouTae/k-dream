@@ -499,49 +499,51 @@ function ProgramSection({
           <p className="text-gray-500 max-w-xl mx-auto">{desc}</p>
         </div>
 
-        <div className="grid gap-6 sm:grid-cols-2">
-          {programs.map((p) => (
-            <div key={p.title} className="group bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
-              {/* 카드 상단 이미지 */}
-              <div className={`relative h-40 bg-gradient-to-br ${p.color}`}>
-                <Image
-                  src={p.image}
-                  alt={p.imageAlt}
-                  fill
-                  className="object-cover group-hover:scale-105 transition-transform duration-300"
-                  onError={(e) => { e.currentTarget.style.display = "none"; }}
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
-                <div className="absolute bottom-3 left-4">
-                  <h3 className="text-lg font-bold text-white">{p.title}</h3>
-                </div>
-              </div>
-
-              {/* 카드 하단 정보 */}
-              <div className="p-5">
-                <p className="text-sm text-gray-500 mb-4">{p.desc}</p>
-
-                <div className="flex gap-3 mb-4">
-                  <span className="text-xs bg-blue-50 text-[#2F6BFF] px-2.5 py-1 rounded-full font-medium">{p.duration}</span>
-                  <span className="text-xs bg-gray-100 text-gray-600 px-2.5 py-1 rounded-full font-medium">{p.visa}</span>
+        <div className="mx-auto max-w-4xl">
+          <div className="grid gap-6 sm:grid-cols-2">
+            {programs.map((p) => (
+              <div key={p.title} className="group bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
+                {/* 카드 상단 이미지 */}
+                <div className={`relative h-40 bg-gradient-to-br ${p.color}`}>
+                  <Image
+                    src={p.image}
+                    alt={p.imageAlt}
+                    fill
+                    className="object-cover group-hover:scale-105 transition-transform duration-300"
+                    onError={(e) => { e.currentTarget.style.display = "none"; }}
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
+                  <div className="absolute bottom-3 left-4">
+                    <h3 className="text-lg font-bold text-white">{p.title}</h3>
+                  </div>
                 </div>
 
-                <ul className="space-y-2">
-                  {p.details.map((detail) => (
-                    <li key={detail} className="flex items-start gap-2 text-sm text-gray-600">
-                      <svg className="w-4 h-4 text-green-500 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                      </svg>
-                      {detail}
-                    </li>
-                  ))}
+                {/* 카드 하단 정보 */}
+                <div className="p-5">
+                  <p className="text-sm text-gray-500 mb-4">{p.desc}</p>
+
+                  <div className="flex gap-3 mb-4">
+                    <span className="text-xs bg-blue-50 text-[#2F6BFF] px-2.5 py-1 rounded-full font-medium">{p.duration}</span>
+                    <span className="text-xs bg-gray-100 text-gray-600 px-2.5 py-1 rounded-full font-medium">{p.visa}</span>
+                  </div>
+
+                  <ul className="space-y-2">
+                    {p.details.map((detail) => (
+                      <li key={detail} className="flex items-start gap-2 text-sm text-gray-600">
+                        <svg className="w-4 h-4 text-green-500 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                        {detail}
+                      </li>
+          ))}
                 </ul>
               </div>
             </div>
-          ))}
-        </div>
+            ))}
+          </div>
 
-        {children}
+          {children}
+        </div>
       </div>
     </section>
   );
