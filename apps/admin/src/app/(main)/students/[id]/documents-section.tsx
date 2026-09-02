@@ -10,7 +10,7 @@ import {
   DocumentReviewStatus,
   StudentDocument,
 } from "@/lib/types";
-import { Badge, Button, ErrorBox } from "@/components/ui";
+import { Badge, Button, ErrorBox, Modal, inputClass } from "@/components/ui";
 import {
   CategorySelect,
   DocumentPicker,
@@ -41,6 +41,11 @@ export function DocumentsSection({
   const [picked, setPicked] = useState<PickedFile[]>([]);
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  /** 보완요청 사유를 입력받는 모달의 대상 서류 */
+  const [supplementTarget, setSupplementTarget] =
+    useState<StudentDocument | null>(null);
+  const [supplementNote, setSupplementNote] = useState("");
+  const [supplementError, setSupplementError] = useState<string | null>(null);
 
   /**
    * 같은 종류 안에서 최신 버전만 진하게 보여준다.
@@ -100,15 +105,40 @@ export function DocumentsSection({
   }
 
   function review(doc: StudentDocument, reviewStatus: DocumentReviewStatus) {
-    const reviewNote =
-      reviewStatus === "SUPPLEMENT_REQUIRED"
-        ? prompt("보완이 필요한 사유를 입력하세요.")?.trim()
-        : undefined;
-    if (reviewStatus === "SUPPLEMENT_REQUIRED" && !reviewNote) return;
-
+    // 보완요청은 사유가 필수라 별도 모달에서 입력받는다
+    if (reviewStatus === "SUPPLEMENT_REQUIRED") {
+      setSupplementTarget(doc);
+      setSupplementNote(doc.reviewNote ?? "");
+      setSupplementError(null);
+      return;
+    }
     void run(`review:${doc.id}`, () =>
-      api.patch(`/documents/${doc.id}/review`, { reviewStatus, reviewNote }),
+      api.patch(`/documents/${doc.id}/review`, { reviewStatus }),
     );
+  }
+
+  async function submitSupplement() {
+    const doc = supplementTarget;
+    const reviewNote = supplementNote.trim();
+    if (!doc || !reviewNote) return;
+
+    // 모달이 아래 ErrorBox 를 가리므로 오류를 모달 안에서 보여준다
+    setSupplementError(null);
+    setBusy(`review:${doc.id}`);
+    try {
+      await api.patch(`/documents/${doc.id}/review`, {
+        reviewStatus: "SUPPLEMENT_REQUIRED",
+        reviewNote,
+      });
+      setSupplementTarget(null);
+      await onChanged();
+    } catch (err) {
+      setSupplementError(
+        err instanceof ApiError ? err.message : "처리에 실패했습니다.",
+      );
+    } finally {
+      setBusy(null);
+    }
   }
 
   function remove(doc: StudentDocument) {
@@ -135,82 +165,87 @@ export function DocumentsSection({
             return (
               <li
                 key={doc.id}
-                className={`flex flex-col gap-2 py-3 sm:flex-row sm:items-center sm:justify-between ${
-                  isLatest ? "" : "opacity-60"
-                }`}
+                className={`py-3 ${isLatest ? "" : "opacity-75"}`}
               >
-                <div className="min-w-0">
-                  <div className="flex items-center gap-2">
-                    {/* 폭은 감싸는 쪽에서 정한다 (select 는 w-full) */}
-                    <div className="w-36 shrink-0">
-                      <CategorySelect
-                        value={doc.category}
-                        onChange={(category) => setCategory(doc, category)}
-                        disabled={busy !== null}
-                      />
-                    </div>
-                    {doc.category && (
-                      <span className="shrink-0 text-xs text-muted">
-                        v{doc.versionNo}
-                        {!isLatest && " (이전 버전)"}
+                <div className="flex flex-wrap items-start gap-3">
+                  {/* 종류 — 폭은 감싸는 쪽에서 정한다 (select 는 w-full) */}
+                  <div className="w-36 shrink-0">
+                    <CategorySelect
+                      value={doc.category}
+                      onChange={(category) => setCategory(doc, category)}
+                      disabled={busy !== null}
+                    />
+                  </div>
+
+                  {/* 파일 정보 — 남는 폭을 모두 쓰고, 넘치면 파일명만 자른다.
+                      min-w-0 이 없으면 긴 파일명이 줄 전체를 밀어내며 깨진다 */}
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-baseline gap-2">
+                      <span className="truncate text-sm font-medium">
+                        {doc.originalFileName}
                       </span>
+                      {doc.category && (
+                        <span className="shrink-0 text-xs text-muted">
+                          v{doc.versionNo}
+                          {!isLatest && " · 이전 버전"}
+                        </span>
+                      )}
+                    </div>
+                    <div className="mt-0.5 text-xs text-muted">
+                      {formatSize(doc.fileSizeBytes)} · {doc.uploader.name} ·{" "}
+                      {new Date(doc.uploadedAt).toLocaleDateString("ko-KR")}
+                    </div>
+                    {doc.reviewNote && (
+                      <div className="mt-1 text-xs break-words text-red-600">
+                        {doc.reviewNote}
+                      </div>
                     )}
                   </div>
-                  <div className="mt-1 truncate text-xs text-muted">
-                    {doc.originalFileName} · {formatSize(doc.fileSizeBytes)} ·{" "}
-                    {doc.uploader.name} ·{" "}
-                    {new Date(doc.uploadedAt).toLocaleString("ko-KR")}
-                  </div>
-                  {doc.reviewNote && (
-                    <div className="mt-1 text-xs text-red-600">
-                      {doc.reviewNote}
-                    </div>
-                  )}
-                </div>
 
-                <div className="flex shrink-0 flex-wrap items-center gap-2">
-                  <Badge tone={REVIEW_TONE[doc.reviewStatus]}>
-                    {DOCUMENT_REVIEW_LABEL[doc.reviewStatus]}
-                  </Badge>
-                  <Button
-                    size="sm"
-                    variant="secondary"
-                    disabled={busy !== null}
-                    onClick={() => void download(doc)}
-                  >
-                    {busy === `download:${doc.id}` ? "여는 중…" : "보기"}
-                  </Button>
-                  {isAdmin && (
-                    <>
-                      <Button
-                        size="sm"
-                        variant="secondary"
-                        disabled={busy !== null}
-                        onClick={() => review(doc, "OK")}
-                      >
-                        확인완료
-                      </Button>
+                  <div className="flex shrink-0 items-center gap-1.5">
+                    <Badge tone={REVIEW_TONE[doc.reviewStatus]}>
+                      {DOCUMENT_REVIEW_LABEL[doc.reviewStatus]}
+                    </Badge>
+                    <Button
+                      size="sm"
+                      variant="secondary"
+                      disabled={busy !== null}
+                      onClick={() => void download(doc)}
+                    >
+                      {busy === `download:${doc.id}` ? "여는 중…" : "보기"}
+                    </Button>
+                    {isAdmin && (
+                      <>
+                        <Button
+                          size="sm"
+                          variant="secondary"
+                          disabled={busy !== null}
+                          onClick={() => review(doc, "OK")}
+                        >
+                          확인
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="danger"
+                          disabled={busy !== null}
+                          onClick={() => review(doc, "SUPPLEMENT_REQUIRED")}
+                        >
+                          보완
+                        </Button>
+                      </>
+                    )}
+                    {/* 확인완료된 서류는 에이전트가 지울 수 없다 (서버도 막는다) */}
+                    {(isAdmin || doc.reviewStatus !== "OK") && (
                       <Button
                         size="sm"
                         variant="danger"
                         disabled={busy !== null}
-                        onClick={() => review(doc, "SUPPLEMENT_REQUIRED")}
+                        onClick={() => remove(doc)}
                       >
-                        보완요청
+                        삭제
                       </Button>
-                    </>
-                  )}
-                  {/* 확인완료된 서류는 에이전트가 지울 수 없다 (서버도 막는다) */}
-                  {(isAdmin || doc.reviewStatus !== "OK") && (
-                    <Button
-                      size="sm"
-                      variant="danger"
-                      disabled={busy !== null}
-                      onClick={() => remove(doc)}
-                    >
-                      삭제
-                    </Button>
-                  )}
+                    )}
+                  </div>
                 </div>
               </li>
             );
@@ -240,6 +275,49 @@ export function DocumentsSection({
           </Button>
         )}
       </div>
+
+      {supplementTarget && (
+        <Modal
+          title="보완 요청"
+          onClose={() => setSupplementTarget(null)}
+        >
+          <p className="mb-3 text-sm text-muted">
+            <span className="font-medium text-foreground">
+              {supplementTarget.originalFileName}
+            </span>
+            <br />
+            어떤 점을 보완해야 하는지 적어주세요. 에이전트에게 그대로 보입니다.
+          </p>
+
+          {supplementError && <ErrorBox message={supplementError} />}
+
+          <textarea
+            className={`${inputClass} min-h-28 resize-y`}
+            value={supplementNote}
+            autoFocus
+            onChange={(e) => setSupplementNote(e.target.value)}
+            placeholder="예) 여권 사진면이 잘려 있습니다. 네 모서리가 모두 보이도록 다시 촬영해 주세요."
+          />
+
+          <div className="mt-4 flex justify-end gap-2">
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={() => setSupplementTarget(null)}
+            >
+              취소
+            </Button>
+            <Button
+              type="button"
+              variant="danger"
+              disabled={busy !== null || !supplementNote.trim()}
+              onClick={() => void submitSupplement()}
+            >
+              {busy?.startsWith("review:") ? "처리 중…" : "보완 요청"}
+            </Button>
+          </div>
+        </Modal>
+      )}
     </section>
   );
 }

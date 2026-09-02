@@ -156,8 +156,22 @@ export function Modal({
   }, [onClose]);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/30 p-0 sm:items-center sm:p-6">
-      <div className="max-h-[92vh] w-full max-w-lg overflow-hidden rounded-t-2xl border border-border bg-surface shadow-lg sm:rounded-2xl">
+    <div
+      className="fixed inset-0 z-50 flex items-end justify-center bg-black/30 p-0 sm:items-center sm:p-6"
+      // 배경을 누르면 닫는다. click 이 아니라 mousedown 을 보는 이유는,
+      // 모달 안에서 텍스트를 드래그하다 밖에서 손을 떼면 click 이 배경에서
+      // 발생해 의도치 않게 닫히기 때문이다.
+      onMouseDown={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+      role="presentation"
+    >
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-label={title}
+        className="max-h-[92vh] w-full max-w-lg overflow-hidden rounded-t-2xl border border-border bg-surface shadow-lg sm:rounded-2xl"
+      >
         <div className="flex items-center justify-between border-b border-border px-5 py-3.5">
           <h2 className="font-semibold">{title}</h2>
           <button
