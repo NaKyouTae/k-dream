@@ -32,8 +32,14 @@ export class StudentDocumentsController {
 
   @Post()
   // 메모리에 받아 저장소로 넘긴다. 디스크에 임시 파일을 남기지 않는다.
+  //
+  // defParamCharset 을 지정하지 않으면 multer 가 파일명을 latin1 로 읽어
+  // 한글·키릴 파일명이 깨진다 ("여권사본.pdf" → "ì¬ê¶ì¬ë³¸.pdf").
   @UseInterceptors(
-    FileInterceptor("file", { limits: { fileSize: MAX_FILE_SIZE_BYTES } }),
+    FileInterceptor("file", {
+      limits: { fileSize: MAX_FILE_SIZE_BYTES },
+      defParamCharset: "utf8",
+    }),
   )
   async upload(
     @Param("studentId") studentId: string,
