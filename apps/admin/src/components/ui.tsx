@@ -153,7 +153,7 @@ export function Badge({
 
   return (
     <span
-      className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${styles}`}
+      className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium whitespace-nowrap ${styles}`}
     >
       {children}
     </span>

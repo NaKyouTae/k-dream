@@ -141,7 +141,9 @@ function StatGrid({
             href={stat?.href ?? "#"}
             className="rounded-2xl border border-border bg-surface p-5 transition-colors hover:border-[#2F6BFF]/40"
           >
-            <div className="text-sm text-muted">{stat?.label ?? "…"}</div>
+            <div className="truncate text-sm whitespace-nowrap text-muted">
+              {stat?.label ?? "…"}
+            </div>
             <div className="mt-2 text-2xl font-bold">{stat?.value ?? "—"}</div>
           </Link>
         ))}
