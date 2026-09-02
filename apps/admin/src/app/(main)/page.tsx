@@ -134,17 +134,24 @@ function StatGrid({
   return (
     <section className="mb-6 last:mb-0">
       <h2 className="mb-3 text-sm font-semibold text-muted">{title}</h2>
-      <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-5">
+      {/*
+        모바일에서는 입력칸 높이의 한 줄짜리로 둔다. 라벨과 값을 위아래로
+        쌓으면 카드 하나가 100px 가까이 되어 지표 몇 개에 화면을 다 쓴다.
+        md 이상에서는 원래대로 크게 보여준다.
+      */}
+      <div className="grid grid-cols-2 gap-2 sm:gap-3 md:gap-4 lg:grid-cols-5">
         {cells.map((stat, i) => (
           <Link
             key={stat?.label ?? i}
             href={stat?.href ?? "#"}
-            className="rounded-2xl border border-border bg-surface p-5 transition-colors hover:border-[#2F6BFF]/40"
+            className="flex items-center justify-between gap-2 rounded-lg border border-border bg-surface px-3 py-2.5 transition-colors hover:border-[#2F6BFF]/40 md:block md:rounded-2xl md:p-5"
           >
-            <div className="truncate text-sm whitespace-nowrap text-muted">
+            <span className="truncate text-sm whitespace-nowrap text-muted">
               {stat?.label ?? "…"}
-            </div>
-            <div className="mt-2 text-2xl font-bold">{stat?.value ?? "—"}</div>
+            </span>
+            <span className="shrink-0 text-base font-bold md:mt-2 md:block md:text-2xl">
+              {stat?.value ?? "—"}
+            </span>
           </Link>
         ))}
       </div>
