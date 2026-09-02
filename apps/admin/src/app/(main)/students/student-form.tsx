@@ -15,7 +15,12 @@ import {
 } from "@/lib/types";
 import { useStaff } from "@/components/app-shell";
 import { Button, ErrorBox, Field, Modal, inputClass } from "@/components/ui";
-import { DocumentPicker, PickedFile } from "@/components/document-picker";
+import {
+  DocumentPicker,
+  MAX_FILE_SIZE_BYTES,
+  PickedFile,
+} from "@/components/document-picker";
+import { compressImage } from "@/lib/image-compress";
 
 interface Props {
   /** 없으면 신규 등록, 있으면 수정 */
@@ -110,9 +115,16 @@ export function StudentForm({ student, onClose, onSaved }: Props) {
       const created = await api.post<{ id: string }>("/students", body);
       for (const [i, doc] of documents.entries()) {
         setProgress(`서류 업로드 중… (${i + 1}/${documents.length})`);
+        const file = await compressImage(doc.file);
+        if (file.size > MAX_FILE_SIZE_BYTES) {
+          throw new ApiError(
+            `${doc.file.name} — 압축 후에도 10MB 를 넘어 올릴 수 없습니다.`,
+            400,
+          );
+        }
         const form = new FormData();
         if (doc.category) form.append("category", doc.category);
-        form.append("file", doc.file);
+        form.append("file", file);
         await api.upload(`/students/${created.id}/documents`, form);
       }
       onSaved();

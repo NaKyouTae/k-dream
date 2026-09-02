@@ -16,9 +16,17 @@ export interface PickedFile {
   category: DocumentCategory | null;
 }
 
-/** 서버와 같은 제한 — 여기서 먼저 걸러 불필요한 업로드를 막는다 */
 export const ACCEPT = ".pdf,.jpg,.jpeg,.png,.heic,.webp";
+
+/** 서버와 버킷이 거부하는 크기. 업로드 직전(압축 후) 기준이다. */
 export const MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024;
+
+/**
+ * 압축 전 원본 이미지 허용치.
+ * 요즘 폰 사진은 장당 10MB 를 넘기도 하는데, 여기서 미리 막으면
+ * 압축해서 올릴 수 있는 파일까지 거부하게 된다. 실제 판정은 압축 후에 한다.
+ */
+export const MAX_SOURCE_IMAGE_BYTES = 40 * 1024 * 1024;
 
 export function formatSize(bytes: number) {
   return bytes < 1024 * 1024
@@ -109,8 +117,11 @@ export function DocumentPicker({
     const accepted: PickedFile[] = [];
 
     for (const file of Array.from(selected)) {
-      if (file.size > MAX_FILE_SIZE_BYTES) {
-        rejected.push(`${file.name} — 10MB 초과`);
+      // PDF 는 압축하지 않으므로 지금 판정하고, 이미지는 압축 후에 판정한다
+      const isImage = file.type.startsWith("image/");
+      const limit = isImage ? MAX_SOURCE_IMAGE_BYTES : MAX_FILE_SIZE_BYTES;
+      if (file.size > limit) {
+        rejected.push(`${file.name} — ${isImage ? "40MB" : "10MB"} 초과`);
         continue;
       }
       if (file.size === 0) {

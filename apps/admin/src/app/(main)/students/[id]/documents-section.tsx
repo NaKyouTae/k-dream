@@ -21,9 +21,11 @@ import {
 import {
   CategorySelect,
   DocumentPicker,
+  MAX_FILE_SIZE_BYTES,
   PickedFile,
   formatSize,
 } from "@/components/document-picker";
+import { compressImage } from "@/lib/image-compress";
 
 const REVIEW_TONE: Record<
   DocumentReviewStatus,
@@ -99,9 +101,16 @@ export function DocumentsSection({
   async function upload() {
     await run("upload", async () => {
       for (const doc of picked) {
+        const file = await compressImage(doc.file);
+        if (file.size > MAX_FILE_SIZE_BYTES) {
+          throw new ApiError(
+            `${doc.file.name} — 압축 후에도 10MB 를 넘어 올릴 수 없습니다.`,
+            400,
+          );
+        }
         const form = new FormData();
         if (doc.category) form.append("category", doc.category);
-        form.append("file", doc.file);
+        form.append("file", file);
         await api.upload(`/students/${studentId}/documents`, form);
       }
       setPicked([]);
