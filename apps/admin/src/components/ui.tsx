@@ -53,16 +53,61 @@ function controlClass(variant: Variant, size: Size, className: string) {
   return `${SIZE[size]} cursor-pointer font-medium whitespace-nowrap transition-colors disabled:cursor-not-allowed disabled:opacity-60 ${VARIANT[variant]} ${className}`;
 }
 
+/** 버튼 안에 들어가는 작은 회전 표시 */
+export function Spinner({ className = "" }: { className?: string }) {
+  return (
+    <svg
+      className={`size-3.5 shrink-0 animate-spin ${className}`}
+      viewBox="0 0 16 16"
+      fill="none"
+      aria-hidden="true"
+    >
+      <circle
+        cx="8"
+        cy="8"
+        r="6.5"
+        stroke="currentColor"
+        strokeWidth="2"
+        className="opacity-25"
+      />
+      <path
+        d="M8 1.5a6.5 6.5 0 0 1 6.5 6.5"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
 export function Button({
   variant = "primary",
   size = "md",
   className = "",
+  loading = false,
+  children,
   ...props
 }: React.ButtonHTMLAttributes<HTMLButtonElement> & {
   variant?: Variant;
   size?: Size;
+  /** 이 버튼의 작업이 진행 중임을 표시하고 중복 클릭을 막는다 */
+  loading?: boolean;
 }) {
-  return <button {...props} className={controlClass(variant, size, className)} />;
+  return (
+    <button
+      {...props}
+      disabled={props.disabled || loading}
+      aria-busy={loading || undefined}
+      className={controlClass(
+        variant,
+        size,
+        `inline-flex items-center justify-center gap-1.5 ${className}`,
+      )}
+    >
+      {loading && <Spinner />}
+      {children}
+    </button>
+  );
 }
 
 /**

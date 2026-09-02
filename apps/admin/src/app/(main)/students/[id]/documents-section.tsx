@@ -10,7 +10,14 @@ import {
   DocumentReviewStatus,
   StudentDocument,
 } from "@/lib/types";
-import { Badge, Button, ErrorBox, Modal, inputClass } from "@/components/ui";
+import {
+  Badge,
+  Button,
+  ErrorBox,
+  Modal,
+  Spinner,
+  inputClass,
+} from "@/components/ui";
 import {
   CategorySelect,
   DocumentPicker,
@@ -112,7 +119,7 @@ export function DocumentsSection({
       setSupplementError(null);
       return;
     }
-    void run(`review:${doc.id}`, () =>
+    void run(`approve:${doc.id}`, () =>
       api.patch(`/documents/${doc.id}/review`, { reviewStatus }),
     );
   }
@@ -124,7 +131,7 @@ export function DocumentsSection({
 
     // 모달이 아래 ErrorBox 를 가리므로 오류를 모달 안에서 보여준다
     setSupplementError(null);
-    setBusy(`review:${doc.id}`);
+    setBusy(`supplement:${doc.id}`);
     try {
       await api.patch(`/documents/${doc.id}/review`, {
         reviewStatus: "SUPPLEMENT_REQUIRED",
@@ -169,12 +176,18 @@ export function DocumentsSection({
               >
                 <div className="flex flex-wrap items-start gap-3">
                   {/* 종류 — 폭은 감싸는 쪽에서 정한다 (select 는 w-full) */}
-                  <div className="w-36 shrink-0">
+                  <div className="relative w-36 shrink-0">
                     <CategorySelect
                       value={doc.category}
                       onChange={(category) => setCategory(doc, category)}
                       disabled={busy !== null}
                     />
+                    {busy === `category:${doc.id}` && (
+                      // 화살표를 가리지 않도록 왼쪽 안쪽에 겹쳐 놓는다
+                      <span className="pointer-events-none absolute inset-y-0 right-7 flex items-center text-muted">
+                        <Spinner />
+                      </span>
+                    )}
                   </div>
 
                   {/* 파일 정보 — 남는 폭을 모두 쓰고, 넘치면 파일명만 자른다.
@@ -209,16 +222,18 @@ export function DocumentsSection({
                     <Button
                       size="sm"
                       variant="secondary"
+                      loading={busy === `download:${doc.id}`}
                       disabled={busy !== null}
                       onClick={() => void download(doc)}
                     >
-                      {busy === `download:${doc.id}` ? "여는 중…" : "보기"}
+                      보기
                     </Button>
                     {isAdmin && (
                       <>
                         <Button
                           size="sm"
                           variant="secondary"
+                          loading={busy === `approve:${doc.id}`}
                           disabled={busy !== null}
                           onClick={() => review(doc, "OK")}
                         >
@@ -227,6 +242,7 @@ export function DocumentsSection({
                         <Button
                           size="sm"
                           variant="danger"
+                          loading={busy === `supplement:${doc.id}`}
                           disabled={busy !== null}
                           onClick={() => review(doc, "SUPPLEMENT_REQUIRED")}
                         >
@@ -239,6 +255,7 @@ export function DocumentsSection({
                       <Button
                         size="sm"
                         variant="danger"
+                        loading={busy === `delete:${doc.id}`}
                         disabled={busy !== null}
                         onClick={() => remove(doc)}
                       >
@@ -268,6 +285,7 @@ export function DocumentsSection({
         {picked.length > 0 && (
           <Button
             className="mt-3"
+            loading={busy === "upload"}
             disabled={busy !== null}
             onClick={() => void upload()}
           >
@@ -310,10 +328,11 @@ export function DocumentsSection({
             <Button
               type="button"
               variant="danger"
+              loading={busy === `supplement:${supplementTarget.id}`}
               disabled={busy !== null || !supplementNote.trim()}
               onClick={() => void submitSupplement()}
             >
-              {busy?.startsWith("review:") ? "처리 중…" : "보완 요청"}
+              보완 요청
             </Button>
           </div>
         </Modal>
