@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { LanguageProvider, useLanguage } from "@/lib/LanguageContext";
+import { LOCALES, LOCALE_LABEL, LOCALE_SHORT } from "@/lib/translations";
 
 /* ──────────────────────────────────────────
    Hooks
@@ -31,36 +32,42 @@ function useActiveSection(sectionIds: string[]) {
    Language Toggle
    ────────────────────────────────────────── */
 function LanguageToggle() {
-  const { locale, toggleLocale } = useLanguage();
+  const { locale, setLocale, t } = useLanguage();
   const [open, setOpen] = useState(false);
   return (
     <div className="relative">
       <button
         onClick={() => setOpen(!open)}
         className="cursor-pointer flex items-center gap-1.5 h-9 px-4 text-sm text-gray-600 hover:text-[#2F6BFF] transition-colors rounded-full border border-gray-200 hover:border-[#2F6BFF]/30"
-        aria-label="언어 변경"
+        aria-label={t("lang.label")}
+        aria-expanded={open}
       >
         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5a17.92 17.92 0 01-8.716-2.247m0 0A8.966 8.966 0 013 12c0-1.264.26-2.466.733-3.559" />
         </svg>
-        <span className="text-xs font-medium">{locale === "ko" ? "KO" : "EN"}</span>
+        <span className="text-xs font-medium">{LOCALE_SHORT[locale]}</span>
       </button>
       {open && (
         <>
           <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
-          <div className="absolute right-0 mt-1 w-32 bg-white rounded-xl shadow-lg border border-gray-100 py-1 z-50">
-            <button
-              onClick={() => { if (locale !== "ko") toggleLocale(); setOpen(false); }}
-              className={`cursor-pointer w-full text-left px-4 py-2 text-sm ${locale === "ko" ? "text-[#2F6BFF] font-medium bg-blue-50" : "text-gray-600 hover:bg-gray-50"}`}
-            >
-              한국어
-            </button>
-            <button
-              onClick={() => { if (locale !== "en") toggleLocale(); setOpen(false); }}
-              className={`cursor-pointer w-full text-left px-4 py-2 text-sm ${locale === "en" ? "text-[#2F6BFF] font-medium bg-blue-50" : "text-gray-600 hover:bg-gray-50"}`}
-            >
-              English
-            </button>
+          <div className="absolute right-0 mt-1 w-36 bg-white rounded-xl shadow-lg border border-gray-100 py-1 z-50">
+            {LOCALES.map((code) => (
+              <button
+                key={code}
+                lang={code}
+                onClick={() => {
+                  setLocale(code);
+                  setOpen(false);
+                }}
+                className={`cursor-pointer w-full text-left px-4 py-2 text-sm ${
+                  locale === code
+                    ? "text-[#2F6BFF] font-medium bg-blue-50"
+                    : "text-gray-600 hover:bg-gray-50"
+                }`}
+              >
+                {LOCALE_LABEL[code]}
+              </button>
+            ))}
           </div>
         </>
       )}
@@ -96,26 +103,26 @@ function Header() {
             <span className="font-bold text-lg text-gray-900">K-DREAM</span>
           </a>
 
-          <nav className="hidden lg:flex items-center gap-7">
+          <nav className="hidden xl:flex items-center gap-6">
             {links.map((link) => (
               <a
                 key={link.href}
                 href={link.href}
-                className={`cursor-pointer text-sm transition-colors ${activeSection === link.id ? "text-[#2F6BFF] font-semibold" : "text-gray-600 hover:text-[#2F6BFF]"}`}
+                className={`cursor-pointer text-sm whitespace-nowrap transition-colors ${activeSection === link.id ? "text-[#2F6BFF] font-semibold" : "text-gray-600 hover:text-[#2F6BFF]"}`}
               >
                 {link.label}
               </a>
             ))}
           </nav>
 
-          <div className="hidden lg:flex items-center gap-3">
-            <a href="#contact" className="cursor-pointer h-9 px-5 inline-flex items-center bg-[#2F6BFF] text-white text-sm font-medium rounded-full hover:bg-[#0A2A5E] transition-colors">
-              {t("header.cta")}
+          <div className="hidden xl:flex items-center gap-3">
+            <a href="#contact" className="cursor-pointer h-9 px-5 inline-flex items-center whitespace-nowrap bg-[#2F6BFF] text-white text-sm font-medium rounded-full hover:bg-[#0A2A5E] transition-colors">
+              {t("header.ctaShort")}
             </a>
             <LanguageToggle />
           </div>
 
-          <div className="lg:hidden flex items-center gap-2">
+          <div className="xl:hidden flex items-center gap-2">
             <button className="cursor-pointer p-2" onClick={() => setMenuOpen(!menuOpen)} aria-label={t("header.menuOpen")}>
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 {menuOpen ? (
@@ -131,7 +138,7 @@ function Header() {
       </div>
 
       {menuOpen && (
-        <div className="lg:hidden bg-white border-t border-gray-100 px-4 pb-4">
+        <div className="xl:hidden bg-white border-t border-gray-100 px-4 pb-4">
           {links.map((link) => (
             <a
               key={link.href}
@@ -914,7 +921,7 @@ export default function Home() {
       <Footer />
       <MobileBottomCTA />
       {/* 모바일 하단 CTA 영역만큼 여백 */}
-      <div className="h-16 lg:hidden" />
+      <div className="h-16 xl:hidden" />
     </LanguageProvider>
   );
 }

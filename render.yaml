@@ -1,0 +1,58 @@
+services:
+  # ── K-DREAM NestJS Backend ──
+  # 프론트(포털·관리자)는 Vercel 에 있고, 여기에는 API 서버만 올린다.
+  - type: web
+    name: k-dream-server
+    env: docker
+    region: singapore
+    plan: starter
+    branch: main
+    autoDeploy: true
+    dockerfilePath: ./Dockerfile.render
+    healthCheckPath: /health
+    buildFilter:
+      paths:
+        - apps/server/**
+        - Dockerfile.render
+        - render.yaml
+        - pnpm-lock.yaml
+        - pnpm-workspace.yaml
+        - package.json
+    envVars:
+      # Render 포트 설정 (NestJS main.ts 의 PORT 와 일치)
+      - key: PORT
+        value: "17000"
+      - key: NODE_ENV
+        value: production
+
+      # Supabase PostgreSQL 연결 (Dashboard에서 직접 입력)
+      # 커넥션 풀러(6543) 사용 시 ?pgbouncer=true 를 붙일 것
+      - key: DATABASE_URL
+        sync: false
+
+      # 쿠키에 서명하는 키. 반드시 새로 생성해서 넣을 것
+      - key: JWT_SECRET
+        sync: false
+
+      # 관리자 콘솔·포털 주소. 쉼표로 구분하며, 여기 없는 origin 은 API 호출이 막힌다.
+      # 예) https://k-dream-admin.vercel.app,https://k-dream.vercel.app
+      - key: CORS_ORIGINS
+        sync: false
+
+      # 최초 관리자 계정 — 관리자가 하나도 없을 때만 생성된다.
+      # 로그인 후 콘솔에서 비밀번호를 바꾸고, 이 값은 그대로 둬도 무방하다.
+      - key: ADMIN_LOGIN_ID
+        value: admin
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: ADMIN_NAME
+        value: K-DREAM 관리자
+
+      # 서류 저장소 (Supabase Storage). 셋 다 있어야 기동된다.
+      # 키는 Settings → API → Secret keys 의 sb_secret_... 값이다.
+      - key: SUPABASE_URL
+        value: https://pxugtseppdhwmxrkdghi.supabase.co
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+      - key: SUPABASE_STORAGE_BUCKET
+        value: students

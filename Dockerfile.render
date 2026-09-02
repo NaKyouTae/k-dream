@@ -1,0 +1,55 @@
+# ── Build Stage ──
+FROM node:22-alpine AS builder
+
+RUN apk add --no-cache libc6-compat openssl python3 make g++
+RUN corepack enable
+
+WORKDIR /build
+
+# pnpm workspace 매니페스트 (의존성 캐시 레이어)
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY apps/server/package.json apps/server/package.json
+
+# server 의 postinstall 이 prisma generate 라서 설치 전에 스키마가 있어야 한다
+COPY apps/server/prisma apps/server/prisma
+COPY apps/server/prisma.config.ts apps/server/prisma.config.ts
+
+# devDeps 포함하여 설치 (nest build 에 필요)
+RUN pnpm install --filter server... --frozen-lockfile
+
+# 소스 복사
+COPY apps/server apps/server
+
+# NestJS 빌드 (Prisma Client 는 postinstall 에서 이미 생성됨)
+RUN pnpm --filter server build
+
+# server 패키지를 독립된 평평한 node_modules 로 추출 (prod deps 만)
+RUN pnpm --filter server --legacy deploy --prod /prod/server
+RUN cd /prod/server && node node_modules/prisma/build/index.js generate
+
+# ── Runtime Stage ──
+FROM node:22-alpine
+
+RUN apk add --no-cache tzdata openssl
+ENV TZ=Asia/Seoul
+ENV NODE_ENV=production
+
+RUN addgroup -g 1001 -S appgroup && \
+    adduser -u 1001 -S appuser -G appgroup
+
+WORKDIR /app
+
+COPY --from=builder /build/apps/server/dist ./dist
+COPY --from=builder /prod/server/node_modules ./node_modules
+COPY --from=builder /prod/server/package.json ./package.json
+COPY --from=builder /prod/server/prisma ./prisma
+COPY --from=builder /prod/server/prisma.config.ts ./prisma.config.ts
+
+RUN chown -R appuser:appgroup /app
+USER appuser
+
+EXPOSE 17000
+
+# 마이그레이션을 먼저 적용한 뒤 서버를 띄운다.
+# 최초 관리자 계정은 서버 부팅 시 ensureInitialAdmin() 이 관리자가 없을 때만 만든다.
+CMD ["sh", "-c", "echo '--- running prisma migrate deploy ---' && node node_modules/prisma/build/index.js migrate deploy && echo '--- starting nest server ---' && node dist/main.js"]

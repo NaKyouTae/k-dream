@@ -6,12 +6,223 @@ datasource db {
   provider = "postgresql"
 }
 
-// ── 관리자 ──
-model Admin {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  name      String
-  createdAt DateTime @default(now())
+// ─────────────────────────────────────────────
+// 공통 코드
+// ─────────────────────────────────────────────
 
-  @@map("admins")
+/// 관리자와 에이전트를 한 테이블(staff)에서 타입으로 구분한다.
+enum StaffType {
+  ADMIN
+  AGENT
+}
+
+enum StaffStatus {
+  ACTIVE
+  SUSPENDED
+}
+
+enum CountryCode {
+  UZ
+  MN
+}
+
+// ─────────────────────────────────────────────
+// 권한 — 관리자 · 에이전트 통합 계정
+// ─────────────────────────────────────────────
+
+model Staff {
+  id           String      @id @default(uuid())
+  type         StaffType
+  loginId      String      @unique
+  passwordHash String
+  name         String
+  /// 에이전트만 사용. 관리자는 null
+  countryCode  CountryCode?
+  /// 에이전트 소속 기관명. 관리자는 null
+  organization String?
+  phone        String?
+  status       StaffStatus @default(ACTIVE)
+  lastLoginAt  DateTime?
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  students          Student[]  @relation("StudentAgent")
+  reviewedStudents  Student[]  @relation("StudentReviewer")
+  uploadedDocuments Document[] @relation("DocumentUploader")
+  auditLogs         AuditLog[]
+
+  @@index([type, status])
+  @@map("staff")
+}
+
+// ─────────────────────────────────────────────
+// 학교 — 관리자가 직접 관리
+// ─────────────────────────────────────────────
+
+enum SchoolType {
+  LANGUAGE
+  COLLEGE
+  UNIVERSITY
+  GRADUATE
+}
+
+enum SchoolStatus {
+  ACTIVE
+  INACTIVE
+}
+
+model School {
+  id        String       @id @default(uuid())
+  nameKo    String
+  nameEn    String?
+  type      SchoolType
+  region    String?
+  website   String?
+  memo      String?
+  status    SchoolStatus @default(ACTIVE)
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+
+  students Student[]
+
+  @@index([status])
+  @@map("schools")
+}
+
+// ─────────────────────────────────────────────
+// 학생
+// ─────────────────────────────────────────────
+
+enum ProgramCode {
+  LANG
+  ASSOC
+  BACH
+  MASTER
+}
+
+enum GenderCode {
+  M
+  F
+  OTHER
+}
+
+/// 검토요청 → 검토중 → (서류보완필요) → 검토완료
+enum StudentStatus {
+  REVIEW_REQUESTED
+  REVIEWING
+  SUPPLEMENT_REQUIRED
+  REVIEW_COMPLETED
+}
+
+model Student {
+  id String @id @default(uuid())
+  /// UZ-2026-0001 형식. 국가-연도-일련번호
+  studentNo   String      @unique
+  countryCode CountryCode
+
+  /// 등록한 에이전트. 에이전트는 본인이 등록한 학생만 접근할 수 있다.
+  agentId String
+  agent   Staff  @relation("StudentAgent", fields: [agentId], references: [id])
+
+  passportName   String
+  localName      String?
+  birthDate      DateTime   @db.Date
+  genderCode     GenderCode
+  passportNo     String
+  passportExpiry DateTime   @db.Date
+  phone          String?
+  email          String?
+
+  desiredProgram ProgramCode
+  desiredMajor   String?
+  schoolId       String?
+  school         School?     @relation(fields: [schoolId], references: [id])
+
+  status       StudentStatus @default(REVIEW_REQUESTED)
+  /// 보완 요청 사유 등 에이전트에게 노출되는 메모
+  reviewNote   String?
+  reviewedAt   DateTime?
+  reviewedById String?
+  reviewedBy   Staff?        @relation("StudentReviewer", fields: [reviewedById], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  documents Document[]
+
+  @@index([agentId])
+  @@index([status])
+  @@map("students")
+}
+
+// ─────────────────────────────────────────────
+// 서류
+// ─────────────────────────────────────────────
+
+enum DocumentCategory {
+  PASSPORT
+  PHOTO
+  GRAD_CERT
+  TRANSCRIPT
+  TOPIK
+  FINANCE
+  FAMILY
+  OTHER
+}
+
+enum DocumentReviewStatus {
+  NOT_REVIEWED
+  OK
+  SUPPLEMENT_REQUIRED
+}
+
+model Document {
+  id        String  @id @default(uuid())
+  studentId String
+  student   Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  category         DocumentCategory
+  originalFileName String
+  storedFileName   String
+  /// 비공개 저장소 경로. 공개 URL을 그대로 저장하지 않는다.
+  storageUri       String
+  mimeType         String
+  fileSizeBytes    Int
+  /// 파일 무결성·중복 확인용
+  sha256           String           @db.Char(64)
+  /// 재업로드 시 증가. 이전 버전 이력을 남긴다.
+  versionNo        Int              @default(1)
+
+  uploaderId String
+  uploader   Staff  @relation("DocumentUploader", fields: [uploaderId], references: [id])
+
+  reviewStatus DocumentReviewStatus @default(NOT_REVIEWED)
+  reviewNote   String?
+  uploadedAt   DateTime             @default(now())
+
+  @@index([studentId, category])
+  @@map("documents")
+}
+
+// ─────────────────────────────────────────────
+// 감사 — 관리자 사이트에서 실행한 액션 기록
+// ─────────────────────────────────────────────
+
+model AuditLog {
+  id      String @id @default(uuid())
+  actorId String?
+  actor   Staff? @relation(fields: [actorId], references: [id])
+
+  /// LOGIN / CREATE_AGENT / UPDATE_SCHOOL / UPDATE_STUDENT_STATUS ...
+  actionCode String
+  entityType String
+  entityId   String?
+  detail     Json?
+  ipAddress  String?
+  userAgent  String?
+  createdAt  DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([actorId])
+  @@map("audit_logs")
 }

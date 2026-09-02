@@ -1,26 +1,15 @@
-import Link from "next/link";
-import { Sidebar } from "@/components/sidebar";
+import { cookies } from "next/headers";
+import { AppShell } from "@/components/app-shell";
+import { readStaffFromToken } from "@/lib/staff-token";
 
-export default function MainLayout({
+export default async function MainLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return (
-    <div className="flex min-h-screen">
-      <Sidebar />
-      <div className="flex flex-1 flex-col">
-        <header className="flex h-14 items-center justify-between border-b border-border bg-surface px-6">
-          <div className="text-sm text-muted">K-Dream 관리자</div>
-          <Link
-            href="/login"
-            className="rounded-lg border border-border px-3 py-1.5 text-sm text-muted transition-colors hover:text-foreground"
-          >
-            로그아웃
-          </Link>
-        </header>
-        <main className="flex-1 p-6">{children}</main>
-      </div>
-    </div>
-  );
+  // 첫 렌더부터 역할을 알아야 메뉴가 2개 → 6개로 늘어나며 깜빡이지 않는다.
+  // 실제 권한 검사는 API 서버가 한다.
+  const token = (await cookies()).get("admin_token")?.value;
+
+  return <AppShell initialStaff={readStaffFromToken(token)}>{children}</AppShell>;
 }
