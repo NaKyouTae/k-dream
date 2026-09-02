@@ -10,7 +10,7 @@ import {
   DocumentReviewStatus,
   StudentDocument,
 } from "@/lib/types";
-import { Badge, Button, ErrorBox, inputClass } from "@/components/ui";
+import { Badge, Button, ErrorBox } from "@/components/ui";
 import {
   CategorySelect,
   DocumentPicker,
@@ -141,16 +141,16 @@ export function DocumentsSection({
               >
                 <div className="min-w-0">
                   <div className="flex items-center gap-2">
-                    <CategorySelect
-                      value={doc.category}
-                      onChange={(category) => setCategory(doc, category)}
-                      disabled={busy !== null}
-                      className={`${inputClass} w-32 py-1 text-sm ${
-                        doc.category ? "" : "text-muted"
-                      }`}
-                    />
+                    {/* 폭은 감싸는 쪽에서 정한다 (select 는 w-full) */}
+                    <div className="w-36 shrink-0">
+                      <CategorySelect
+                        value={doc.category}
+                        onChange={(category) => setCategory(doc, category)}
+                        disabled={busy !== null}
+                      />
+                    </div>
                     {doc.category && (
-                      <span className="text-xs text-muted">
+                      <span className="shrink-0 text-xs text-muted">
                         v{doc.versionNo}
                         {!isLatest && " (이전 버전)"}
                       </span>

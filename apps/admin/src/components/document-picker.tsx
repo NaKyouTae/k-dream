@@ -26,21 +26,24 @@ export function formatSize(bytes: number) {
     : `${(bytes / 1024 / 1024).toFixed(1)}MB`;
 }
 
-/** 미지정을 포함한 종류 선택 드롭다운 */
+/**
+ * 미지정을 포함한 종류 선택 드롭다운.
+ *
+ * 폭은 감싸는 쪽에서 정한다. inputClass 가 w-full 이라 여기에 w-32 같은 걸
+ * 덧붙이면 충돌해서 레이아웃이 깨진다 (tailwind-merge 를 쓰지 않는다).
+ */
 export function CategorySelect({
   value,
   onChange,
   disabled,
-  className,
 }: {
   value: DocumentCategory | null;
   onChange: (next: DocumentCategory | null) => void;
   disabled?: boolean;
-  className?: string;
 }) {
   return (
     <select
-      className={className ?? inputClass}
+      className={inputClass}
       value={value ?? ""}
       disabled={disabled}
       onChange={(e) =>
@@ -153,12 +156,14 @@ export function DocumentPicker({
                   {formatSize(f.file.size)}
                 </div>
               </div>
-              <CategorySelect
-                value={f.category}
-                onChange={(category) => update(f.key, category)}
-                disabled={disabled}
-                className={`${inputClass} w-32 shrink-0 py-1.5 text-sm`}
-              />
+              {/* 폭은 여기서 정한다 (select 는 w-full 로 이 안을 채운다) */}
+              <div className="w-36 shrink-0">
+                <CategorySelect
+                  value={f.category}
+                  onChange={(category) => update(f.key, category)}
+                  disabled={disabled}
+                />
+              </div>
               <button
                 type="button"
                 disabled={disabled}
