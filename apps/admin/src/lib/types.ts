@@ -98,6 +98,7 @@ export interface StudentListItem {
 
 export interface StudentDocument {
   id: string;
+  studentId: string;
   /** 업로드 후 나중에 지정할 수 있어 비어 있을 수 있다 */
   category: DocumentCategory | null;
   originalFileName: string;

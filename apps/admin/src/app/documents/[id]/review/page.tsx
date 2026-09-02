@@ -1,6 +1,7 @@
 "use client";
 
 import { use, useCallback, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { api, ApiError } from "@/lib/api";
 import { Badge, Button, ErrorBox } from "@/components/ui";
 import {
@@ -32,6 +33,7 @@ export default function DocumentReviewPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = use(params);
+  const router = useRouter();
   const [document, setDocument] = useState<StudentDocument | null>(null);
   const [fileUrl, setFileUrl] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -63,6 +65,19 @@ export default function DocumentReviewPage({
     });
   }, [id, fetchDocument]);
 
+  /**
+   * 새 창으로 열렸으면 목록 창에 알리고 닫는다.
+   * 같은 탭에서 열렸으면(모바일) 학생 화면으로 되돌아간다.
+   */
+  function close() {
+    if (window.opener) {
+      window.close();
+      return;
+    }
+    if (document?.studentId) router.push(`/students/${document.studentId}`);
+    else router.back();
+  }
+
   async function complete() {
     setError(null);
     setSaving(true);
@@ -73,9 +88,9 @@ export default function DocumentReviewPage({
         { type: DOCUMENT_REVIEWED_MESSAGE, id },
         window.location.origin,
       );
-      window.close();
-      // window.close() 는 스크립트로 연 창에서만 동작한다. 직접 주소를
-      // 입력해 들어온 경우를 위해 화면 상태도 갱신해 둔다.
+      close();
+      // 창이 닫히지 않는 경우(주소를 직접 입력해 들어온 경우)를 위해
+      // 화면 상태도 갱신해 둔다.
       await fetchDocument(id);
     } catch (err) {
       setError(
@@ -90,7 +105,7 @@ export default function DocumentReviewPage({
 
   return (
     <div className="flex h-viewport flex-col bg-background">
-      <header className="sticky top-0 z-10 flex shrink-0 flex-wrap items-center gap-3 border-b border-border bg-surface px-4 py-3">
+      <header className="sticky top-0 z-10 flex shrink-0 flex-col gap-2 border-b border-border bg-surface px-4 py-3 sm:flex-row sm:items-center sm:gap-3">
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2">
             <span className="truncate font-semibold">
@@ -114,8 +129,8 @@ export default function DocumentReviewPage({
           </div>
         </div>
 
-        <div className="flex shrink-0 items-center gap-2">
-          <Button variant="secondary" onClick={() => window.close()}>
+        <div className="flex shrink-0 items-center justify-end gap-2">
+          <Button variant="secondary" onClick={close}>
             닫기
           </Button>
           <Button

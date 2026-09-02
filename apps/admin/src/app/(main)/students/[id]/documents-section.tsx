@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import { api, ApiError } from "@/lib/api";
 import { useStaff } from "@/components/app-shell";
 import {
@@ -47,6 +48,7 @@ export function DocumentsSection({
   onChanged: () => void | Promise<void>;
 }) {
   const me = useStaff();
+  const router = useRouter();
   const isAdmin = me?.type === "ADMIN";
   const [picked, setPicked] = useState<PickedFile[]>([]);
   const [busy, setBusy] = useState<string | null>(null);
@@ -152,13 +154,20 @@ export function DocumentsSection({
     );
   }
 
-  /** 서류를 새 창에서 크게 보며 검토한다 */
+  /**
+   * 서류를 크게 보며 검토한다.
+   *
+   * 데스크톱은 새 창을 띄워 목록을 그대로 두고 본다. 모바일에서는 새 창이
+   * 탭으로 열리는데 window.close() 가 막혀 돌아올 방법이 없어지므로,
+   * 같은 탭에서 이동하고 검토 화면이 뒤로 보내준다.
+   */
   function openReview(doc: StudentDocument) {
-    window.open(
-      `/documents/${doc.id}/review`,
-      `k-dream-review-${doc.id}`,
-      "width=1100,height=900",
-    );
+    const url = `/documents/${doc.id}/review`;
+    if (window.matchMedia("(max-width: 767px)").matches) {
+      router.push(url);
+      return;
+    }
+    window.open(url, `k-dream-review-${doc.id}`, "width=1100,height=900");
   }
 
   /** 검토 상태를 바꾼다. 되돌리기(NOT_REVIEWED)는 사유도 함께 지워진다. */

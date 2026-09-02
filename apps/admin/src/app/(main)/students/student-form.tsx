@@ -187,7 +187,7 @@ export function StudentForm({ student, onClose, onSaved }: Props) {
           />
         </Field>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid gap-4 min-[480px]:grid-cols-2">
           <Field label="생년월일" required>
             <input
               className={inputClass}
@@ -213,7 +213,7 @@ export function StudentForm({ student, onClose, onSaved }: Props) {
           </Field>
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid gap-4 min-[480px]:grid-cols-2">
           <Field label="여권번호" required>
             <input
               className={inputClass}
@@ -235,7 +235,7 @@ export function StudentForm({ student, onClose, onSaved }: Props) {
           </Field>
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid gap-4 min-[480px]:grid-cols-2">
           <Field label="연락처">
             <input
               className={inputClass}
@@ -256,7 +256,7 @@ export function StudentForm({ student, onClose, onSaved }: Props) {
           </Field>
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid gap-4 min-[480px]:grid-cols-2">
           <Field label="희망 과정" required>
             <select
               className={inputClass}
