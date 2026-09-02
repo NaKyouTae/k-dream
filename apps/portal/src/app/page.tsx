@@ -171,6 +171,7 @@ function Hero() {
   const heroPoints = [t("hero.point1"), t("hero.point2")];
   return (
     <section
+      id="hero"
       className="relative mt-16 overflow-hidden"
       style={{ minHeight: "fit-content", height: "calc(100dvh - 4rem)" }}
     >
@@ -225,7 +226,7 @@ function Hero() {
               {heroPoints.map((point) => (
                 <div
                   key={point}
-                  className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-left text-sm text-blue-50/95 backdrop-blur-sm"
+                  className="flex items-center justify-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-center text-sm text-blue-50/95 backdrop-blur-sm"
                 >
                   <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-cyan-300/15 text-cyan-200">
                     <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
@@ -992,8 +993,29 @@ function Footer() {
    ────────────────────────────────────────── */
 function MobileBottomCTA() {
   const { t } = useLanguage();
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const hero = document.getElementById("hero");
+    if (!hero) return;
+    // 첫 화면에는 히어로 자체 버튼이 있으므로 겹쳐 보일 필요가 없다.
+    // 히어로가 화면에서 벗어나는 순간부터 하단 막대를 띄운다.
+    // (관찰 콜백 안에서만 setState 한다 — effect 동기 setState 금지)
+    const observer = new IntersectionObserver(
+      ([entry]) => setVisible(!entry.isIntersecting),
+      { rootMargin: "-40% 0px 0px 0px" },
+    );
+    observer.observe(hero);
+    return () => observer.disconnect();
+  }, []);
+
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-40 lg:hidden bg-white border-t border-gray-200 px-4 py-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))]">
+    <div
+      aria-hidden={!visible}
+      className={`fixed bottom-0 left-0 right-0 z-40 lg:hidden bg-white border-t border-gray-200 px-4 py-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] transition-transform duration-300 ${
+        visible ? "translate-y-0" : "pointer-events-none translate-y-full"
+      }`}
+    >
       <div className="flex gap-3 max-w-lg mx-auto">
         <a
           href="mailto:contact@k-dream.co.kr"
