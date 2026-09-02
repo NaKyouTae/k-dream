@@ -17,6 +17,7 @@ import {
   Badge,
   Button,
   ErrorBox,
+  HScroll,
   LinkButton,
   PageHeader,
   inputClass,
@@ -174,28 +175,30 @@ export default function StudentsPage() {
 
       {error && <ErrorBox message={error} />}
 
-      {/* 상태 필터 — 모바일에서는 가로 스크롤 */}
-      <div className="-mx-4 mb-4 overflow-x-auto px-4 sm:mx-0 sm:px-0">
-        <div className="flex w-max gap-2">
-          {tabs.map((tab) => (
-            <button
-              key={tab.key}
-              type="button"
-              onClick={() => {
-                setFilter(tab.key);
-                refresh(tab.key, q);
-              }}
-              className={`cursor-pointer rounded-full border px-3.5 py-1.5 text-sm whitespace-nowrap transition-colors ${
-                filter === tab.key
-                  ? "border-[#2F6BFF] bg-[#2F6BFF]/10 font-semibold text-[#2F6BFF]"
-                  : "border-border bg-surface text-muted hover:text-foreground"
-              }`}
-            >
-              {tab.label}
-              <span className="ml-1.5 text-xs">{tab.count}</span>
-            </button>
-          ))}
-        </div>
+      {/* 상태 필터 — 넘치면 좌우 버튼으로도 이동할 수 있다 */}
+      <div className="mb-4">
+        <HScroll>
+          <div className="flex w-max gap-2">
+            {tabs.map((tab) => (
+              <button
+                key={tab.key}
+                type="button"
+                onClick={() => {
+                  setFilter(tab.key);
+                  refresh(tab.key, q);
+                }}
+                className={`cursor-pointer rounded-full border px-3.5 py-1.5 text-sm whitespace-nowrap transition-colors ${
+                  filter === tab.key
+                    ? "border-[#2F6BFF] bg-[#2F6BFF]/10 font-semibold text-[#2F6BFF]"
+                    : "border-border bg-surface text-muted hover:text-foreground"
+                }`}
+              >
+                {tab.label}
+                <span className="ml-1.5 text-xs">{tab.count}</span>
+              </button>
+            ))}
+          </div>
+        </HScroll>
       </div>
 
       <form

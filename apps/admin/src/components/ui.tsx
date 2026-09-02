@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 /**
  * 인풋과 버튼이 공유하는 세로 크기.
@@ -133,6 +133,86 @@ export function LinkButton({
     >
       {children}
     </Link>
+  );
+}
+
+/**
+ * 가로로 넘치는 줄(필터 탭 등)을 담는 스크롤 영역.
+ *
+ * 모바일에서 그냥 overflow-x-auto 만 두면 더 있다는 걸 알아채기 어렵다.
+ * 넘칠 때만 양옆에 이동 버튼을 띄우고, 손가락 스크롤도 그대로 둔다.
+ */
+export function HScroll({ children }: { children: React.ReactNode }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [canLeft, setCanLeft] = useState(false);
+  const [canRight, setCanRight] = useState(false);
+
+  const measure = useCallback(() => {
+    const el = ref.current;
+    if (!el) return;
+    // 소수점 오차로 버튼이 깜빡이지 않도록 1px 여유를 둔다
+    setCanLeft(el.scrollLeft > 1);
+    setCanRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 1);
+  }, []);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    // ResizeObserver 는 관찰을 시작할 때 한 번 불려서 첫 측정도 겸한다.
+    // (effect 본문에서 곧바로 setState 하지 않기 위한 것이기도 하다)
+    const observer = new ResizeObserver(measure);
+    observer.observe(el);
+    for (const child of Array.from(el.children)) observer.observe(child);
+    return () => observer.disconnect();
+  }, [measure]);
+
+  function scrollBy(direction: -1 | 1) {
+    const el = ref.current;
+    if (!el) return;
+    el.scrollBy({ left: direction * el.clientWidth * 0.8, behavior: "smooth" });
+  }
+
+  return (
+    <div className="relative">
+      <div
+        ref={ref}
+        onScroll={measure}
+        className="overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+      >
+        {children}
+      </div>
+
+      {canLeft && <ScrollArrow side="left" onClick={() => scrollBy(-1)} />}
+      {canRight && <ScrollArrow side="right" onClick={() => scrollBy(1)} />}
+    </div>
+  );
+}
+
+function ScrollArrow({
+  side,
+  onClick,
+}: {
+  side: "left" | "right";
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-label={side === "left" ? "이전 항목 보기" : "다음 항목 보기"}
+      className={`absolute inset-y-0 flex w-9 cursor-pointer items-center bg-linear-to-r from-background to-transparent text-muted ${
+        side === "left"
+          ? "left-0 justify-start"
+          : "right-0 justify-end bg-linear-to-l"
+      }`}
+    >
+      <span
+        aria-hidden="true"
+        className="flex size-6 items-center justify-center rounded-full border border-border bg-surface text-xs shadow-sm"
+      >
+        {side === "left" ? "‹" : "›"}
+      </span>
+    </button>
   );
 }
 

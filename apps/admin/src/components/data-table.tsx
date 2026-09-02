@@ -96,7 +96,7 @@ export function DataTable<T extends { id: string }>({
       </div>
 
       {/* 모바일 */}
-      <div className="space-y-3 md:hidden">
+      <div className="space-y-2 md:hidden">
         {loading && <CardMessage text="불러오는 중…" />}
         {!loading && rows.length === 0 && <CardMessage text={empty} />}
         {!loading &&
@@ -104,26 +104,26 @@ export function DataTable<T extends { id: string }>({
             <div
               key={row.id}
               onClick={(e) => handleRowClick(row, e)}
-              className={`rounded-2xl border border-border bg-surface p-4 ${
+              className={`rounded-xl border border-border bg-surface p-3 ${
                 rowHref ? "cursor-pointer active:bg-black/[0.02]" : ""
               }`}
             >
-              <div className="text-sm font-semibold break-all">
-                {primary.cell(row)}
+              {/* 동작 버튼은 카드 우측 상단에 둔다. 아래에 두면 카드마다
+                  구분선과 여백이 더 붙어 목록이 길어진다. */}
+              <div className="flex items-start justify-between gap-2">
+                <div className="min-w-0 flex-1 text-sm font-semibold break-all">
+                  {primary.cell(row)}
+                </div>
+                {actions && <div className="shrink-0">{actions(row)}</div>}
               </div>
-              <dl className="mt-3 space-y-1.5">
+              <dl className="mt-2 space-y-1">
                 {rest.map((c) => (
-                  <div key={c.key} className="flex gap-3 text-sm">
-                    <dt className="w-24 shrink-0 text-muted">{c.header}</dt>
+                  <div key={c.key} className="flex gap-2 text-xs">
+                    <dt className="w-20 shrink-0 text-muted">{c.header}</dt>
                     <dd className="min-w-0 break-words">{c.cell(row)}</dd>
                   </div>
                 ))}
               </dl>
-              {actions && (
-                <div className="mt-3 flex justify-end border-t border-border pt-3">
-                  {actions(row)}
-                </div>
-              )}
             </div>
           ))}
       </div>
