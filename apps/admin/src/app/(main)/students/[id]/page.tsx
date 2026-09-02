@@ -90,7 +90,7 @@ export default function StudentDetailPage() {
   }
 
   return (
-    <div className="max-w-6xl">
+    <div>
       <LinkButton href="/students" size="sm">
         ← 학생 목록
       </LinkButton>
