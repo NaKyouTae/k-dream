@@ -49,8 +49,3 @@ body {
 @utility h-viewport {
   height: var(--viewport-height);
 }
-
-/* sticky 열이 화면을 넘지 않도록 하는 높이. 위아래 여백 2rem 을 뺀다. */
-@utility max-h-viewport {
-  max-height: calc(var(--viewport-height) - 2rem);
-}

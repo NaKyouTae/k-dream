@@ -190,9 +190,9 @@ export default function StudentDetailPage() {
 
         </div>
 
-        {/* 서류·검토는 우측에 붙여둔다. 좌측 정보를 훑으면서 계속 보이도록
-            sticky 로 두고, 내용이 길면 이 열 안에서만 스크롤한다. */}
-        <div className="lg:sticky lg:top-4 lg:max-h-viewport lg:overflow-y-auto">
+        {/* 우측 열은 그냥 흐르게 둔다. sticky + overflow 로 고정하면
+            열 안쪽 스크롤과 페이지 스크롤이 겹쳐 두 번 스크롤하게 된다. */}
+        <div>
           {/* 검토 처리는 관리자만. 서버도 AdminGuard 로 막는다 */}
           {isAdmin && (
             <Section title="검토 처리">
