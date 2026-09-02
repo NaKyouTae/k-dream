@@ -169,10 +169,10 @@ export const SCHOOL_STATUS_LABEL: Record<SchoolStatus, string> = {
 };
 
 export const STUDENT_STATUS_LABEL: Record<StudentStatus, string> = {
-  REVIEW_REQUESTED: "검토요청",
-  REVIEWING: "검토중",
-  SUPPLEMENT_REQUIRED: "서류보완필요",
-  REVIEW_COMPLETED: "검토완료",
+  REVIEW_REQUESTED: "검토 요청",
+  REVIEWING: "검토 중",
+  SUPPLEMENT_REQUIRED: "서류 보완 필요",
+  REVIEW_COMPLETED: "검토 완료",
 };
 
 export const PROGRAM_LABEL: Record<ProgramCode, string> = {
@@ -213,8 +213,8 @@ export const DOCUMENT_CATEGORY_ORDER: DocumentCategory[] = [
 
 export const DOCUMENT_REVIEW_LABEL: Record<DocumentReviewStatus, string> = {
   NOT_REVIEWED: "미검토",
-  OK: "확인완료",
-  SUPPLEMENT_REQUIRED: "보완필요",
+  OK: "확인 완료",
+  SUPPLEMENT_REQUIRED: "보완 필요",
 };
 
 /** 목록 필터 탭 순서이자 진행 순서 */

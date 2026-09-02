@@ -21,9 +21,9 @@ import { DocumentsSection } from "./documents-section";
 
 /** 관리자가 직접 지정할 수 있는 상태. 검토요청은 등록 시점에만 붙는다. */
 const REVIEW_ACTIONS: { status: StudentStatus; label: string }[] = [
-  { status: "REVIEWING", label: "검토중으로 변경" },
-  { status: "SUPPLEMENT_REQUIRED", label: "서류보완 요청" },
-  { status: "REVIEW_COMPLETED", label: "검토완료" },
+  { status: "REVIEWING", label: "검토 중으로 변경" },
+  { status: "SUPPLEMENT_REQUIRED", label: "서류 보완 요청" },
+  { status: "REVIEW_COMPLETED", label: "검토 완료" },
 ];
 
 export default function StudentDetailPage() {
@@ -187,7 +187,7 @@ export default function StudentDetailPage() {
                 <span className="mb-1.5 block text-sm font-medium">
                   메모
                   <span className="ml-1.5 text-xs font-normal text-muted">
-                    서류보완 요청 시 필수. 에이전트에게 그대로 보입니다.
+                    서류 보완 요청 시 필수. 에이전트에게 그대로 보입니다.
                   </span>
                 </span>
                 <textarea

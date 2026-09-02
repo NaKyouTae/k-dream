@@ -160,7 +160,7 @@ export default function StudentsPage() {
         title="학생"
         description={
           isAdmin
-            ? "모든 에이전트가 등록한 학생입니다. 검토요청 건을 열어 서류를 확인하고 상태를 변경합니다."
+            ? "모든 에이전트가 등록한 학생입니다. 검토 요청 건을 열어 서류를 확인하고 상태를 변경합니다."
             : "본인이 등록한 학생만 표시됩니다."
         }
         action={

@@ -212,7 +212,7 @@ export class DocumentsService {
   async remove(staff: StaffPayload, id: string) {
     const document = await this.findAccessible(staff, id);
     if (staff.type === "AGENT" && document.reviewStatus === "OK") {
-      throw new ForbiddenException("확인완료된 서류는 삭제할 수 없습니다.");
+      throw new ForbiddenException("확인 완료된 서류는 삭제할 수 없습니다.");
     }
     await this.prisma.document.delete({ where: { id } });
     // 저장소 삭제가 실패해도 DB 기준으로는 지워진 것으로 본다

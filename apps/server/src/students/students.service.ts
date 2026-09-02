@@ -174,7 +174,7 @@ export class StudentsService {
   async update(staff: StaffPayload, id: string, dto: UpdateStudentDto) {
     const student = await this.findOne(staff, id);
     if (staff.type === "AGENT" && student.status === "REVIEW_COMPLETED") {
-      throw new ForbiddenException("검토완료된 학생은 수정할 수 없습니다.");
+      throw new ForbiddenException("검토 완료된 학생은 수정할 수 없습니다.");
     }
     await this.assertSchoolUsable(dto.schoolId);
 
@@ -200,7 +200,7 @@ export class StudentsService {
 
     if (dto.status === "REVIEW_REQUESTED") {
       throw new BadRequestException(
-        "검토요청은 에이전트가 등록할 때만 붙는 상태입니다.",
+        "검토 요청은 에이전트가 등록할 때만 붙는 상태입니다.",
       );
     }
     if (dto.status === "SUPPLEMENT_REQUIRED" && !dto.reviewNote?.trim()) {
