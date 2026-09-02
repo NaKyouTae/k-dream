@@ -26,3 +26,31 @@ body {
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
   word-break: keep-all;
 }
+
+/*
+ * 화면 높이 기준값.
+ *
+ * dvh 는 모바일에서 주소창이 접히고 펼쳐지는 만큼을 반영해 주지만,
+ * 구형 삼성 인터넷과 Safari 15.3 이하는 이 단위를 모른다.
+ * 같은 규칙 안에 vh/dvh 를 두 번 선언하는 흔한 방법은 CSS 압축 과정에서
+ * 뒤의 값만 남고 폴백이 사라진다. 그래서 @supports 로 규칙을 나눠
+ * 지원하는 브라우저에서만 dvh 로 덮어쓰게 한다.
+ */
+:root {
+  --viewport-height: 100vh;
+}
+
+@supports (height: 100dvh) {
+  :root {
+    --viewport-height: 100dvh;
+  }
+}
+
+@utility h-viewport {
+  height: var(--viewport-height);
+}
+
+/* sticky 열이 화면을 넘지 않도록 하는 높이. 위아래 여백 2rem 을 뺀다. */
+@utility max-h-viewport {
+  max-height: calc(var(--viewport-height) - 2rem);
+}

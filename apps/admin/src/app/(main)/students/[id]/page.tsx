@@ -177,7 +177,7 @@ export default function StudentDetailPage() {
 
         {/* 서류·검토는 우측에 붙여둔다. 좌측 정보를 훑으면서 계속 보이도록
             sticky 로 두고, 내용이 길면 이 열 안에서만 스크롤한다. */}
-        <div className="lg:sticky lg:top-4 lg:max-h-[calc(100dvh-2rem)] lg:overflow-y-auto">
+        <div className="lg:sticky lg:top-4 lg:max-h-viewport lg:overflow-y-auto">
           <DocumentsSection
             studentId={student.id}
             documents={student.documents}

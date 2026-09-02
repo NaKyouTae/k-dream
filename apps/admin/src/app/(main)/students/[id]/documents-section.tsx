@@ -211,44 +211,28 @@ export function DocumentsSection({
                 key={doc.id}
                 className={`py-3 ${isLatest ? "" : "opacity-75"}`}
               >
-                <div className="flex flex-wrap items-start gap-3">
-                  {/* 종류 — 폭은 감싸는 쪽에서 정한다 (select 는 w-full) */}
-                  <div className="relative w-36 shrink-0">
-                    <CategorySelect
-                      value={doc.category}
-                      onChange={(category) => setCategory(doc, category)}
-                      disabled={busy !== null}
-                    />
-                    {busy === `category:${doc.id}` && (
-                      // 화살표를 가리지 않도록 왼쪽 안쪽에 겹쳐 놓는다
-                      <span className="pointer-events-none absolute inset-y-0 right-7 flex items-center text-muted">
-                        <Spinner />
-                      </span>
-                    )}
-                  </div>
-
-                  {/* 파일 정보 — 남는 폭을 모두 쓰고, 넘치면 파일명만 자른다.
-                      min-w-0 이 없으면 긴 파일명이 줄 전체를 밀어내며 깨진다 */}
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-baseline gap-2">
-                      <span className="truncate text-sm font-medium">
-                        {doc.originalFileName}
-                      </span>
-                      {doc.category && (
-                        <span className="shrink-0 text-xs text-muted">
-                          v{doc.versionNo}
-                          {!isLatest && " · 이전 버전"}
+                {/* 1행 — 종류와 동작 */}
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <div className="flex min-w-0 items-center gap-2">
+                    {/* 폭은 감싸는 쪽에서 정한다 (select 는 w-full) */}
+                    <div className="relative w-36 shrink-0">
+                      <CategorySelect
+                        value={doc.category}
+                        onChange={(category) => setCategory(doc, category)}
+                        disabled={busy !== null}
+                      />
+                      {busy === `category:${doc.id}` && (
+                        // 화살표를 가리지 않도록 왼쪽 안쪽에 겹쳐 놓는다
+                        <span className="pointer-events-none absolute inset-y-0 right-7 flex items-center text-muted">
+                          <Spinner />
                         </span>
                       )}
                     </div>
-                    <div className="mt-0.5 text-xs text-muted">
-                      {formatSize(doc.fileSizeBytes)} · {doc.uploader.name} ·{" "}
-                      {new Date(doc.uploadedAt).toLocaleDateString("ko-KR")}
-                    </div>
-                    {doc.reviewNote && (
-                      <div className="mt-1 text-xs break-words text-red-600">
-                        {doc.reviewNote}
-                      </div>
+                    {doc.category && (
+                      <span className="shrink-0 text-xs text-muted">
+                        v{doc.versionNo}
+                        {!isLatest && " · 이전 버전"}
+                      </span>
                     )}
                   </div>
 
@@ -301,6 +285,28 @@ export function DocumentsSection({
                     )}
                   </div>
                 </div>
+
+                {/* 2행 — 파일 정보. 좌측은 남는 폭을 쓰고 길면 파일명을 자른다 */}
+                <div className="mt-1.5 flex items-baseline justify-between gap-3 text-xs text-muted">
+                  <span className="min-w-0 truncate">
+                    <span className="text-foreground">
+                      {doc.originalFileName}
+                    </span>
+                    {" · "}
+                    {formatSize(doc.fileSizeBytes)}
+                  </span>
+                  <span className="shrink-0">
+                    {new Date(doc.uploadedAt).toLocaleDateString("ko-KR")}
+                    {" · "}
+                    {doc.uploader.name}
+                  </span>
+                </div>
+
+                {doc.reviewNote && (
+                  <div className="mt-1.5 text-xs break-words text-red-600">
+                    {doc.reviewNote}
+                  </div>
+                )}
               </li>
             );
           })}

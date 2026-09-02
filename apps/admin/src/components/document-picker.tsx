@@ -161,7 +161,7 @@ export function DocumentPicker({
       )}
 
       {files.length > 0 && (
-        <ul className="space-y-2 not-first:mt-3">
+        <ul className={`space-y-2 ${showTrigger ? "mt-3" : ""}`}>
           {files.map((f) => (
             <li
               key={f.key}
