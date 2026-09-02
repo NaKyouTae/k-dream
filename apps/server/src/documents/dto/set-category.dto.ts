@@ -1,9 +1,9 @@
 import { DocumentCategory } from "@prisma/client";
 import { IsEnum, IsOptional } from "class-validator";
 
-export class UploadDocumentDto {
-  /** 업로드 시점에는 비워둘 수 있다. 나중에 분류한다. */
+export class SetCategoryDto {
+  /** null 이면 미지정으로 되돌린다. */
   @IsOptional()
   @IsEnum(DocumentCategory, { message: "서류 종류가 올바르지 않습니다." })
-  category?: DocumentCategory;
+  category?: DocumentCategory | null;
 }

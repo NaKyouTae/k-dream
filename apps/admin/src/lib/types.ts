@@ -98,7 +98,8 @@ export interface StudentListItem {
 
 export interface StudentDocument {
   id: string;
-  category: DocumentCategory;
+  /** 업로드 후 나중에 지정할 수 있어 비어 있을 수 있다 */
+  category: DocumentCategory | null;
   originalFileName: string;
   mimeType: string;
   fileSizeBytes: number;
@@ -247,6 +248,7 @@ export const AUDIT_ACTION_LABEL: Record<string, string> = {
   UPDATE_STUDENT: "학생 정보 수정",
   UPDATE_STUDENT_STATUS: "학생 상태 변경",
   UPLOAD_DOCUMENT: "서류 업로드",
+  UPDATE_DOCUMENT: "서류 분류 변경",
   REVIEW_DOCUMENT: "서류 검토",
   DELETE_DOCUMENT: "서류 삭제",
   CREATE_SCHOOL: "학교 등록",

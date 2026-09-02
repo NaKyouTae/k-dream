@@ -5,7 +5,7 @@ import {
   NotFoundException,
 } from "@nestjs/common";
 import { extname } from "node:path";
-import { createHash } from "node:crypto";
+import { createHash, randomUUID } from "node:crypto";
 import type { DocumentCategory, Prisma } from "@prisma/client";
 import type { StaffPayload } from "../auth/auth.service";
 import { PrismaService } from "../prisma/prisma.service";
@@ -57,10 +57,27 @@ export class DocumentsService {
     return student;
   }
 
+  /**
+   * 같은 종류의 서류를 다시 올리면 새 버전이 된다.
+   * 종류가 없는 동안에는 버전을 매기지 않는다 (서로 다른 파일이지 이전 버전이 아니다).
+   */
+  private async nextVersionNo(
+    studentId: string,
+    category: DocumentCategory | null,
+  ) {
+    if (!category) return 1;
+    const latest = await this.prisma.document.findFirst({
+      where: { studentId, category },
+      orderBy: { versionNo: "desc" },
+      select: { versionNo: true },
+    });
+    return (latest?.versionNo ?? 0) + 1;
+  }
+
   async upload(
     staff: StaffPayload,
     studentId: string,
-    category: DocumentCategory,
+    category: DocumentCategory | null,
     file: Express.Multer.File,
   ) {
     const student = await this.assertStudentAccess(staff, studentId);
@@ -77,17 +94,12 @@ export class DocumentsService {
       throw new BadRequestException("빈 파일은 업로드할 수 없습니다.");
     }
 
-    // 같은 종류를 다시 올리면 새 버전이 된다 (이전 버전은 이력으로 남긴다)
-    const latest = await this.prisma.document.findFirst({
-      where: { studentId, category },
-      orderBy: { versionNo: "desc" },
-      select: { versionNo: true },
-    });
-    const versionNo = (latest?.versionNo ?? 0) + 1;
+    const versionNo = await this.nextVersionNo(studentId, category);
 
-    // 저장명은 서버가 정한다 — 사용자 파일명을 그대로 경로에 쓰지 않는다
+    // 저장 경로에는 종류를 넣지 않는다. 나중에 분류를 바꿔도 파일을 옮길 필요가 없다.
+    // 사용자 파일명도 경로에 쓰지 않는다 (경로 조작·중복 방지).
     const extension = safeExtension(file.originalname, file.mimetype);
-    const storedFileName = `${student.studentNo}_${category}_v${String(versionNo).padStart(2, "0")}${extension}`;
+    const storedFileName = `${randomUUID()}${extension}`;
     const storagePath = `students/${student.studentNo}/${storedFileName}`;
 
     const { storageUri } = await this.storage.upload(
@@ -113,11 +125,35 @@ export class DocumentsService {
     });
   }
 
+  /** 업로드 후 서류 종류를 지정하거나 바꾼다. 파일은 그대로 두고 분류만 바뀐다. */
+  async setCategory(
+    staff: StaffPayload,
+    id: string,
+    category: DocumentCategory | null,
+  ) {
+    const document = await this.findAccessible(staff, id);
+    if (document.category === category) return document;
+
+    return this.prisma.document.update({
+      where: { id },
+      data: {
+        category,
+        // 새 분류 안에서 몇 번째 버전인지 다시 매긴다
+        versionNo: await this.nextVersionNo(document.studentId, category),
+      },
+      select: DOCUMENT_SELECT,
+    });
+  }
+
   async list(staff: StaffPayload, studentId: string) {
     await this.assertStudentAccess(staff, studentId);
     return this.prisma.document.findMany({
       where: { studentId },
-      orderBy: [{ category: "asc" }, { versionNo: "desc" }],
+      orderBy: [
+        { category: "asc" },
+        { versionNo: "desc" },
+        { uploadedAt: "desc" },
+      ],
       select: DOCUMENT_SELECT,
     });
   }

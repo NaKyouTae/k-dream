@@ -38,7 +38,6 @@ export function StudentForm({ student, onClose, onSaved }: Props) {
   const [agents, setAgents] = useState<Agent[]>([]);
   const [agentId, setAgentId] = useState(student?.agent?.id ?? "");
   const [passportName, setPassportName] = useState(student?.passportName ?? "");
-  const [localName, setLocalName] = useState(student?.localName ?? "");
   const [birthDate, setBirthDate] = useState(toDateInput(student?.birthDate));
   const [genderCode, setGenderCode] = useState<GenderCode>(
     student?.genderCode ?? "M",
@@ -90,7 +89,6 @@ export function StudentForm({ student, onClose, onSaved }: Props) {
       // 수정 시에는 담당 에이전트를 바꾸지 않는다 (서버도 무시한다)
       ...(editing || !isAdmin ? {} : { agentId }),
       passportName: passportName.trim(),
-      localName: localName.trim() || undefined,
       birthDate,
       genderCode,
       passportNo: passportNo.trim(),
@@ -113,7 +111,7 @@ export function StudentForm({ student, onClose, onSaved }: Props) {
       for (const [i, doc] of documents.entries()) {
         setProgress(`서류 업로드 중… (${i + 1}/${documents.length})`);
         const form = new FormData();
-        form.append("category", doc.category);
+        if (doc.category) form.append("category", doc.category);
         form.append("file", doc.file);
         await api.upload(`/students/${created.id}/documents`, form);
       }
@@ -177,15 +175,7 @@ export function StudentForm({ student, onClose, onSaved }: Props) {
           />
         </Field>
 
-        <Field label="현지어 이름">
-          <input
-            className={inputClass}
-            value={localName}
-            onChange={(e) => setLocalName(e.target.value)}
-          />
-        </Field>
-
-        <div className="grid gap-4 sm:grid-cols-2">
+        <div className="grid grid-cols-2 gap-4">
           <Field label="생년월일" required>
             <input
               className={inputClass}
@@ -211,7 +201,7 @@ export function StudentForm({ student, onClose, onSaved }: Props) {
           </Field>
         </div>
 
-        <div className="grid gap-4 sm:grid-cols-2">
+        <div className="grid grid-cols-2 gap-4">
           <Field label="여권번호" required>
             <input
               className={inputClass}
@@ -233,7 +223,7 @@ export function StudentForm({ student, onClose, onSaved }: Props) {
           </Field>
         </div>
 
-        <div className="grid gap-4 sm:grid-cols-2">
+        <div className="grid grid-cols-2 gap-4">
           <Field label="연락처">
             <input
               className={inputClass}
@@ -254,7 +244,7 @@ export function StudentForm({ student, onClose, onSaved }: Props) {
           </Field>
         </div>
 
-        <div className="grid gap-4 sm:grid-cols-2">
+        <div className="grid grid-cols-2 gap-4">
           <Field label="희망 과정" required>
             <select
               className={inputClass}
@@ -299,7 +289,7 @@ export function StudentForm({ student, onClose, onSaved }: Props) {
         {!editing && (
           <Field
             label="서류"
-            hint="여권·성적증명서 등. PDF 또는 이미지, 각 10MB 이하. 나중에 상세 화면에서도 올릴 수 있습니다."
+            hint="여러 개를 한 번에 고를 수 있습니다. 종류는 비워둬도 되고, 나중에 상세 화면에서 지정할 수 있습니다. PDF 또는 이미지, 각 10MB 이하."
           >
             <div className="mt-1.5">
               <DocumentPicker

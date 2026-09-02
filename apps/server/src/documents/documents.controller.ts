@@ -18,6 +18,7 @@ import { AdminGuard, AuthGuard, AuthedRequest } from "../auth/auth.guard";
 import { StorageService } from "../storage/storage.service";
 import { DocumentsService } from "./documents.service";
 import { ReviewDocumentDto } from "./dto/review-document.dto";
+import { SetCategoryDto } from "./dto/set-category.dto";
 
 @Controller("documents")
 export class DocumentsController {
@@ -52,6 +53,28 @@ export class DocumentsController {
   @UseGuards(AuthGuard)
   downloadUrl(@Param("id") id: string, @Req() req: AuthedRequest) {
     return this.documents.downloadUrl(req.staff!, id);
+  }
+
+  /** 업로드 후 종류를 지정한다. 에이전트도 본인 학생 서류는 분류할 수 있다. */
+  @Patch(":id/category")
+  @UseGuards(AuthGuard)
+  async setCategory(
+    @Param("id") id: string,
+    @Body() dto: SetCategoryDto,
+    @Req() req: AuthedRequest,
+  ) {
+    const document = await this.documents.setCategory(
+      req.staff!,
+      id,
+      dto.category ?? null,
+    );
+    await this.audit.record(req, {
+      actionCode: "UPDATE_DOCUMENT",
+      entityType: "DOCUMENT",
+      entityId: id,
+      detail: { category: dto.category ?? null },
+    });
+    return document;
   }
 
   @Patch(":id/review")

@@ -6,11 +6,13 @@ import { useStaff } from "@/components/app-shell";
 import {
   DOCUMENT_CATEGORY_LABEL,
   DOCUMENT_REVIEW_LABEL,
+  DocumentCategory,
   DocumentReviewStatus,
   StudentDocument,
 } from "@/lib/types";
-import { Badge, Button, ErrorBox } from "@/components/ui";
+import { Badge, Button, ErrorBox, inputClass } from "@/components/ui";
 import {
+  CategorySelect,
   DocumentPicker,
   PickedFile,
   formatSize,
@@ -40,9 +42,13 @@ export function DocumentsSection({
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  /** 최신 버전만 크게 보여주고 이전 버전은 접어둔다 */
+  /**
+   * 같은 종류 안에서 최신 버전만 진하게 보여준다.
+   * 미지정 서류는 서로 다른 파일이므로 버전으로 묶지 않는다.
+   */
   const latestByCategory = new Map<string, StudentDocument>();
   for (const doc of documents) {
+    if (!doc.category) continue;
     const current = latestByCategory.get(doc.category);
     if (!current || doc.versionNo > current.versionNo) {
       latestByCategory.set(doc.category, doc);
@@ -66,7 +72,7 @@ export function DocumentsSection({
     await run("upload", async () => {
       for (const doc of picked) {
         const form = new FormData();
-        form.append("category", doc.category);
+        if (doc.category) form.append("category", doc.category);
         form.append("file", doc.file);
         await api.upload(`/students/${studentId}/documents`, form);
       }
@@ -87,6 +93,12 @@ export function DocumentsSection({
     });
   }
 
+  function setCategory(doc: StudentDocument, category: DocumentCategory | null) {
+    void run(`category:${doc.id}`, () =>
+      api.patch(`/documents/${doc.id}/category`, { category }),
+    );
+  }
+
   function review(doc: StudentDocument, reviewStatus: DocumentReviewStatus) {
     const reviewNote =
       reviewStatus === "SUPPLEMENT_REQUIRED"
@@ -100,8 +112,10 @@ export function DocumentsSection({
   }
 
   function remove(doc: StudentDocument) {
-    if (!confirm(`${DOCUMENT_CATEGORY_LABEL[doc.category]} v${doc.versionNo} 을 삭제할까요?`))
-      return;
+    const label = doc.category
+      ? `${DOCUMENT_CATEGORY_LABEL[doc.category]} v${doc.versionNo}`
+      : doc.originalFileName;
+    if (!confirm(`${label} 을(를) 삭제할까요?`)) return;
     void run(`delete:${doc.id}`, () => api.delete(`/documents/${doc.id}`));
   }
 
@@ -116,7 +130,8 @@ export function DocumentsSection({
       ) : (
         <ul className="divide-y divide-border">
           {documents.map((doc) => {
-            const isLatest = latestByCategory.get(doc.category)?.id === doc.id;
+            const isLatest =
+              !doc.category || latestByCategory.get(doc.category)?.id === doc.id;
             return (
               <li
                 key={doc.id}
@@ -125,14 +140,23 @@ export function DocumentsSection({
                 }`}
               >
                 <div className="min-w-0">
-                  <div className="text-sm font-medium">
-                    {DOCUMENT_CATEGORY_LABEL[doc.category]}
-                    <span className="ml-2 text-xs font-normal text-muted">
-                      v{doc.versionNo}
-                      {!isLatest && " (이전 버전)"}
-                    </span>
+                  <div className="flex items-center gap-2">
+                    <CategorySelect
+                      value={doc.category}
+                      onChange={(category) => setCategory(doc, category)}
+                      disabled={busy !== null}
+                      className={`${inputClass} w-32 py-1 text-sm ${
+                        doc.category ? "" : "text-muted"
+                      }`}
+                    />
+                    {doc.category && (
+                      <span className="text-xs text-muted">
+                        v{doc.versionNo}
+                        {!isLatest && " (이전 버전)"}
+                      </span>
+                    )}
                   </div>
-                  <div className="truncate text-xs text-muted">
+                  <div className="mt-1 truncate text-xs text-muted">
                     {doc.originalFileName} · {formatSize(doc.fileSizeBytes)} ·{" "}
                     {doc.uploader.name} ·{" "}
                     {new Date(doc.uploadedAt).toLocaleString("ko-KR")}

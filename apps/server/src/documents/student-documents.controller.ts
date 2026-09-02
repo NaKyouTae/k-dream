@@ -45,7 +45,7 @@ export class StudentDocumentsController {
     const document = await this.documents.upload(
       req.staff!,
       studentId,
-      dto.category,
+      dto.category ?? null,
       file,
     );
     await this.audit.record(req, {

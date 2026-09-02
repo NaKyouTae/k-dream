@@ -128,7 +128,6 @@ export default function StudentDetailPage() {
 
       <Section title="기본 정보">
         <Row label="여권 영문명" value={student.passportName} />
-        <Row label="현지어 이름" value={student.localName} />
         <Row
           label="생년월일"
           value={new Date(student.birthDate).toLocaleDateString("ko-KR")}

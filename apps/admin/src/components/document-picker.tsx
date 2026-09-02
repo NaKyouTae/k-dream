@@ -9,8 +9,11 @@ import {
 import { Button, inputClass } from "@/components/ui";
 
 export interface PickedFile {
-  category: DocumentCategory;
+  /** 목록에서 각 줄을 구분하기 위한 임시 키 (서버에 보내지 않는다) */
+  key: string;
   file: File;
+  /** 비워둘 수 있다. 나중에 상세 화면에서도 지정할 수 있다. */
+  category: DocumentCategory | null;
 }
 
 /** 서버와 같은 제한 — 여기서 먼저 걸러 불필요한 업로드를 막는다 */
@@ -23,9 +26,40 @@ export function formatSize(bytes: number) {
     : `${(bytes / 1024 / 1024).toFixed(1)}MB`;
 }
 
+/** 미지정을 포함한 종류 선택 드롭다운 */
+export function CategorySelect({
+  value,
+  onChange,
+  disabled,
+  className,
+}: {
+  value: DocumentCategory | null;
+  onChange: (next: DocumentCategory | null) => void;
+  disabled?: boolean;
+  className?: string;
+}) {
+  return (
+    <select
+      className={className ?? inputClass}
+      value={value ?? ""}
+      disabled={disabled}
+      onChange={(e) =>
+        onChange(e.target.value ? (e.target.value as DocumentCategory) : null)
+      }
+    >
+      <option value="">미지정</option>
+      {DOCUMENT_CATEGORY_ORDER.map((c) => (
+        <option key={c} value={c}>
+          {DOCUMENT_CATEGORY_LABEL[c]}
+        </option>
+      ))}
+    </select>
+  );
+}
+
 /**
- * 서류 종류를 고르고 파일을 담아두는 컴포넌트.
- * 학생 등록 폼에서는 저장 후에 한꺼번에 올리고, 상세에서는 고르는 즉시 올린다.
+ * 파일을 먼저 여러 개 고르고, 그 다음 각각의 종류를 지정한다.
+ * 종류는 선택 사항이라 비워둔 채 올려도 되고, 나중에 상세 화면에서 지정할 수 있다.
  */
 export function DocumentPicker({
   files,
@@ -37,86 +71,99 @@ export function DocumentPicker({
   disabled?: boolean;
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
-  const [category, setCategory] = useState<DocumentCategory>("PASSPORT");
-  const [error, setError] = useState<string | null>(null);
+  const [errors, setErrors] = useState<string[]>([]);
 
-  function addFile(file: File) {
-    if (file.size > MAX_FILE_SIZE_BYTES) {
-      setError(`${file.name} — 10MB 를 넘는 파일은 올릴 수 없습니다.`);
-      return;
+  function addFiles(selected: FileList) {
+    const rejected: string[] = [];
+    const accepted: PickedFile[] = [];
+
+    for (const file of Array.from(selected)) {
+      if (file.size > MAX_FILE_SIZE_BYTES) {
+        rejected.push(`${file.name} — 10MB 초과`);
+        continue;
+      }
+      if (file.size === 0) {
+        rejected.push(`${file.name} — 빈 파일`);
+        continue;
+      }
+      // 같은 파일을 두 번 고르면 한 번만 담는다
+      const duplicate = files.some(
+        (f) => f.file.name === file.name && f.file.size === file.size,
+      );
+      if (duplicate) continue;
+
+      accepted.push({
+        key: `${file.name}-${file.size}-${file.lastModified}-${Math.random()}`,
+        file,
+        category: null,
+      });
     }
-    if (file.size === 0) {
-      setError(`${file.name} — 빈 파일입니다.`);
-      return;
-    }
-    setError(null);
-    // 같은 종류를 다시 고르면 마지막 것만 남긴다
-    onChange([...files.filter((f) => f.category !== category), { category, file }]);
+
+    setErrors(rejected);
+    if (accepted.length) onChange([...files, ...accepted]);
+  }
+
+  function update(key: string, category: DocumentCategory | null) {
+    onChange(files.map((f) => (f.key === key ? { ...f, category } : f)));
   }
 
   return (
     <div>
-      <div className="flex gap-2">
-        <select
-          className={`${inputClass} sm:max-w-44`}
-          value={category}
-          onChange={(e) => setCategory(e.target.value as DocumentCategory)}
-          disabled={disabled}
-        >
-          {DOCUMENT_CATEGORY_ORDER.map((c) => (
-            <option key={c} value={c}>
-              {DOCUMENT_CATEGORY_LABEL[c]}
-            </option>
-          ))}
-        </select>
-        <Button
-          type="button"
-          variant="secondary"
-          className="shrink-0"
-          disabled={disabled}
-          onClick={() => inputRef.current?.click()}
-        >
-          파일 선택
-        </Button>
-        <input
-          ref={inputRef}
-          type="file"
-          accept={ACCEPT}
-          className="hidden"
-          onChange={(e) => {
-            const file = e.target.files?.[0];
-            if (file) addFile(file);
-            // 같은 파일을 다시 골라도 change 가 나도록 비운다
-            e.target.value = "";
-          }}
-        />
-      </div>
+      <Button
+        type="button"
+        variant="secondary"
+        disabled={disabled}
+        onClick={() => inputRef.current?.click()}
+      >
+        파일 선택
+      </Button>
+      <input
+        ref={inputRef}
+        type="file"
+        accept={ACCEPT}
+        multiple
+        className="hidden"
+        onChange={(e) => {
+          if (e.target.files?.length) addFiles(e.target.files);
+          // 같은 파일을 다시 골라도 change 가 나도록 비운다
+          e.target.value = "";
+        }}
+      />
 
-      {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
+      {errors.length > 0 && (
+        <ul className="mt-2 space-y-0.5">
+          {errors.map((message) => (
+            <li key={message} className="text-sm text-red-600">
+              {message}
+            </li>
+          ))}
+        </ul>
+      )}
 
       {files.length > 0 && (
-        <ul className="mt-3 space-y-1.5">
+        <ul className="mt-3 space-y-2">
           {files.map((f) => (
             <li
-              key={f.category}
-              className="flex items-center gap-2 rounded-lg border border-border px-3 py-2 text-sm"
+              key={f.key}
+              className="flex items-center gap-2 rounded-lg border border-border px-3 py-2"
             >
-              <span className="shrink-0 font-medium">
-                {DOCUMENT_CATEGORY_LABEL[f.category]}
-              </span>
-              <span className="min-w-0 flex-1 truncate text-muted">
-                {f.file.name}
-              </span>
-              <span className="shrink-0 text-xs text-muted">
-                {formatSize(f.file.size)}
-              </span>
+              <div className="min-w-0 flex-1">
+                <div className="truncate text-sm">{f.file.name}</div>
+                <div className="text-xs text-muted">
+                  {formatSize(f.file.size)}
+                </div>
+              </div>
+              <CategorySelect
+                value={f.category}
+                onChange={(category) => update(f.key, category)}
+                disabled={disabled}
+                className={`${inputClass} w-32 shrink-0 py-1.5 text-sm`}
+              />
               <button
                 type="button"
                 disabled={disabled}
-                onClick={() =>
-                  onChange(files.filter((x) => x.category !== f.category))
-                }
-                aria-label={`${DOCUMENT_CATEGORY_LABEL[f.category]} 삭제`}
+                onClick={() => onChange(files.filter((x) => x.key !== f.key))}
+                aria-label={`${f.file.name} 제외`}
                 className="shrink-0 cursor-pointer px-1 text-muted hover:text-red-600 disabled:opacity-50"
               >
                 ×

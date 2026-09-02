@@ -181,7 +181,8 @@ model Document {
   studentId String
   student   Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
 
-  category         DocumentCategory
+  /// 업로드 시점에는 비어 있을 수 있다. 나중에 분류한다.
+  category         DocumentCategory?
   originalFileName String
   storedFileName   String
   /// 비공개 저장소 경로. 공개 URL을 그대로 저장하지 않는다.
