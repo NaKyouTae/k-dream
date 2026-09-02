@@ -324,12 +324,12 @@ function FullServiceFlow() {
           ))}
         </div>
 
-        <div className="hidden sm:grid gap-5 xl:grid-cols-3 2xl:grid-cols-6">
+        <div className="mx-auto hidden max-w-4xl gap-5 sm:grid sm:grid-cols-2">
           {steps.map((step, index) => (
             <div key={step.num} className="relative">
               {renderStepCard(step)}
               {index < steps.length - 1 && (
-                <div className="hidden 2xl:flex absolute top-1/2 -right-4 z-10 -translate-y-1/2 items-center text-[#B8C6E3]">
+                <div className="hidden absolute top-1/2 -right-4 z-10 -translate-y-1/2 items-center text-[#B8C6E3]">
                   <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14m-4-4 4 4-4 4" />
                   </svg>
@@ -673,36 +673,22 @@ function AdmissionProcess() {
         </div>
 
         {/* PC: 가로 6단 */}
-        <div className="hidden lg:grid grid-cols-6 gap-0 items-start">
-          {steps.map((step, i) => (
-            <div key={step.num} className="flex items-start">
-              <div className="flex-1 text-center">
-                <div className="w-16 h-16 bg-[#2F6BFF] rounded-2xl flex items-center justify-center text-2xl mx-auto mb-3 shadow-lg shadow-[#2F6BFF]/20">
-                  {step.icon}
-                </div>
-                <p className="font-bold text-gray-900 text-sm mb-1">{step.title}</p>
-                <p className="text-xs text-gray-400 px-2">{step.desc}</p>
-              </div>
-              {i < steps.length - 1 && (
-                <div className="flex items-center pt-6 px-1 text-[#2F6BFF]/30">
-                  <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                  </svg>
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-
-        {/* 모바일: 세로 */}
-        <div className="lg:hidden grid grid-cols-2 sm:grid-cols-3 gap-4">
+        {/* 4단계를 2행 2열로. 화면 크기에 따라 배치를 바꾸지 않는다 */}
+        <div className="mx-auto grid max-w-4xl grid-cols-2 gap-4 sm:gap-6">
           {steps.map((step) => (
-            <div key={step.num} className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 text-center">
-              <div className="w-12 h-12 bg-[#2F6BFF] rounded-xl flex items-center justify-center text-xl mx-auto mb-3">
+            <div
+              key={step.num}
+              className="rounded-2xl border border-gray-100 bg-white p-5 text-center shadow-sm sm:p-8"
+            >
+              <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-[#2F6BFF] text-xl shadow-lg shadow-[#2F6BFF]/20 sm:mb-4 sm:h-14 sm:w-14 sm:text-2xl">
                 {step.icon}
               </div>
-              <p className="font-bold text-gray-900 text-sm mb-1">{step.title}</p>
-              <p className="text-xs text-gray-400">{step.desc}</p>
+              <p className="mb-1 text-sm font-bold text-gray-900 sm:text-base break-keep">
+                {step.title}
+              </p>
+              <p className="text-xs text-gray-400 sm:text-sm break-keep">
+                {step.desc}
+              </p>
             </div>
           ))}
         </div>
@@ -740,7 +726,7 @@ function SettlementSupport() {
 
         <div className="grid md:grid-cols-2 gap-12 items-center">
           {/* 왼쪽 이미지 */}
-          <div className="relative aspect-[4/3] rounded-2xl overflow-hidden bg-gradient-to-br from-green-500 to-emerald-600">
+          <div className="relative aspect-[16/9] rounded-2xl overflow-hidden bg-gradient-to-br from-green-500 to-emerald-600">
             <Image
               src="/images/settlement.jpg"
               alt="한국 생활 정착 지원"
@@ -856,7 +842,7 @@ function CareerSupport() {
           </div>
 
           {/* 오른쪽 이미지 */}
-          <div className="relative aspect-[4/3] rounded-2xl overflow-hidden bg-gradient-to-br from-[#2F6BFF]/30 to-[#0A2A5E]/50">
+          <div className="relative aspect-[16/9] rounded-2xl overflow-hidden bg-gradient-to-br from-[#2F6BFF]/30 to-[#0A2A5E]/50">
             <Image
               src="/images/career.jpg"
               alt="취업 지원 및 면접"
@@ -910,9 +896,9 @@ function PartnerLogos() {
           {partnerGroups.map((group) => (
             <div
               key={group.title}
-              className={`rounded-2xl border bg-gradient-to-br ${group.color} p-8 text-center shadow-sm`}
+              className={`rounded-2xl border bg-gradient-to-br ${group.color} p-8 text-left shadow-sm`}
             >
-              <div className="w-16 h-16 mx-auto mb-5 rounded-2xl bg-white/80 border border-white flex items-center justify-center text-3xl shadow-sm">
+              <div className="mb-5 flex h-16 w-16 items-center justify-center rounded-2xl border border-white bg-white/80 text-3xl shadow-sm">
                 {group.icon}
               </div>
               <h3 className="text-xl font-bold text-gray-900">{group.title}</h3>
