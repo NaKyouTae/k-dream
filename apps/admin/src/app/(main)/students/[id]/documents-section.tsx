@@ -55,6 +55,8 @@ export function DocumentsSection({
   const [supplementError, setSupplementError] = useState<string | null>(null);
   /** 헤더의 버튼으로 파일 선택창을 연다 */
   const openPicker = useRef<(() => void) | null>(null);
+  /** 종류를 드롭다운으로 바꿔 보여줄 서류 id */
+  const [editingCategory, setEditingCategory] = useState<string | null>(null);
 
   /**
    * 같은 종류 안에서 최신 버전만 진하게 보여준다.
@@ -108,8 +110,22 @@ export function DocumentsSection({
   }
 
   function setCategory(doc: StudentDocument, category: DocumentCategory | null) {
+    setEditingCategory(null);
+    if (doc.category === category) return;
     void run(`category:${doc.id}`, () =>
       api.patch(`/documents/${doc.id}/category`, { category }),
+    );
+  }
+
+  /** 검토 상태를 바꾼다. 되돌리기(NOT_REVIEWED)는 사유도 함께 지워진다. */
+  function setReviewStatus(
+    doc: StudentDocument,
+    reviewStatus: DocumentReviewStatus,
+  ) {
+    // 버튼마다 자기 작업일 때만 로딩이 돌도록 키를 나눈다
+    const key = reviewStatus === "OK" ? "approve" : "revert";
+    void run(`${key}:${doc.id}`, () =>
+      api.patch(`/documents/${doc.id}/review`, { reviewStatus }),
     );
   }
 
@@ -121,9 +137,7 @@ export function DocumentsSection({
       setSupplementError(null);
       return;
     }
-    void run(`approve:${doc.id}`, () =>
-      api.patch(`/documents/${doc.id}/review`, { reviewStatus }),
-    );
+    setReviewStatus(doc, reviewStatus);
   }
 
   async function submitSupplement() {
@@ -211,28 +225,63 @@ export function DocumentsSection({
                 key={doc.id}
                 className={`py-3 ${isLatest ? "" : "opacity-75"}`}
               >
-                {/* 1행 — 종류와 동작 */}
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                  <div className="flex min-w-0 items-center gap-2">
-                    {/* 폭은 감싸는 쪽에서 정한다 (select 는 w-full) */}
-                    <div className="relative w-36 shrink-0">
-                      <CategorySelect
-                        value={doc.category}
-                        onChange={(category) => setCategory(doc, category)}
-                        disabled={busy !== null}
-                      />
-                      {busy === `category:${doc.id}` && (
-                        // 화살표를 가리지 않도록 왼쪽 안쪽에 겹쳐 놓는다
-                        <span className="pointer-events-none absolute inset-y-0 right-7 flex items-center text-muted">
-                          <Spinner />
+                {/* 1행 — 종류와 동작. 좁아져도 접히지 않고 한 줄을 유지한다 */}
+                <div className="flex items-center gap-2">
+                  <div className="flex min-w-0 flex-1 items-center gap-1.5">
+                    {editingCategory === doc.id ? (
+                      <div className="w-36 shrink-0">
+                        <CategorySelect
+                          value={doc.category}
+                          autoFocus
+                          onChange={(category) => setCategory(doc, category)}
+                          onCancel={() => setEditingCategory(null)}
+                          disabled={busy !== null}
+                        />
+                      </div>
+                    ) : (
+                      <>
+                        <span
+                          className={`truncate text-sm font-medium ${
+                            doc.category ? "" : "text-muted"
+                          }`}
+                        >
+                          {doc.category
+                            ? DOCUMENT_CATEGORY_LABEL[doc.category]
+                            : "미지정"}
                         </span>
-                      )}
-                    </div>
-                    {doc.category && (
-                      <span className="shrink-0 text-xs text-muted">
-                        v{doc.versionNo}
-                        {!isLatest && " · 이전 버전"}
-                      </span>
+                        {doc.category && (
+                          <span className="shrink-0 text-xs text-muted">
+                            v{doc.versionNo}
+                            {!isLatest && " · 이전 버전"}
+                          </span>
+                        )}
+                        <button
+                          type="button"
+                          title="서류 종류 변경"
+                          aria-label="서류 종류 변경"
+                          disabled={busy !== null}
+                          onClick={() => setEditingCategory(doc.id)}
+                          className="shrink-0 cursor-pointer rounded p-1 text-muted hover:bg-black/[0.04] hover:text-foreground disabled:cursor-not-allowed disabled:opacity-50"
+                        >
+                          {busy === `category:${doc.id}` ? (
+                            <Spinner />
+                          ) : (
+                            <svg
+                              width="14"
+                              height="14"
+                              viewBox="0 0 16 16"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="1.6"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              aria-hidden="true"
+                            >
+                              <path d="M11.5 2.5a1.6 1.6 0 0 1 2.3 2.3L5.6 13 2.5 13.5l.5-3.1 8.5-7.9Z" />
+                            </svg>
+                          )}
+                        </button>
+                      </>
                     )}
                   </div>
 
@@ -249,27 +298,39 @@ export function DocumentsSection({
                     >
                       보기
                     </Button>
-                    {isAdmin && (
-                      <>
-                        <Button
-                          size="sm"
-                          variant="secondary"
-                          loading={busy === `approve:${doc.id}`}
-                          disabled={busy !== null}
-                          onClick={() => review(doc, "OK")}
-                        >
-                          확인
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="danger"
-                          loading={busy === `supplement:${doc.id}`}
-                          disabled={busy !== null}
-                          onClick={() => review(doc, "SUPPLEMENT_REQUIRED")}
-                        >
-                          보완
-                        </Button>
-                      </>
+                    {/* 지금 상태와 다른 것만 보여준다 */}
+                    {isAdmin && doc.reviewStatus !== "OK" && (
+                      <Button
+                        size="sm"
+                        variant="secondary"
+                        loading={busy === `approve:${doc.id}`}
+                        disabled={busy !== null}
+                        onClick={() => review(doc, "OK")}
+                      >
+                        확인
+                      </Button>
+                    )}
+                    {isAdmin && doc.reviewStatus !== "SUPPLEMENT_REQUIRED" && (
+                      <Button
+                        size="sm"
+                        variant="danger"
+                        loading={busy === `supplement:${doc.id}`}
+                        disabled={busy !== null}
+                        onClick={() => review(doc, "SUPPLEMENT_REQUIRED")}
+                      >
+                        보완
+                      </Button>
+                    )}
+                    {isAdmin && doc.reviewStatus !== "NOT_REVIEWED" && (
+                      <Button
+                        size="sm"
+                        variant="secondary"
+                        loading={busy === `revert:${doc.id}`}
+                        disabled={busy !== null}
+                        onClick={() => setReviewStatus(doc, "NOT_REVIEWED")}
+                      >
+                        되돌리기
+                      </Button>
                     )}
                     {/* 확인완료된 서류는 에이전트가 지울 수 없다 (서버도 막는다) */}
                     {(isAdmin || doc.reviewStatus !== "OK") && (

@@ -35,17 +35,30 @@ export function formatSize(bytes: number) {
 export function CategorySelect({
   value,
   onChange,
+  onCancel,
   disabled,
+  autoFocus,
 }: {
   value: DocumentCategory | null;
   onChange: (next: DocumentCategory | null) => void;
+  /** 고르지 않고 빠져나갈 때 (포커스 이탈·Esc) */
+  onCancel?: () => void;
   disabled?: boolean;
+  autoFocus?: boolean;
 }) {
   return (
     <select
       className={inputClass}
       value={value ?? ""}
       disabled={disabled}
+      autoFocus={autoFocus}
+      // Safari 는 옵션을 고를 때 change 보다 blur 가 먼저 나기도 한다.
+      // 즉시 닫으면 선택이 유실되므로 한 틱 미뤄서, 그 사이 change 가
+      // 처리됐다면 이 취소는 아무 일도 하지 않게 한다.
+      onBlur={() => setTimeout(() => onCancel?.(), 0)}
+      onKeyDown={(e) => {
+        if (e.key === "Escape") onCancel?.();
+      }}
       onChange={(e) =>
         onChange(e.target.value ? (e.target.value as DocumentCategory) : null)
       }
