@@ -182,7 +182,7 @@ export function DocumentsSection({
           disabled={busy !== null}
           onClick={() => openPicker.current?.()}
         >
-          파일 선택
+          + 파일 추가
         </Button>
       </div>
 

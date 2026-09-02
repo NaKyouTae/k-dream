@@ -147,7 +147,7 @@ export function DocumentPicker({
           disabled={disabled}
           onClick={() => inputRef.current?.click()}
         >
-          파일 선택
+          + 파일 추가
         </Button>
       )}
       <input
