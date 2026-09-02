@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { api, ApiError } from "@/lib/api";
 import { useStaff } from "@/components/app-shell";
 import {
@@ -53,6 +53,8 @@ export function DocumentsSection({
     useState<StudentDocument | null>(null);
   const [supplementNote, setSupplementNote] = useState("");
   const [supplementError, setSupplementError] = useState<string | null>(null);
+  /** 헤더의 버튼으로 파일 선택창을 연다 */
+  const openPicker = useRef<(() => void) | null>(null);
 
   /**
    * 같은 종류 안에서 최신 버전만 진하게 보여준다.
@@ -158,9 +160,44 @@ export function DocumentsSection({
 
   return (
     <section className="mb-4 rounded-2xl border border-border bg-surface p-4 sm:p-5">
-      <h2 className="mb-3 font-semibold">서류 ({documents.length}건)</h2>
+      <div className="mb-3 flex items-center justify-between gap-3">
+        <h2 className="font-semibold">서류 ({documents.length}건)</h2>
+        <Button
+          size="sm"
+          variant="secondary"
+          disabled={busy !== null}
+          onClick={() => openPicker.current?.()}
+        >
+          파일 선택
+        </Button>
+      </div>
 
       {error && <ErrorBox message={error} />}
+
+      {/* 고른 파일은 버튼 바로 아래에 보여준다 */}
+      <div className={picked.length > 0 ? "mb-4" : ""}>
+        <DocumentPicker
+          files={picked}
+          onChange={setPicked}
+          disabled={busy !== null}
+          showTrigger={false}
+          openRef={openPicker}
+        />
+        {picked.length > 0 && (
+          <div className="mt-3 flex items-center gap-2">
+            <Button
+              loading={busy === "upload"}
+              disabled={busy !== null}
+              onClick={() => void upload()}
+            >
+              {busy === "upload" ? "업로드 중…" : `${picked.length}건 업로드`}
+            </Button>
+            <span className="text-xs text-muted">
+              종류는 비워둬도 되고 올린 뒤에 지정할 수 있습니다.
+            </span>
+          </div>
+        )}
+      </div>
 
       {documents.length === 0 ? (
         <p className="py-2 text-sm text-muted">업로드된 서류가 없습니다.</p>
@@ -269,30 +306,6 @@ export function DocumentsSection({
           })}
         </ul>
       )}
-
-      <div className="mt-4 border-t border-border pt-4">
-        <div className="mb-2 text-sm font-medium">
-          서류 올리기
-          <span className="ml-1.5 text-xs font-normal text-muted">
-            같은 종류를 다시 올리면 새 버전으로 쌓입니다.
-          </span>
-        </div>
-        <DocumentPicker
-          files={picked}
-          onChange={setPicked}
-          disabled={busy !== null}
-        />
-        {picked.length > 0 && (
-          <Button
-            className="mt-3"
-            loading={busy === "upload"}
-            disabled={busy !== null}
-            onClick={() => void upload()}
-          >
-            {busy === "upload" ? "업로드 중…" : `${picked.length}건 업로드`}
-          </Button>
-        )}
-      </div>
 
       {supplementTarget && (
         <Modal

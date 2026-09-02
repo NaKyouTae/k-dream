@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { MutableRefObject, useEffect, useRef, useState } from "react";
 import {
   DOCUMENT_CATEGORY_LABEL,
   DOCUMENT_CATEGORY_ORDER,
@@ -68,13 +68,28 @@ export function DocumentPicker({
   files,
   onChange,
   disabled,
+  showTrigger = true,
+  openRef,
 }: {
   files: PickedFile[];
   onChange: (next: PickedFile[]) => void;
   disabled?: boolean;
+  /** 파일 선택 버튼을 다른 곳(섹션 헤더 등)에 두고 싶으면 false */
+  showTrigger?: boolean;
+  /** 바깥에서 파일 선택창을 열 수 있게 여는 함수를 담아준다 */
+  openRef?: MutableRefObject<(() => void) | null>;
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [errors, setErrors] = useState<string[]>([]);
+
+  // 헤더 등 바깥 버튼에서도 파일 선택창을 열 수 있게 한다
+  useEffect(() => {
+    if (!openRef) return;
+    openRef.current = () => inputRef.current?.click();
+    return () => {
+      openRef.current = null;
+    };
+  }, [openRef]);
 
   function addFiles(selected: FileList) {
     const rejected: string[] = [];
@@ -112,14 +127,16 @@ export function DocumentPicker({
 
   return (
     <div>
-      <Button
-        type="button"
-        variant="secondary"
-        disabled={disabled}
-        onClick={() => inputRef.current?.click()}
-      >
-        파일 선택
-      </Button>
+      {showTrigger && (
+        <Button
+          type="button"
+          variant="secondary"
+          disabled={disabled}
+          onClick={() => inputRef.current?.click()}
+        >
+          파일 선택
+        </Button>
+      )}
       <input
         ref={inputRef}
         type="file"
@@ -144,7 +161,7 @@ export function DocumentPicker({
       )}
 
       {files.length > 0 && (
-        <ul className="mt-3 space-y-2">
+        <ul className="space-y-2 not-first:mt-3">
           {files.map((f) => (
             <li
               key={f.key}

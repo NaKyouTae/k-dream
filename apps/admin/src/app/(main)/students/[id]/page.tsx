@@ -90,7 +90,7 @@ export default function StudentDetailPage() {
   }
 
   return (
-    <div className="max-w-3xl">
+    <div className="max-w-6xl">
       <LinkButton href="/students" size="sm">
         ← 학생 목록
       </LinkButton>
@@ -126,93 +126,102 @@ export default function StudentDetailPage() {
         </div>
       )}
 
-      <Section title="기본 정보">
-        <Row label="여권 영문명" value={student.passportName} />
-        <Row
-          label="생년월일"
-          value={new Date(student.birthDate).toLocaleDateString("ko-KR")}
-        />
-        <Row label="성별" value={GENDER_LABEL[student.genderCode]} />
-        <Row label="여권번호" value={student.passportNo} />
-        <Row
-          label="여권 만료"
-          value={new Date(student.passportExpiry).toLocaleDateString("ko-KR")}
-        />
-        <Row label="연락처" value={student.phone} />
-        <Row label="이메일" value={student.email} />
-      </Section>
+      <div className="grid items-start gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,30rem)]">
+        <div>
+          <Section title="기본 정보">
+            <Row label="여권 영문명" value={student.passportName} />
+            <Row
+              label="생년월일"
+              value={new Date(student.birthDate).toLocaleDateString("ko-KR")}
+            />
+            <Row label="성별" value={GENDER_LABEL[student.genderCode]} />
+            <Row label="여권번호" value={student.passportNo} />
+            <Row
+              label="여권 만료"
+              value={new Date(student.passportExpiry).toLocaleDateString("ko-KR")}
+            />
+            <Row label="연락처" value={student.phone} />
+            <Row label="이메일" value={student.email} />
+          </Section>
 
-      <Section title="지원 정보">
-        <Row label="희망 과정" value={PROGRAM_LABEL[student.desiredProgram]} />
-        <Row label="희망 전공" value={student.desiredMajor} />
-        <Row
-          label="신청 학교"
-          value={
-            student.school
-              ? `${student.school.nameKo} (${SCHOOL_TYPE_LABEL[student.school.type]})`
-              : null
-          }
-        />
-        <Row
-          label="담당 에이전트"
-          value={`${student.agent.name}${
-            student.agent.organization ? ` · ${student.agent.organization}` : ""
-          }`}
-        />
-        <Row
-          label="최근 검토"
-          value={
-            student.reviewedAt
-              ? `${new Date(student.reviewedAt).toLocaleString("ko-KR")}${
-                  student.reviewedBy ? ` · ${student.reviewedBy.name}` : ""
-                }`
-              : null
-          }
-        />
-      </Section>
+          <Section title="지원 정보">
+            <Row label="희망 과정" value={PROGRAM_LABEL[student.desiredProgram]} />
+            <Row label="희망 전공" value={student.desiredMajor} />
+            <Row
+              label="신청 학교"
+              value={
+                student.school
+                  ? `${student.school.nameKo} (${SCHOOL_TYPE_LABEL[student.school.type]})`
+                  : null
+              }
+            />
+            <Row
+              label="담당 에이전트"
+              value={`${student.agent.name}${
+                student.agent.organization ? ` · ${student.agent.organization}` : ""
+              }`}
+            />
+            <Row
+              label="최근 검토"
+              value={
+                student.reviewedAt
+                  ? `${new Date(student.reviewedAt).toLocaleString("ko-KR")}${
+                      student.reviewedBy ? ` · ${student.reviewedBy.name}` : ""
+                    }`
+                  : null
+              }
+            />
+          </Section>
 
-      <DocumentsSection
-        studentId={student.id}
-        documents={student.documents}
-        onChanged={() => load(id)}
-      />
+        </div>
 
-      {/* 검토 처리는 관리자만. 서버도 AdminGuard 로 막는다 */}
-      {isAdmin && (
-      <Section title="검토 처리">
-        <label className="block">
-          <span className="mb-1.5 block text-sm font-medium">
-            메모
-            <span className="ml-1.5 text-xs font-normal text-muted">
-              서류보완 요청 시 필수. 에이전트에게 그대로 보입니다.
-            </span>
-          </span>
-          <textarea
-            className={`${inputClass} min-h-20`}
-            value={note}
-            onChange={(e) => setNote(e.target.value)}
-            placeholder="예) 성적증명서 스캔 상태가 좋지 않아 재업로드가 필요합니다."
+        {/* 서류·검토는 우측에 붙여둔다. 좌측 정보를 훑으면서 계속 보이도록
+            sticky 로 두고, 내용이 길면 이 열 안에서만 스크롤한다. */}
+        <div className="lg:sticky lg:top-4 lg:max-h-[calc(100dvh-2rem)] lg:overflow-y-auto">
+          <DocumentsSection
+            studentId={student.id}
+            documents={student.documents}
+            onChanged={() => load(id)}
           />
-        </label>
 
-        <div className="mt-4 flex flex-col gap-2 sm:flex-row">
-          {REVIEW_ACTIONS.filter((a) => a.status !== student.status).map(
-            (action) => (
-              <Button
-                key={action.status}
-                variant={
-                  action.status === "REVIEW_COMPLETED" ? "primary" : "secondary"
-                }
-                disabled={saving !== null}
-                onClick={() => void changeStatus(action.status)}
-              >
-                {saving === action.status ? "처리 중…" : action.label}
-              </Button>
-            ),
+          {/* 검토 처리는 관리자만. 서버도 AdminGuard 로 막는다 */}
+          {isAdmin && (
+            <Section title="검토 처리">
+              <label className="block">
+                <span className="mb-1.5 block text-sm font-medium">
+                  메모
+                  <span className="ml-1.5 text-xs font-normal text-muted">
+                    서류보완 요청 시 필수. 에이전트에게 그대로 보입니다.
+                  </span>
+                </span>
+                <textarea
+                  className={`${inputClass} min-h-20`}
+                  value={note}
+                  onChange={(e) => setNote(e.target.value)}
+                  placeholder="예) 성적증명서 스캔 상태가 좋지 않아 재업로드가 필요합니다."
+                />
+              </label>
+
+              <div className="mt-4 flex flex-col gap-2 sm:flex-row">
+                {REVIEW_ACTIONS.filter((a) => a.status !== student.status).map(
+                  (action) => (
+                    <Button
+                      key={action.status}
+                      variant={
+                        action.status === "REVIEW_COMPLETED" ? "primary" : "secondary"
+                      }
+                      disabled={saving !== null}
+                      onClick={() => void changeStatus(action.status)}
+                    >
+                      {saving === action.status ? "처리 중…" : action.label}
+                    </Button>
+                  ),
+                )}
+              </div>
+            </Section>
           )}
         </div>
-      </Section>
-      )}
+      </div>
 
       {editing && (
         <StudentForm
