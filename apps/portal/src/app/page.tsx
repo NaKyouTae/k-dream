@@ -221,7 +221,7 @@ function Hero() {
             <p className="text-[16px] text-blue-100/85 leading-relaxed">
               {t("hero.desc2")}
             </p>
-            <div className="mt-6 grid gap-3 max-w-2xl mx-auto sm:grid-cols-3">
+            <div className="mx-auto mt-6 grid max-w-2xl gap-3">
               {heroPoints.map((point) => (
                 <div
                   key={point}
@@ -237,11 +237,12 @@ function Hero() {
               ))}
             </div>
           </div>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <a href="#programs" className="cursor-pointer px-8 py-3 bg-[#2F6BFF] hover:bg-[#0A2A5E] text-white font-medium rounded-full transition-colors">
+          {/* 위의 포인트 박스와 좌우 끝을 맞춘다 (같은 max-w-2xl) */}
+          <div className="mx-auto grid max-w-2xl gap-3 sm:grid-cols-2">
+            <a href="#programs" className="cursor-pointer rounded-full bg-[#2F6BFF] px-8 py-3 text-center font-medium text-white transition-colors hover:bg-[#0A2A5E]">
               {t("hero.cta1")}
             </a>
-            <a href="#contact" className="cursor-pointer px-8 py-3 border border-[#2F6BFF]/40 text-blue-300 hover:bg-[#2F6BFF]/10 font-medium rounded-full transition-colors">
+            <a href="#contact" className="cursor-pointer rounded-full border border-[#2F6BFF]/40 px-8 py-3 text-center font-medium text-blue-300 transition-colors hover:bg-[#2F6BFF]/10">
               {t("hero.cta2")}
             </a>
           </div>
