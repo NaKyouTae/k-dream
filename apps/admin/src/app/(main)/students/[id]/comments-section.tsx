@@ -6,6 +6,9 @@ import { useStaff } from "@/components/app-shell";
 import { STAFF_TYPE_LABEL, StaffType } from "@/lib/types";
 import { Button, ErrorBox, inputClass } from "@/components/ui";
 
+/** 기본으로 펼쳐 두는 최근 메모 개수 */
+const VISIBLE_COUNT = 3;
+
 interface StudentComment {
   id: string;
   body: string;
@@ -23,6 +26,8 @@ export function CommentsSection({ studentId }: { studentId: string }) {
   const [body, setBody] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState<string | null>(null);
+  /** 메모가 쌓이면 목록이 길어져 작성란이 멀어진다. 최근 것만 펼쳐 둔다. */
+  const [showAll, setShowAll] = useState(false);
 
   const load = useCallback(
     () =>
@@ -82,44 +87,59 @@ export function CommentsSection({ studentId }: { studentId: string }) {
           아직 주고받은 메모가 없습니다. 진행 상황이나 전달할 내용을 남겨보세요.
         </p>
       ) : (
-        <ul className="space-y-3">
-          {comments.map((comment) => {
-            const mine = comment.author.id === me?.sub;
-            return (
-              <li key={comment.id} className="text-sm">
-                <div className="flex items-baseline gap-2">
-                  <span className="font-medium">{comment.author.name}</span>
-                  <span
-                    className={`shrink-0 rounded-full px-1.5 py-0.5 text-[11px] ${
-                      comment.author.type === "ADMIN"
-                        ? "bg-[#2F6BFF]/10 text-[#2F6BFF]"
-                        : "bg-black/[0.05] text-muted"
-                    }`}
-                  >
-                    {STAFF_TYPE_LABEL[comment.author.type]}
-                  </span>
-                  <span className="shrink-0 text-xs text-muted">
-                    {new Date(comment.createdAt).toLocaleString("ko-KR")}
-                  </span>
-                  {/* 본인 것만 지울 수 있다. 관리자는 모두 (서버도 같게 막는다) */}
-                  {(mine || me?.type === "ADMIN") && (
-                    <button
-                      type="button"
-                      disabled={busy !== null}
-                      onClick={() => void remove(comment.id)}
-                      className="ml-auto shrink-0 cursor-pointer text-xs text-muted hover:text-red-600 disabled:opacity-50"
-                    >
-                      삭제
-                    </button>
-                  )}
-                </div>
-                <p className="mt-0.5 whitespace-pre-wrap break-words">
-                  {comment.body}
-                </p>
-              </li>
-            );
-          })}
-        </ul>
+        <>
+          {comments.length > VISIBLE_COUNT && (
+            <button
+              type="button"
+              onClick={() => setShowAll((v) => !v)}
+              className="mb-2 cursor-pointer text-xs text-muted underline-offset-2 hover:underline"
+            >
+              {showAll
+                ? "최근 메모만 보기"
+                : `이전 메모 ${comments.length - VISIBLE_COUNT}건 더 보기`}
+            </button>
+          )}
+          <ul className="space-y-3">
+            {(showAll ? comments : comments.slice(-VISIBLE_COUNT)).map(
+              (comment) => {
+                const mine = comment.author.id === me?.sub;
+                return (
+                  <li key={comment.id} className="text-sm">
+                    <div className="flex items-baseline gap-2">
+                      <span className="font-medium">{comment.author.name}</span>
+                      <span
+                        className={`shrink-0 rounded-full px-1.5 py-0.5 text-[11px] ${
+                          comment.author.type === "ADMIN"
+                            ? "bg-[#2F6BFF]/10 text-[#2F6BFF]"
+                            : "bg-black/[0.05] text-muted"
+                        }`}
+                      >
+                        {STAFF_TYPE_LABEL[comment.author.type]}
+                      </span>
+                      <span className="shrink-0 text-xs text-muted">
+                        {new Date(comment.createdAt).toLocaleString("ko-KR")}
+                      </span>
+                      {/* 본인 것만 지울 수 있다. 관리자는 모두 (서버도 같게 막는다) */}
+                      {(mine || me?.type === "ADMIN") && (
+                        <button
+                          type="button"
+                          disabled={busy !== null}
+                          onClick={() => void remove(comment.id)}
+                          className="ml-auto shrink-0 cursor-pointer text-xs text-muted hover:text-red-600 disabled:opacity-50"
+                        >
+                          삭제
+                        </button>
+                      )}
+                    </div>
+                    <p className="mt-0.5 whitespace-pre-wrap break-words">
+                      {comment.body}
+                    </p>
+                  </li>
+                );
+              },
+            )}
+          </ul>
+        </>
       )}
 
       <div className="mt-4 border-t border-border pt-4">

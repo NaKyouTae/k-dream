@@ -35,6 +35,8 @@ export default function StudentDetailPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState<StudentStatus | null>(null);
   const [editing, setEditing] = useState(false);
+  /** 전달된 메모는 길어질 수 있어 접어둘 수 있게 한다 */
+  const [noteOpen, setNoteOpen] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   // 첫 await 이전에 setState 를 호출하지 않는다 (effect 내 동기 setState 금지)
@@ -119,11 +121,23 @@ export default function StudentDetailPage() {
       {error && <ErrorBox message={error} />}
 
       {student.reviewNote && (
-        <div className="mb-4 rounded-2xl border border-amber-200 bg-amber-50 p-4">
-          <div className="text-xs font-medium text-amber-800">
+        <div className="mb-4 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3">
+          <button
+            type="button"
+            aria-expanded={noteOpen}
+            onClick={() => setNoteOpen((v) => !v)}
+            className="flex w-full cursor-pointer items-center gap-1.5 text-xs font-medium text-amber-800"
+          >
             에이전트에게 전달된 메모
-          </div>
-          <p className="mt-1 text-sm text-amber-900">{student.reviewNote}</p>
+            <span aria-hidden="true" className="text-[10px]">
+              {noteOpen ? "▲" : "▼"}
+            </span>
+          </button>
+          {noteOpen && (
+            <p className="mt-1.5 text-sm whitespace-pre-wrap text-amber-900">
+              {student.reviewNote}
+            </p>
+          )}
         </div>
       )}
 
@@ -174,7 +188,6 @@ export default function StudentDetailPage() {
             />
           </Section>
 
-          <CommentsSection studentId={student.id} />
         </div>
 
         {/* 서류·검토는 우측에 붙여둔다. 좌측 정보를 훑으면서 계속 보이도록
@@ -216,6 +229,8 @@ export default function StudentDetailPage() {
               </div>
             </Section>
           )}
+
+          <CommentsSection studentId={student.id} />
 
           <DocumentsSection
             studentId={student.id}
