@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  HttpCode,
   Param,
   Patch,
   Post,
@@ -68,6 +69,23 @@ export class StudentsController {
       entityType: "STUDENT",
       entityId: student.id,
       detail: { studentNo: student.studentNo, changed: Object.keys(dto) },
+    });
+    return student;
+  }
+
+  /**
+   * 에이전트가 보완을 마치고 다시 검토를 요청한다.
+   * 본인 학생만 가능하다 (findOne 에서 걸러진다).
+   */
+  @Post(":id/request-review")
+  @HttpCode(200)
+  async requestReview(@Param("id") id: string, @Req() req: AuthedRequest) {
+    const student = await this.students.requestReview(req.staff!, id);
+    await this.audit.record(req, {
+      actionCode: "REQUEST_REVIEW",
+      entityType: "STUDENT",
+      entityId: student.id,
+      detail: { studentNo: student.studentNo },
     });
     return student;
   }

@@ -230,7 +230,11 @@ export default function StudentDetailPage() {
             </Section>
           )}
 
-          <CommentsSection studentId={student.id} />
+          <CommentsSection
+            studentId={student.id}
+            studentStatus={student.status}
+            onStatusChanged={() => load(id)}
+          />
 
           <DocumentsSection
             studentId={student.id}

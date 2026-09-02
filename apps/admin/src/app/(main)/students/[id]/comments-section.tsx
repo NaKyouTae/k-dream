@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { api, ApiError } from "@/lib/api";
 import { useStaff } from "@/components/app-shell";
-import { STAFF_TYPE_LABEL, StaffType } from "@/lib/types";
+import { STAFF_TYPE_LABEL, StaffType, StudentStatus } from "@/lib/types";
 import { Button, ErrorBox, inputClass } from "@/components/ui";
 
 /** 기본으로 펼쳐 두는 최근 메모 개수 */
@@ -20,7 +20,16 @@ interface StudentComment {
  * 관리자와 에이전트가 학생 건에 대해 주고받는 메모.
  * reviewNote 는 덮어쓰기라 이전 내용이 사라지므로, 오간 맥락은 여기에 쌓인다.
  */
-export function CommentsSection({ studentId }: { studentId: string }) {
+export function CommentsSection({
+  studentId,
+  studentStatus,
+  onStatusChanged,
+}: {
+  studentId: string;
+  studentStatus: StudentStatus;
+  /** 검토 요청으로 상태가 바뀌면 상세 화면을 다시 읽는다 */
+  onStatusChanged: () => void | Promise<void>;
+}) {
   const me = useStaff();
   const [comments, setComments] = useState<StudentComment[] | null>(null);
   const [body, setBody] = useState("");
@@ -53,6 +62,30 @@ export function CommentsSection({ studentId }: { studentId: string }) {
       await load();
     } catch (err) {
       setError(err instanceof ApiError ? err.message : "등록에 실패했습니다.");
+    } finally {
+      setBusy(null);
+    }
+  }
+
+  /**
+   * 보완을 마치고 다시 검토를 요청한다.
+   * 이미 요청했거나 검토가 끝난 건에는 보여줄 이유가 없다.
+   */
+  const canRequestReview =
+    studentStatus !== "REVIEW_REQUESTED" &&
+    studentStatus !== "REVIEW_COMPLETED";
+
+  async function requestReview() {
+    if (!confirm("관리자에게 검토를 요청할까요?")) return;
+    setError(null);
+    setBusy("request-review");
+    try {
+      await api.post(`/students/${studentId}/request-review`, {});
+      await onStatusChanged();
+    } catch (err) {
+      setError(
+        err instanceof ApiError ? err.message : "요청에 실패했습니다.",
+      );
     } finally {
       setBusy(null);
     }
@@ -153,14 +186,25 @@ export function CommentsSection({ studentId }: { studentId: string }) {
               : "관리자에게 전달할 내용을 적어주세요. (예: TOPIK 성적은 다음 주 발표 예정입니다)"
           }
         />
-        <Button
-          className="mt-2"
-          loading={busy === "create"}
-          disabled={busy !== null || !body.trim()}
-          onClick={() => void submit()}
-        >
-          메모 남기기
-        </Button>
+        <div className="mt-2 flex flex-wrap items-center gap-2">
+          <Button
+            loading={busy === "create"}
+            disabled={busy !== null || !body.trim()}
+            onClick={() => void submit()}
+          >
+            메모 남기기
+          </Button>
+          {canRequestReview && (
+            <Button
+              variant="secondary"
+              loading={busy === "request-review"}
+              disabled={busy !== null}
+              onClick={() => void requestReview()}
+            >
+              검토 요청
+            </Button>
+          )}
+        </div>
       </div>
     </section>
   );

@@ -219,6 +219,36 @@ export class StudentsService {
     });
   }
 
+  /**
+   * 에이전트가 보완을 마치고 다시 검토를 요청한다.
+   *
+   * 관리자용 updateStatus 와 분리한 이유는, 그쪽은 AdminGuard 로 막혀 있고
+   * REVIEW_REQUESTED 로 되돌리는 것을 막고 있기 때문이다. 여기서는 반대로
+   * 그 상태로만 보낸다.
+   */
+  async requestReview(staff: StaffPayload, id: string) {
+    const student = await this.findOne(staff, id);
+
+    if (student.status === "REVIEW_COMPLETED") {
+      throw new BadRequestException("이미 검토가 완료된 학생입니다.");
+    }
+    if (student.status === "REVIEW_REQUESTED") {
+      throw new BadRequestException("이미 검토를 요청한 상태입니다.");
+    }
+
+    return this.prisma.student.update({
+      where: { id },
+      data: {
+        status: "REVIEW_REQUESTED",
+        // 지난 보완 사유는 더 이상 현재 상태가 아니다. 오간 내용은 메모에 남는다.
+        reviewNote: null,
+        reviewedAt: null,
+        reviewedById: null,
+      },
+      select: LIST_SELECT,
+    });
+  }
+
   /** 비활성 학교로는 신청할 수 없다 */
   private async assertSchoolUsable(schoolId?: string) {
     if (!schoolId) return;
