@@ -13,9 +13,9 @@ export class StorageService implements OnModuleInit, StorageDriver {
   private readonly driver: StorageDriver;
 
   constructor() {
-    const url = process.env.SUPABASE_URL?.replace(/\/$/, "");
-    const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
-    const bucket = process.env.SUPABASE_STORAGE_BUCKET;
+    const url = readEnv("SUPABASE_URL")?.replace(/\/$/, "");
+    const key = readEnv("SUPABASE_SERVICE_ROLE_KEY");
+    const bucket = readEnv("SUPABASE_STORAGE_BUCKET");
 
     this.driver =
       url && key && bucket
@@ -59,4 +59,17 @@ export class StorageService implements OnModuleInit, StorageDriver {
   remove(path: string) {
     return this.driver.remove(path);
   }
+}
+
+/**
+ * 환경변수를 읽으면서 앞뒤 공백과 따옴표를 벗긴다.
+ *
+ * .env 파일에서는 따옴표가 자동으로 벗겨지지만 배포 대시보드(Render 등)는
+ * 입력한 문자를 그대로 값으로 쓴다. 따옴표째 붙여넣으면 키가 통째로 잘못된
+ * 값이 되어 Supabase 가 "Invalid Compact JWS" 로 거절한다.
+ */
+function readEnv(name: string) {
+  const raw = process.env[name]?.trim();
+  if (!raw) return undefined;
+  return raw.replace(/^(['"])(.*)\1$/s, "$2").trim() || undefined;
 }
