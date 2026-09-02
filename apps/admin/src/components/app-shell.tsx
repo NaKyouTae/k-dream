@@ -51,13 +51,17 @@ export function AppShell({
           me={me}
         />
 
-        {/* 헤더가 없으므로 모바일에서는 떠 있는 버튼으로 드로어를 연다 */}
-        {!navOpen && (
+        {/*
+          모바일 상단 막대.
+          사이드바가 숨겨져 있어 서비스명을 볼 곳이 없었다. 떠 있는 메뉴
+          버튼만 두면 어느 서비스인지 알 수 없어 막대로 바꿨다.
+        */}
+        <header className="fixed inset-x-0 top-0 z-20 flex h-14 items-center gap-1 border-b border-border bg-surface px-2 md:hidden">
           <button
             type="button"
             aria-label="메뉴 열기"
             onClick={() => setNavOpen(true)}
-            className="fixed top-3 left-3 z-30 flex size-10 items-center justify-center rounded-lg border border-border bg-surface text-muted shadow-sm md:hidden"
+            className="flex size-10 shrink-0 cursor-pointer items-center justify-center rounded-lg text-muted hover:bg-black/[0.04]"
           >
             <svg
               width="20"
@@ -72,10 +76,14 @@ export function AppShell({
               <path d="M3 5h14M3 10h14M3 15h14" />
             </svg>
           </button>
-        )}
+          <span className="font-bold tracking-tight text-[#0A2A5E]">
+            K-Dream
+          </span>
+          <span className="truncate text-xs text-muted">관리자 콘솔</span>
+        </header>
 
-        {/* 모바일은 떠 있는 메뉴 버튼과 겹치지 않도록 위쪽을 비운다 */}
-        <main className="min-w-0 flex-1 px-4 pt-16 pb-6 md:p-6">{children}</main>
+        {/* 모바일은 고정된 상단 막대만큼 위쪽을 비운다 */}
+        <main className="min-w-0 flex-1 px-4 pt-18 pb-6 md:p-6">{children}</main>
       </div>
     </StaffContext.Provider>
   );
