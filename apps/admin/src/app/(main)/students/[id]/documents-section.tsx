@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { api, ApiError } from "@/lib/api";
 import { useStaff } from "@/components/app-shell";
 import {
@@ -26,6 +26,7 @@ import {
   formatSize,
 } from "@/components/document-picker";
 import { compressImage } from "@/lib/image-compress";
+import { DOCUMENT_REVIEWED_MESSAGE } from "@/app/documents/[id]/review/page";
 
 const REVIEW_TONE: Record<
   DocumentReviewStatus,
@@ -85,6 +86,19 @@ export function DocumentsSection({
     }
   }
 
+  // 검토 전용 창에서 검토를 마치면 알려온다
+  useEffect(() => {
+    function onMessage(e: MessageEvent) {
+      if (e.origin !== window.location.origin) return;
+      if ((e.data as { type?: string })?.type !== DOCUMENT_REVIEWED_MESSAGE) {
+        return;
+      }
+      void onChanged();
+    }
+    window.addEventListener("message", onMessage);
+    return () => window.removeEventListener("message", onMessage);
+  }, [onChanged]);
+
   async function run(label: string, job: () => Promise<unknown>) {
     setError(null);
     setBusy(label);
@@ -135,6 +149,15 @@ export function DocumentsSection({
     if (doc.category === category) return;
     void run(`category:${doc.id}`, () =>
       api.patch(`/documents/${doc.id}/category`, { category }),
+    );
+  }
+
+  /** 서류를 새 창에서 크게 보며 검토한다 */
+  function openReview(doc: StudentDocument) {
+    window.open(
+      `/documents/${doc.id}/review`,
+      `k-dream-review-${doc.id}`,
+      "width=1100,height=900",
     );
   }
 
@@ -280,11 +303,10 @@ export function DocumentsSection({
                     <Button
                       size="sm"
                       variant="secondary"
-                      loading={busy === `approve:${doc.id}`}
                       disabled={busy !== null}
-                      onClick={() => review(doc, "OK")}
+                      onClick={() => openReview(doc)}
                     >
-                      확인
+                      검토
                     </Button>
                   )}
                   {isAdmin && !isOlder && doc.reviewStatus !== "SUPPLEMENT_REQUIRED" && (
@@ -306,7 +328,7 @@ export function DocumentsSection({
                       disabled={busy !== null}
                       onClick={() => setReviewStatus(doc, "NOT_REVIEWED")}
                     >
-                      되돌리기
+                      미검토
                     </Button>
                   )}
                   {/* 확인완료된 서류는 에이전트가 지울 수 없다 (서버도 막는다) */}

@@ -175,6 +175,16 @@ export class DocumentsService {
     return document;
   }
 
+  /** 검토 화면에서 서류 한 건의 정보를 읽는다 */
+  async findOne(staff: StaffPayload, id: string) {
+    // 접근 권한을 먼저 확인하고, 저장 경로·학생 정보는 빼고 돌려준다
+    const { id: documentId } = await this.findAccessible(staff, id);
+    return this.prisma.document.findUniqueOrThrow({
+      where: { id: documentId },
+      select: DOCUMENT_SELECT,
+    });
+  }
+
   /** 버킷이 비공개라 만료 시간이 있는 링크를 그때그때 발급한다 */
   async downloadUrl(staff: StaffPayload, id: string) {
     const document = await this.findAccessible(staff, id);

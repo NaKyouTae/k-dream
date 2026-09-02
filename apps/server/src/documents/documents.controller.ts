@@ -48,6 +48,12 @@ export class DocumentsController {
     return res.sendFile(filePath);
   }
 
+  @Get(":id")
+  @UseGuards(AuthGuard)
+  findOne(@Param("id") id: string, @Req() req: AuthedRequest) {
+    return this.documents.findOne(req.staff!, id);
+  }
+
   /** 비공개 버킷이라 만료 시간이 있는 링크를 그때그때 발급한다 */
   @Get(":id/download-url")
   @UseGuards(AuthGuard)
