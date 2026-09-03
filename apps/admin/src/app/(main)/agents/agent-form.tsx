@@ -93,12 +93,12 @@ export function AgentForm({ agent, onClose, onSaved }: Props) {
             />
           </Field>
         ) : (
-          <Field label="초기 비밀번호">
-            <p className="rounded-lg border border-border bg-black/[0.02] px-3 py-2.5 text-sm md:py-2">
-              <code className="font-mono">{DEFAULT_AGENT_PASSWORD}</code>
-              <span className="ml-2 text-muted">
-                계정 전달 시 함께 안내하고, 첫 로그인 후 변경하도록 하세요.
-              </span>
+          <Field
+            label="초기 비밀번호"
+            hint={`비밀번호는 ${DEFAULT_AGENT_PASSWORD} 로 자동 생성됩니다. 계정을 전달할 때 함께 안내하세요.`}
+          >
+            <p className="rounded-lg border border-border bg-black/[0.02] px-3 py-2.5 font-mono text-sm md:py-2">
+              {DEFAULT_AGENT_PASSWORD}
             </p>
           </Field>
         )}
