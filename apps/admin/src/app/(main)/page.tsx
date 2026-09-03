@@ -12,18 +12,30 @@ import {
   STUDENT_STATUS_ORDER,
   Staff,
 } from "@/lib/types";
-import { ErrorBox, PageHeader } from "@/components/ui";
+import { ErrorBox, LinkButton, PageHeader } from "@/components/ui";
 
 interface Stat {
   label: string;
   value: number;
   href: string;
+  /** 지금 손봐야 하는 항목을 눈에 띄게 한다 */
+  tone?: "primary" | "danger";
+}
+
+/** 대시보드 맨 위에 띄우는 할 일 안내 */
+interface ActionCall {
+  message: string;
+  cta: string;
+  href: string;
+  tone: "primary" | "danger";
 }
 
 interface Dashboard {
   students: Stat[];
   /** 관리자만 본다 */
   operations: Stat[] | null;
+  /** 처리할 게 없으면 null */
+  action: ActionCall | null;
 }
 
 async function fetchDashboard(admin: boolean): Promise<Dashboard> {
@@ -34,16 +46,25 @@ async function fetchDashboard(admin: boolean): Promise<Dashboard> {
 
   // 학생 지표는 두 역할 모두 같은 항목을 본다. 서버가 범위를 갈라준다:
   // 관리자는 전체 학생, 에이전트는 본인이 등록한 학생.
+  // 역할마다 지금 봐야 하는 상태가 다르다.
+  // 관리자는 자기가 처리할 검토 건, 에이전트는 보완이 걸린 본인 학생.
+  const emphasis: Partial<Record<string, Stat["tone"]>> = admin
+    ? { REVIEW_REQUESTED: "primary", REVIEWING: "primary" }
+    : { SUPPLEMENT_REQUIRED: "danger" };
+
   const students: Stat[] = [
     { label: admin ? "전체 학생" : "내 학생", value: total, href: "/students" },
     ...STUDENT_STATUS_ORDER.map((s) => ({
       label: STUDENT_STATUS_LABEL[s],
       value: counts[s] ?? 0,
       href: `/students?status=${s}`,
+      tone: emphasis[s],
     })),
   ];
 
-  if (!admin) return { students, operations: null };
+  const action = buildAction(admin, counts);
+
+  if (!admin) return { students, operations: null, action };
 
   // 운영 지표는 관리자 전용 API 라 에이전트가 부르면 403 이다.
   const [agents, schools, admins] = await Promise.all([
@@ -56,11 +77,37 @@ async function fetchDashboard(admin: boolean): Promise<Dashboard> {
 
   return {
     students,
+    action,
     operations: [
       { label: "활성 에이전트", value: active(agents.items), href: "/agents" },
       { label: "등록 학교", value: schools.items.length, href: "/schools" },
       { label: "관리자", value: active(admins.items), href: "/admins" },
     ],
+  };
+}
+
+/** 지금 처리해야 할 게 있으면 안내 문구를 만든다 */
+function buildAction(
+  admin: boolean,
+  counts: Record<string, number>,
+): ActionCall | null {
+  if (admin) {
+    const n = counts.REVIEW_REQUESTED ?? 0;
+    if (n === 0) return null;
+    return {
+      message: `검토할 요청이 ${n}건 있습니다.`,
+      cta: "검토하러 가기",
+      href: "/students?status=REVIEW_REQUESTED",
+      tone: "primary",
+    };
+  }
+  const n = counts.SUPPLEMENT_REQUIRED ?? 0;
+  if (n === 0) return null;
+  return {
+    message: `서류 보완할 학생이 ${n}명 있습니다.`,
+    cta: "보완하러 가기",
+    href: "/students?status=SUPPLEMENT_REQUIRED",
+    tone: "danger",
   };
 }
 
@@ -102,6 +149,8 @@ export default function DashboardPage() {
 
       {error && <ErrorBox message={error} />}
 
+      {data?.action && <ActionBanner action={data.action} />}
+
       <StatGrid
         title="학생 현황"
         stats={data?.students ?? null}
@@ -115,6 +164,38 @@ export default function DashboardPage() {
           placeholderCount={3}
         />
       )}
+    </div>
+  );
+}
+
+/** 기본 타일은 무채색, 지금 처리할 항목만 색을 준다 */
+const TILE_TONE: Record<string, string> = {
+  default:
+    "border-border bg-surface text-muted hover:border-[#2F6BFF]/40",
+  primary:
+    "border-[#2F6BFF]/30 bg-[#2F6BFF]/[0.06] text-[#2F6BFF] hover:border-[#2F6BFF]/60",
+  danger: "border-red-200 bg-red-50 text-red-600 hover:border-red-300",
+};
+
+function ActionBanner({ action }: { action: ActionCall }) {
+  const styles =
+    action.tone === "danger"
+      ? "border-red-200 bg-red-50 text-red-700"
+      : "border-[#2F6BFF]/30 bg-[#2F6BFF]/[0.06] text-[#0A2A5E]";
+
+  return (
+    <div
+      className={`mb-5 flex flex-wrap items-center justify-between gap-3 rounded-xl border px-4 py-3.5 ${styles}`}
+    >
+      <p className="font-semibold break-keep">{action.message}</p>
+      <LinkButton
+        href={action.href}
+        size="sm"
+        variant={action.tone === "danger" ? "danger" : "primary"}
+        className="shrink-0"
+      >
+        {action.cta}
+      </LinkButton>
     </div>
   );
 }
@@ -144,9 +225,9 @@ function StatGrid({
           <Link
             key={stat?.label ?? i}
             href={stat?.href ?? "#"}
-            className="flex items-center justify-between gap-2 rounded-lg border border-border bg-surface px-3 py-2.5 transition-colors hover:border-[#2F6BFF]/40 md:block md:rounded-2xl md:p-5"
+            className={`flex items-center justify-between gap-2 rounded-lg border px-3 py-2.5 transition-colors md:block md:rounded-2xl md:p-5 ${TILE_TONE[stat?.tone ?? "default"]}`}
           >
-            <span className="truncate text-sm whitespace-nowrap text-muted">
+            <span className="truncate text-sm whitespace-nowrap">
               {stat?.label ?? "…"}
             </span>
             <span className="shrink-0 text-base font-bold md:mt-2 md:block md:text-2xl">
