@@ -83,7 +83,7 @@ export function AppShell({
         </header>
 
         {/* 모바일은 고정된 상단 막대만큼 위쪽을 비운다 */}
-        <main className="min-w-0 flex-1 px-4 pt-18 pb-6 md:p-6">{children}</main>
+        <main className="min-w-0 flex-1 px-4 pt-18 pb-24 sm:pb-6 md:p-6">{children}</main>
       </div>
     </StaffContext.Provider>
   );

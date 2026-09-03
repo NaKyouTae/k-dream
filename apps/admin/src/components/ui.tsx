@@ -22,13 +22,29 @@ export function PageHeader({
   action?: React.ReactNode;
 }) {
   return (
-    <div className="mb-5 flex flex-col gap-3 sm:mb-6 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
-      <div>
-        <h1 className="text-lg font-bold sm:text-xl">{title}</h1>
-        {description && <p className="mt-1 text-sm text-muted">{description}</p>}
+    <>
+      <div className="mb-5 flex flex-col gap-3 sm:mb-6 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
+        <div>
+          <h1 className="text-lg font-bold sm:text-xl">{title}</h1>
+          {description && (
+            <p className="mt-1 text-sm text-muted">{description}</p>
+          )}
+        </div>
+        {/* 좁은 화면에서는 아래 고정 막대로 내린다 */}
+        {action && <div className="hidden shrink-0 sm:block">{action}</div>}
       </div>
-      {action && <div className="shrink-0">{action}</div>}
-    </div>
+
+      {/*
+        모바일에서는 주요 동작을 화면 아래에 고정한다. 목록이 길어지면
+        상단 버튼이 스크롤 밖으로 밀려나 다시 올라가야 했다.
+        같은 노드를 두 번 그리지만 핸들러가 같아 동작은 하나다.
+      */}
+      {action && (
+        <div className="fixed inset-x-0 bottom-0 z-20 border-t border-border bg-surface px-4 py-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] sm:hidden">
+          {action}
+        </div>
+      )}
+    </>
   );
 }
 
