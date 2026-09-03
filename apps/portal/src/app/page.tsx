@@ -892,17 +892,24 @@ function PartnerLogos() {
           <p className="text-gray-500 max-w-xl mx-auto">{t("partners.desc")}</p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-6">
+        {/* 아이콘을 왼쪽에 두고 제목·설명을 오른쪽에 세로로 쌓는다 */}
+        <div className="mx-auto grid max-w-4xl gap-4">
           {partnerGroups.map((group) => (
             <div
               key={group.title}
-              className={`rounded-2xl border bg-gradient-to-br ${group.color} p-8 text-left shadow-sm`}
+              className={`flex items-center gap-5 rounded-2xl border bg-gradient-to-br ${group.color} p-6 text-left shadow-sm sm:gap-6 sm:p-8`}
             >
-              <div className="mb-5 flex h-16 w-16 items-center justify-center rounded-2xl border border-white bg-white/80 text-3xl shadow-sm">
+              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border border-white bg-white/80 text-2xl shadow-sm sm:h-16 sm:w-16 sm:text-3xl">
                 {group.icon}
               </div>
-              <h3 className="text-xl font-bold text-gray-900">{group.title}</h3>
-              <p className="mt-3 text-sm text-gray-500 leading-relaxed">{group.desc}</p>
+              <div className="min-w-0">
+                <h3 className="text-lg font-bold text-gray-900 sm:text-xl break-keep">
+                  {group.title}
+                </h3>
+                <p className="mt-1 text-sm leading-relaxed text-gray-500 break-keep">
+                  {group.desc}
+                </p>
+              </div>
             </div>
           ))}
         </div>
