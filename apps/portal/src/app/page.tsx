@@ -573,7 +573,7 @@ function Programs() {
       visa: t("programs.item2.visa"),
       details: [t("programs.item2.detail1"), t("programs.item2.detail2"), t("programs.item2.detail3")],
       color: "from-cyan-500 to-cyan-600",
-      image: "/images/program-college.png",
+      image: "/images/program-college.jpg",
       imageAlt: "전문대 실습 장면",
     },
   ];
@@ -619,7 +619,7 @@ function DegreePrograms() {
       visa: t("programs.item3.visa"),
       details: [t("programs.item3.detail1"), t("programs.item3.detail2"), t("programs.item3.detail3")],
       color: "from-indigo-500 to-indigo-600",
-      image: "/images/program-university.png",
+      image: "/images/program-university.jpg",
       imageAlt: "4년제 대학 캠퍼스",
     },
     {
