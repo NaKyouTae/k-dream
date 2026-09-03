@@ -232,8 +232,9 @@ export function DocumentsSection({
               key={doc.id}
               className={`py-3 ${isOlder ? "opacity-60" : ""}`}
             >
-              {/* 1행 — 종류와 동작. 좁아져도 접히지 않고 한 줄을 유지한다 */}
-              <div className="flex items-center gap-2">
+              {/* 1행 — 종류와 동작.
+                  폰에서는 배지까지 여섯 개가 한 줄에 못 들어가 아래로 내린다 */}
+              <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
                 <div className="flex min-w-0 flex-1 items-center gap-1.5">
                   {editingCategory === doc.id ? (
                     <div className="w-36 shrink-0">
@@ -294,7 +295,7 @@ export function DocumentsSection({
                   )}
                 </div>
 
-                <div className="flex shrink-0 items-center gap-1.5">
+                <div className="flex flex-wrap items-center gap-1.5 sm:shrink-0">
                   <Badge tone={REVIEW_TONE[doc.reviewStatus]}>
                     {DOCUMENT_REVIEW_LABEL[doc.reviewStatus]}
                   </Badge>
@@ -356,7 +357,7 @@ export function DocumentsSection({
               </div>
 
               {/* 2행 — 파일 정보. 좌측은 남는 폭을 쓰고 길면 파일명을 자른다 */}
-              <div className="mt-1.5 flex items-baseline justify-between gap-3 text-xs text-muted">
+              <div className="mt-1.5 flex flex-col gap-0.5 text-xs text-muted sm:flex-row sm:items-baseline sm:justify-between sm:gap-3">
                 <span className="min-w-0 truncate">
                   <span className="text-foreground">
                     {doc.originalFileName}

@@ -142,7 +142,7 @@ export default function StudentDetailPage() {
       )}
 
       <div className="grid items-start gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,30rem)]">
-        <div>
+        <div className="min-w-0">
           <Section title="기본 정보">
             <Row label="여권 영문명" value={student.passportName} />
             <Row
@@ -191,8 +191,10 @@ export default function StudentDetailPage() {
         </div>
 
         {/* 우측 열은 그냥 흐르게 둔다. sticky + overflow 로 고정하면
-            열 안쪽 스크롤과 페이지 스크롤이 겹쳐 두 번 스크롤하게 된다. */}
-        <div>
+            열 안쪽 스크롤과 페이지 스크롤이 겹쳐 두 번 스크롤하게 된다.
+            min-w-0 이 없으면 그리드 자식이 내용 폭 아래로 줄지 않아
+            긴 파일명 하나에 카드 전체가 화면 밖으로 밀린다. */}
+        <div className="min-w-0">
           {/* 검토 처리는 관리자만. 서버도 AdminGuard 로 막는다 */}
           {isAdmin && (
             <Section title="검토 처리">
