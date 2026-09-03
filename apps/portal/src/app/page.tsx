@@ -423,9 +423,9 @@ function Introduction() {
   return (
     <section id="about" className="py-20 sm:py-28">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid md:grid-cols-2 gap-12 items-center">
+        <div className="grid gap-12 md:grid-cols-2">
           {/* 왼쪽 이미지 */}
-          <div className="relative h-64 rounded-2xl overflow-hidden bg-gradient-to-br from-[#0A2A5E] to-[#2F6BFF]">
+          <div className="relative h-64 md:h-full rounded-2xl overflow-hidden bg-gradient-to-br from-[#0A2A5E] to-[#2F6BFF]">
             <Image
               src="/images/intro.jpg"
               alt="K-DREAM 유학 상담"
@@ -724,9 +724,9 @@ function SettlementSupport() {
           <p className="text-gray-500 max-w-xl mx-auto whitespace-pre-line">{t("settlement.desc")}</p>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-12 items-center">
+        <div className="grid gap-12 md:grid-cols-2">
           {/* 왼쪽 이미지 */}
-          <div className="relative h-64 rounded-2xl overflow-hidden bg-gradient-to-br from-green-500 to-emerald-600">
+          <div className="relative h-64 md:h-full rounded-2xl overflow-hidden bg-gradient-to-br from-green-500 to-emerald-600">
             <Image
               src="/images/settlement.jpg"
               alt="한국 생활 정착 지원"
@@ -825,7 +825,7 @@ function CareerSupport() {
           <p className="text-blue-200/70 max-w-xl mx-auto">{t("career.desc")}</p>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-12 items-center">
+        <div className="grid gap-12 md:grid-cols-2">
           {/* 왼쪽 카드들 */}
           <div className="space-y-4">
             {items.map((item) => (
@@ -842,7 +842,7 @@ function CareerSupport() {
           </div>
 
           {/* 오른쪽 이미지 */}
-          <div className="relative h-64 rounded-2xl overflow-hidden bg-gradient-to-br from-[#2F6BFF]/30 to-[#0A2A5E]/50">
+          <div className="relative h-64 md:h-full rounded-2xl overflow-hidden bg-gradient-to-br from-[#2F6BFF]/30 to-[#0A2A5E]/50">
             <Image
               src="/images/career.jpg"
               alt="취업 지원 및 면접"
