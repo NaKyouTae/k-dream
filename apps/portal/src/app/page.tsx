@@ -425,7 +425,7 @@ function Introduction() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid md:grid-cols-2 gap-12 items-center">
           {/* 왼쪽 이미지 */}
-          <div className="relative aspect-[4/3] rounded-2xl overflow-hidden bg-gradient-to-br from-[#0A2A5E] to-[#2F6BFF]">
+          <div className="relative h-64 rounded-2xl overflow-hidden bg-gradient-to-br from-[#0A2A5E] to-[#2F6BFF]">
             <Image
               src="/images/intro.jpg"
               alt="K-DREAM 유학 상담"
@@ -726,7 +726,7 @@ function SettlementSupport() {
 
         <div className="grid md:grid-cols-2 gap-12 items-center">
           {/* 왼쪽 이미지 */}
-          <div className="relative aspect-[16/9] rounded-2xl overflow-hidden bg-gradient-to-br from-green-500 to-emerald-600">
+          <div className="relative h-64 rounded-2xl overflow-hidden bg-gradient-to-br from-green-500 to-emerald-600">
             <Image
               src="/images/settlement.jpg"
               alt="한국 생활 정착 지원"
@@ -842,7 +842,7 @@ function CareerSupport() {
           </div>
 
           {/* 오른쪽 이미지 */}
-          <div className="relative aspect-[16/9] rounded-2xl overflow-hidden bg-gradient-to-br from-[#2F6BFF]/30 to-[#0A2A5E]/50">
+          <div className="relative h-64 rounded-2xl overflow-hidden bg-gradient-to-br from-[#2F6BFF]/30 to-[#0A2A5E]/50">
             <Image
               src="/images/career.jpg"
               alt="취업 지원 및 면접"
