@@ -49,7 +49,11 @@ export class StudentsService {
 
   /** 에이전트는 본인이 등록한 학생만 볼 수 있다 */
   private scopeOf(staff: StaffPayload): Prisma.StudentWhereInput {
-    return staff.type === "ADMIN" ? {} : { agentId: staff.sub };
+    // 목록·상세·집계가 모두 이 조건을 거친다. 지워진 학생은 어디에도 안 보인다.
+    return {
+      deletedAt: null,
+      ...(staff.type === "ADMIN" ? {} : { agentId: staff.sub }),
+    };
   }
 
   async list(staff: StaffPayload, query: ListStudentsDto) {
@@ -263,6 +267,28 @@ export class StudentsService {
         "비활성 상태인 학교에는 신청할 수 없습니다.",
       );
     }
+  }
+
+  /**
+   * 학생을 목록에서 감춘다.
+   *
+   * 실제로 지우면 documents 가 CASCADE 로 함께 사라져 영구 보관 요건이
+   * 깨진다. 그래서 표시만 하고 행과 서류는 남긴다.
+   * 학생번호도 그대로 두어 다시 발급되지 않게 한다.
+   */
+  async remove(staff: StaffPayload, id: string) {
+    const student = await this.findOne(staff, id);
+
+    // 검토가 끝난 건은 관리자만 정리할 수 있다 (수정 규칙과 같다)
+    if (staff.type !== "ADMIN" && student.status === "REVIEW_COMPLETED") {
+      throw new ForbiddenException("검토 완료된 학생은 삭제할 수 없습니다.");
+    }
+
+    await this.prisma.student.update({
+      where: { id },
+      data: { deletedAt: new Date() },
+    });
+    return { id: student.id, studentNo: student.studentNo };
   }
 
   private async nextStudentNo(countryCode: CountryCode): Promise<string> {

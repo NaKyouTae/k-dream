@@ -254,6 +254,7 @@ export const AUDIT_ACTION_LABEL: Record<string, string> = {
   CREATE_STUDENT: "학생 등록",
   UPDATE_STUDENT: "학생 정보 수정",
   UPDATE_STUDENT_STATUS: "학생 상태 변경",
+  DELETE_STUDENT: "학생 삭제",
   REQUEST_REVIEW: "검토 요청",
   CREATE_COMMENT: "메모 작성",
   DELETE_COMMENT: "메모 삭제",

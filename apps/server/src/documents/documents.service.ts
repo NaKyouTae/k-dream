@@ -49,6 +49,7 @@ export class DocumentsService {
     const student = await this.prisma.student.findFirst({
       where: {
         id: studentId,
+        deletedAt: null,
         ...(staff.type === "ADMIN" ? {} : { agentId: staff.sub }),
       },
       select: { id: true, studentNo: true, status: true },

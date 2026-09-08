@@ -148,12 +148,16 @@ model Student {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  /// 서류를 영구 보관해야 하므로 학생도 실제로 지우지 않는다.
+  /// 실제 삭제하면 documents 가 CASCADE 로 함께 사라진다.
+  deletedAt DateTime?
 
   documents Document[]
   comments  StudentComment[]
 
   @@index([agentId])
   @@index([status])
+  @@index([deletedAt])
   @@map("students")
 }
 

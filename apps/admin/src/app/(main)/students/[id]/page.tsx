@@ -1,6 +1,6 @@
 "use client";
 
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { api, ApiError } from "@/lib/api";
 import {
@@ -36,7 +36,9 @@ export default function StudentDetailPage() {
   const [saving, setSaving] = useState<StudentStatus | null>(null);
   const [editing, setEditing] = useState(false);
   /** 전달된 메모는 길어질 수 있어 접어둘 수 있게 한다 */
+  const router = useRouter();
   const [noteOpen, setNoteOpen] = useState(true);
+  const [removing, setRemoving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   // 첫 await 이전에 setState 를 호출하지 않는다 (effect 내 동기 setState 금지)
@@ -92,6 +94,28 @@ export default function StudentDetailPage() {
     );
   }
 
+  async function remove() {
+    if (!student) return;
+    // 실제로는 목록에서만 감춘다. 서류가 남는다는 점을 분명히 알린다.
+    if (
+      !confirm(
+        `${student.passportName} (${student.studentNo}) 을(를) 목록에서 삭제할까요?\n` +
+          "서류와 기록은 보관되며, 학생번호는 다시 발급되지 않습니다.",
+      )
+    )
+      return;
+
+    setError(null);
+    setRemoving(true);
+    try {
+      await api.delete(`/students/${student.id}`);
+      router.replace("/students");
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : "삭제에 실패했습니다.");
+      setRemoving(false);
+    }
+  }
+
   return (
     <div>
       <LinkButton href="/students" size="sm">
@@ -113,6 +137,17 @@ export default function StudentDetailPage() {
           {!isAdmin && student.status !== "REVIEW_COMPLETED" && (
             <Button variant="secondary" onClick={() => setEditing(true)}>
               정보 수정
+            </Button>
+          )}
+          {/* 삭제 조건은 수정과 같다. 서버도 같게 막는다 */}
+          {(isAdmin || student.status !== "REVIEW_COMPLETED") && (
+            <Button
+              variant="danger"
+              loading={removing}
+              disabled={saving !== null}
+              onClick={() => void remove()}
+            >
+              삭제
             </Button>
           )}
         </div>

@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   Param,
@@ -71,6 +72,22 @@ export class StudentsController {
       detail: { studentNo: student.studentNo, changed: Object.keys(dto) },
     });
     return student;
+  }
+
+  /**
+   * 목록에서 감춘다. 서류를 영구 보관해야 해서 실제로 지우지 않는다.
+   * 에이전트는 본인 학생만, 검토 완료 전까지만 가능하다.
+   */
+  @Delete(":id")
+  @HttpCode(204)
+  async remove(@Param("id") id: string, @Req() req: AuthedRequest) {
+    const student = await this.students.remove(req.staff!, id);
+    await this.audit.record(req, {
+      actionCode: "DELETE_STUDENT",
+      entityType: "STUDENT",
+      entityId: student.id,
+      detail: { studentNo: student.studentNo },
+    });
   }
 
   /**
