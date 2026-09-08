@@ -27,7 +27,7 @@ const LIST_SELECT = {
   updatedAt: true,
   agent: { select: { id: true, name: true, organization: true } },
   school: { select: { id: true, nameKo: true } },
-  _count: { select: { documents: true } },
+  _count: { select: { documents: { where: { deletedAt: null } } } },
 } satisfies Prisma.StudentSelect;
 
 const DETAIL_INCLUDE = {
@@ -37,6 +37,7 @@ const DETAIL_INCLUDE = {
   school: { select: { id: true, nameKo: true, type: true } },
   reviewedBy: { select: { id: true, name: true } },
   documents: {
+    where: { deletedAt: null },
     orderBy: [{ category: "asc" }, { versionNo: "desc" }],
     include: { uploader: { select: { id: true, name: true } } },
   },

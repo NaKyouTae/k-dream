@@ -221,7 +221,9 @@ export function DocumentsSection({
     const label = doc.category
       ? `${DOCUMENT_CATEGORY_LABEL[doc.category]} v${doc.versionNo}`
       : doc.originalFileName;
-    if (!confirm(`${label} 을(를) 삭제할까요?`)) return;
+    // 실제로는 목록에서만 감춘다. 파일은 보관되므로 그렇게 알린다.
+    if (!confirm(`${label} 을(를) 목록에서 삭제할까요?\n서류 자체는 보관 기록으로 남습니다.`))
+      return;
     void run(`delete:${doc.id}`, () => api.delete(`/documents/${doc.id}`));
   }
 

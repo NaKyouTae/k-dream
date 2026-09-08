@@ -219,8 +219,11 @@ model Document {
   reviewStatus DocumentReviewStatus @default(NOT_REVIEWED)
   reviewNote   String?
   uploadedAt   DateTime             @default(now())
+  /// 서류는 영구 보관한다. 삭제는 화면에서 감추기만 하고 파일은 남긴다.
+  deletedAt    DateTime?
 
   @@index([studentId, category])
+  @@index([studentId, deletedAt])
   @@map("documents")
 }
 

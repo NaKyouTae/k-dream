@@ -66,6 +66,7 @@ export class DocumentsService {
     category: DocumentCategory | null,
   ) {
     if (!category) return 1;
+    // 지워진 서류도 센다. 번호를 다시 쓰면 이력이 헷갈린다.
     const latest = await this.prisma.document.findFirst({
       where: { studentId, category },
       orderBy: { versionNo: "desc" },
@@ -148,7 +149,7 @@ export class DocumentsService {
   async list(staff: StaffPayload, studentId: string) {
     await this.assertStudentAccess(staff, studentId);
     return this.prisma.document.findMany({
-      where: { studentId },
+      where: { studentId, deletedAt: null },
       orderBy: [
         { category: "asc" },
         { versionNo: "desc" },
@@ -159,8 +160,8 @@ export class DocumentsService {
   }
 
   private async findAccessible(staff: StaffPayload, id: string) {
-    const document = await this.prisma.document.findUnique({
-      where: { id },
+    const document = await this.prisma.document.findFirst({
+      where: { id, deletedAt: null },
       select: {
         ...DOCUMENT_SELECT,
         storageUri: true,
@@ -214,9 +215,12 @@ export class DocumentsService {
     if (staff.type === "AGENT" && document.reviewStatus === "OK") {
       throw new ForbiddenException("확인 완료된 서류는 삭제할 수 없습니다.");
     }
-    await this.prisma.document.delete({ where: { id } });
-    // 저장소 삭제가 실패해도 DB 기준으로는 지워진 것으로 본다
-    await this.storage.remove(document.storageUri).catch(() => undefined);
+    // 서류는 영구 보관 대상이라 실제로 지우지 않는다.
+    // 화면에서만 감추고 행과 파일은 그대로 남긴다.
+    await this.prisma.document.update({
+      where: { id },
+      data: { deletedAt: new Date() },
+    });
     return document;
   }
 }
